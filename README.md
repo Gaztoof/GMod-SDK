@@ -11,7 +11,6 @@ Note that for now, this only works in x86
 
 I will eventually upload the latest dylibs and idb that I made while reversing the game.
 
-![](https://i.imgur.com/FmLXmCl.png)
 
 ## Usage
 
