@@ -1,5 +1,13 @@
 #include "Memory.h"
 
+void BytePatch(PVOID source, BYTE newValue)
+{
+    DWORD originalProtection;
+    VirtualProtect(source, sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
+    *(BYTE*)(source) = newValue;
+    VirtualProtect(source, sizeof(PVOID), originalProtection, &originalProtection);
+}
+
 PVOID VMTHook(PVOID** src, PVOID dst, int index)
 {
 	// I could do tramp hooking instead of VMT hooking, but I came across a few problems while implementing my tramp, and VMT just makes it easier.

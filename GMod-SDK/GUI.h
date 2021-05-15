@@ -65,8 +65,12 @@ const char* plyInfoEmplacement[] = {
 	"Left",
 };
 const char* configsNames[]{
+	"Default",
 	"HvH",
 	"Legit"
+	"Config1",
+	"Config2",
+	"Config3",
 };
 const char* hitmarkerSound[]{
 	"Metal",
@@ -527,13 +531,13 @@ void DrawMisc() {
 				VMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
 				VMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
 
-				 VMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
+				VMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
 
-				 extern _Present oPresent;
+				extern _Present oPresent;
 #ifdef _WIN64
-				*(char**)(present) = (char*)(oPresent);
+				* (char**)(present) = (char*)(oPresent);
 #else
-				**(char***)(present) = (char*)oPresent;
+				** (char***)(present) = (char*)oPresent;
 #endif
 				InputSystem->EnableInput(true);
 				Settings::openMenu = false;

@@ -8,6 +8,7 @@
 #include <limits>
 #include <array>
 
+void BytePatch(PVOID source, BYTE newValue);
 PVOID VMTHook(PVOID** src, PVOID dst, int index);
 const char* findPattern(const char* moduleName, std::string_view pattern) noexcept;
 

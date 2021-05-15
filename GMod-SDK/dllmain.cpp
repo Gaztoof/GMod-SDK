@@ -16,7 +16,6 @@
 #include "Present.h"
 #include "FireEvent.h"
 
-
 #include "Memory.h"
 
 
@@ -35,7 +34,7 @@ void Main()
     SetConsoleTitle(L"GMod SDK - WIP - Coded by t.me/Gaztoof");
 #endif
 
-    ConfigSystem::ResetConfig();
+    ConfigSystem::LoadConfig("Default");
 
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
     LuaInterface = (CLuaInterface*)LuaShared->GetLuaInterface(0);
@@ -54,6 +53,7 @@ void Main()
     EngineTrace = (IEngineTrace*)GetInterface("engine.dll", "EngineTraceClient003");
     IVDebugOverlay = (CIVDebugOverlay*)GetInterface("engine.dll", "VDebugOverlay003");
     GameEventManager = (CGameEventManager*)GetInterface("engine.dll", "GAMEEVENTSMANAGER002");
+    MatSystemSurface = (void*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
 
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
@@ -78,7 +78,6 @@ void Main()
     oDrawModelExecute = (_DrawModelExecute)VMTHook((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
-    // https://i.imgur.com/rBCVKg8.png
 
     present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern), 0x2);
 

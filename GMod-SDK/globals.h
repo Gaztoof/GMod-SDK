@@ -72,6 +72,7 @@ CModelInfo* ModelInfo;
 CInput* Input;
 CIVDebugOverlay* IVDebugOverlay;
 CGameEventManager* GameEventManager;
+void* MatSystemSurface;
 
 int screenWidth, screenHeight;
 
