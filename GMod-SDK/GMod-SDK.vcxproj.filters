@@ -43,6 +43,9 @@
     <Filter Include="Header Files\hooks\menu">
       <UniqueIdentifier>{a3a85829-1bf6-43cf-bf0c-2dc309a45bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\vgui">
+      <UniqueIdentifier>{b72d5e43-4c26-4658-a946-9ff378d4bcf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="CCollisionProperty.h">
       <Filter>Header Files\client</Filter>
+    </ClCompile>
+    <ClCompile Include="VPanelWrapper.h">
+      <Filter>Header Files\vgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="json.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaintTraverse.h">
+      <Filter>Header Files\hooks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

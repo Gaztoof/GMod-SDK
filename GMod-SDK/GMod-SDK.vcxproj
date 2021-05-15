@@ -178,6 +178,7 @@
     <ClCompile Include="iclientrenderable.h" />
     <ClCompile Include="KeyValues.cpp" />
     <ClCompile Include="vmatrix.h" />
+    <ClCompile Include="VPanelWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiAim.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="MenuControls.h" />
     <ClInclude Include="GunHacks.h" />
     <ClInclude Include="Misc.h" />
+    <ClInclude Include="PaintTraverse.h" />
     <ClInclude Include="Present.h" />
     <ClInclude Include="RenderView.h" />
     <ClInclude Include="shareddefs.h" />

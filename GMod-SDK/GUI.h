@@ -79,6 +79,7 @@ const char* hitmarkerSound[]{
 };
 const char* autostrafeStyle[]{
 	"Normal",
+	"Silent strafe",
 	"Rage"
 };
 
@@ -530,6 +531,7 @@ void DrawMisc() {
 				VMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
 				VMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
 				VMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
+				VMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
 
 				VMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
 

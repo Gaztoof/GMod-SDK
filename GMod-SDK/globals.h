@@ -27,6 +27,7 @@
 #include "CModelInfo.h"
 #include "CIVDebugOverlay.h"
 #include "CGameEventManager.h"
+#include "VPanelWrapper.h"
 
 #ifdef _WIN64
 #define ViewRenderOffset 0xC4
@@ -48,7 +49,9 @@
 
 typedef HRESULT(__stdcall* _Present)(IDirect3DDevice9*, CONST RECT*, CONST RECT*, HWND, CONST RGNDATA*);
 typedef bool(__thiscall* _FireEvent)(CGameEventManager*, IGameEvent*);
+typedef void(__thiscall* _PaintTraverse)(void*, VPanel*, bool, bool);
 
+_PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
 char* present; // clean that
 
@@ -73,6 +76,7 @@ CInput* Input;
 CIVDebugOverlay* IVDebugOverlay;
 CGameEventManager* GameEventManager;
 void* MatSystemSurface;
+VPanelWrapper* PanelWrapper;
 
 int screenWidth, screenHeight;
 

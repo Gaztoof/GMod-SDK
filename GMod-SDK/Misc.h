@@ -143,10 +143,12 @@ void FlashSpam(CUserCmd* cmd)
 }
 void UseSpam(CUserCmd* cmd)
 {
-    if (Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E) && (cmd->command_number % 2))
+    if (Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E))
+    {
+        if(cmd->command_number % 2)
         cmd->buttons |= IN_USE;
-    else if(Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E))
-        cmd->buttons &= ~IN_USE;
+        else cmd->buttons &= ~IN_USE;
+    }
 }
 void BunnyHop(CUserCmd* cmd)
 {
@@ -158,19 +160,30 @@ void BunnyHop(CUserCmd* cmd)
                 cmd->buttons &= ~IN_JUMP;
             else
                 cmd->buttons |= IN_JUMP;
-            if (Settings::Misc::autoStrafe)
+        }
+        if (Settings::Misc::autoStrafe)
+        {
+            if (Settings::Misc::autoStrafeStyle == 0) // Legit
             {
                 if (!(flags & FL_ONGROUND)) {
-                    if (cmd->mousedx < 0)
-                        cmd->sidemove = -450.0f;
-                    else if (cmd->mousedx > 0)
-                        cmd->sidemove = 450.0f;
+                    cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
                 }
             }
+            else if (Settings::Misc::autoStrafeStyle == 1) { // Silent-strafe
+                if (cmd->mousedy == 0.f)
+                {
+                    cmd->viewangles.y += (cmd->command_number % 2) ? 1.f : -1.f;
+                    cmd->sidemove = (cmd->command_number % 2) ? 450.f : -450.f;
+                }
+                else  cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
+            }
+            else if (Settings::Misc::autoStrafeStyle == 2) { // Rage-strafe
+                // Unimplemented.
+            }
         }
+
         if (!(flags & FL_ONGROUND))
             cmd->buttons &= ~IN_SPEED;
-
     }
 }
 

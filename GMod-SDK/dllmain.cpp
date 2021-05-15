@@ -15,6 +15,7 @@
 #include "RenderView.h"
 #include "Present.h"
 #include "FireEvent.h"
+#include "PaintTraverse.h"
 
 #include "Memory.h"
 
@@ -54,6 +55,7 @@ void Main()
     IVDebugOverlay = (CIVDebugOverlay*)GetInterface("engine.dll", "VDebugOverlay003");
     GameEventManager = (CGameEventManager*)GetInterface("engine.dll", "GAMEEVENTSMANAGER002");
     MatSystemSurface = (void*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
+    PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
 
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
@@ -74,6 +76,7 @@ void Main()
     oFrameStageNotify = (_FrameStageNotify)VMTHook((PVOID**)CHLclient, hkFrameStageNotify, 35);
     oRenderView = (_RenderView)VMTHook((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
     oFireEvent = (_FireEvent)VMTHook((PVOID**)GameEventManager, (PVOID)hkFireEvent, 7);
+    oPaintTraverse = (_PaintTraverse)VMTHook((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 
     oDrawModelExecute = (_DrawModelExecute)VMTHook((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!

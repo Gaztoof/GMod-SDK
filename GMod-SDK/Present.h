@@ -122,21 +122,19 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	}
 	ImGui::End();
 	
-	// GOD I KNOW I SHOULDN'T DO THAT ITS AWFUL.
+	/*// GOD I KNOW I SHOULDN'T DO THAT ITS AWFUL.
 	static char* _SetCursorPos = (char*)GetProcAddress(GetModuleHandleA("user32.dll"), "SetCursorPos");
 	// if menu is open, and setcursorpos is real, make it a ret
 	if (Settings::openMenu && (*_SetCursorPos == '\xE9'))
 		BytePatch(_SetCursorPos, 0xC3);
 	else if ((*_SetCursorPos == '\xC3') && !Settings::openMenu) // if menu is closed, and setcursorpos is a ret, make it a jmp as it originally is
-		BytePatch(_SetCursorPos, 0xE9);
+		BytePatch(_SetCursorPos, 0xE9);*/
 	
 
 	if (Settings::openMenu)
 	{
 		static int tab = 0;
 		style->ScrollbarSize = 5.f;
-
-		InputSystem->EnableInput(false);
 
 		ImGui::SetNextWindowSize(ImVec2(660.f, 560.f));
 		ImGui::BeginMenuBackground("Main Windows", &Settings::openMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar); 
@@ -270,9 +268,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		ImGui::End();
 		SpectatorList();
 	}
-	else {
-		InputSystem->EnableInput(true);
-	}
+
 	ImGui::EndFrame();
 	ImGui::Render();
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
