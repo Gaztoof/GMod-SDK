@@ -510,11 +510,18 @@ public:
 	// LMAO hard coding offsets
 	// i'll eventually make a dumper
 
-	BYTE getMoveType() { // not working
+	/* If you want to update an offset, open IDA, search for the netvar (exemple search in strings for m_fflags)
+	* Double click the occurence.
+	* Find xref (press key) to a dq offset. https://i.imgur.com/qoyuLzS.png
+	* Double click it.
+	* There's your offset.
+	* For exemple, in https://i.imgur.com/88fYuYY.png this case, the offset will be 0x01F4 AND NOT 0x010F4 !
+	*/
+	int getMoveType() {
 #ifdef _WIN64
-		return *(BYTE*)((uintptr_t)this + 0x1F4); // https://i.imgur.com/NV5vl7c.png
+		return *(int*)((uintptr_t)this + 0x1F4); // https://i.imgur.com/NV5vl7c.png
 #else
-		return *(BYTE*)((uintptr_t)this + 0x178); // https://i.imgur.com/oRWjTg9.png
+		return *(int*)((uintptr_t)this + 0x178); // https://i.imgur.com/oRWjTg9.png
 #endif
 	}
 	int getFlags() {
