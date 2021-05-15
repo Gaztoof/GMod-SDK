@@ -19,7 +19,7 @@ This also comes in with a built-in lua executor.
 ![](https://i.imgur.com/So6vWVn.png)
 ![](https://i.imgur.com/85YRzrO.png)
 ![](https://i.imgur.com/SouXE7G.png)
-![](https://i.imgur.com/yxpwGHi.png)
+![](https://i.imgur.com/fBRleQL.png)
 
 ## Usage
 
