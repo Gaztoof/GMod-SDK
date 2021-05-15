@@ -121,7 +121,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		ImGui::Text("Coded by t.me/Gaztoof");
 	}
 	ImGui::End();
-
+	
 	if (Settings::openMenu)
 	{
 		static int tab = 0;

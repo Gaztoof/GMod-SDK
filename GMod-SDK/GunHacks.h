@@ -10,42 +10,49 @@ void GunHacks(C_BaseCombatWeapon* _this) {
 	CLuaInterface* Lua = LuaShared->GetLuaInterface(0);
 	
 	_this->PushEntity();
-	if (!strcmp(GetLuaEntBase(_this), "bobs_gun_base")) // m9k
+
+	/* Basically what this does is:
+	* Get the gun's base name.
+	* If it is M9K, or CW, or FAS, modify it's exact fields.
+	* If it is another base, just apply every other base's fields to it too.
+	* Universal norecoil :-)
+	*/
+	if (!strcmp(GetLuaEntBase(_this), "bobs_gun_base")) // if the gun's base == m9k
 	{
 		Lua->GetField(-1, "Primary");
-		if (Lua->IsType(-1, LuaObjectType::TABLE))
+		if (Lua->IsType(-1, LuaObjectType::TABLE)) // if SWEP.Primary is a table
 		{
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "IronAccuracy");
+			Lua->SetField(-2, "IronAccuracy"); // SWEP.Primary.IronAccuracy = 0
 			if (Settings::Misc::noSpread)
 			{
 				Lua->PushNumber(0);
-				Lua->SetField(-2, "Spread");
+				Lua->SetField(-2, "Spread"); // SWEP.Primary.Spread = 0
 			}
 			if (Settings::Misc::noRecoil)
 			{
 				Lua->PushNumber(0);
-				Lua->SetField(-2, "KickHorizontal");
+				Lua->SetField(-2, "KickHorizontal"); // SWEP.Primary.KickHorizontal = 0
 				Lua->PushNumber(0);
-				Lua->SetField(-2, "KickUp");
+				Lua->SetField(-2, "KickUp"); // SWEP.Primary.KickUp = 0
 				Lua->PushNumber(0);
-				Lua->SetField(-2, "KickDown");
+				Lua->SetField(-2, "KickDown"); // SWEP.Primary.KickDown = 0
 			}
 			Lua->Pop(2);
 			return;
 		}
 		else Lua->Pop(2);
 	}	
-	else if (!strcmp(GetLuaEntBase(_this), "cw_base")) // cw2
+	else if (!strcmp(GetLuaEntBase(_this), "cw_base")) // if the gun's base == cw2
 	{
 		if (Settings::Misc::noSpread)
 		{
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipSpread");
+			Lua->SetField(-2, "HipSpread"); // SWEP.HipSpread = 0
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "AimSpread");
+			Lua->SetField(-2, "AimSpread"); // SWEP.AimSpread = 0
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "SpreadPerShot");
+			Lua->SetField(-2, "SpreadPerShot"); // SWEP.SpreadPerShot = 0
 			Lua->PushBool(true);
 			Lua->SetField(-2, "NoFreeAim"); // <-- That is the secret :)
 		}
@@ -57,27 +64,25 @@ void GunHacks(C_BaseCombatWeapon* _this) {
 		Lua->Pop(1);
 		return;
 	}
-	else if (!strcmp(GetLuaEntBase(_this), "fas2_base")) // fas2
+	else if (!strcmp(GetLuaEntBase(_this), "fas2_base")) // if the gun's base == fas2
 	{
 		if (Settings::Misc::noSpread)
 		{
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipCone");
+			Lua->SetField(-2, "HipCone"); // SWEP.HipCone = 0
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "AimCone");
+			Lua->SetField(-2, "AimCone"); // SWEP.AimCone = 0
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "SpreadPerShot");
+			Lua->SetField(-2, "SpreadPerShot"); // SWEP.SpreadPerShot = 0
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "MaxSpreadInc");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipCone");
+			Lua->SetField(-2, "MaxSpreadInc"); // SWEP.MaxSpreadInc = 0
 		}
 		if (Settings::Misc::noRecoil)
 		{
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "Recoil");
+			Lua->SetField(-2, "Recoil"); // SWEP.Recoil = 0
 			Lua->PushNumber(0);
-			Lua->SetField(-2, "ViewKick");
+			Lua->SetField(-2, "ViewKick"); // SWEP.ViewKick = 0
 		}
 		Lua->Pop(1);
 		return;
@@ -125,15 +130,4 @@ void GunHacks(C_BaseCombatWeapon* _this) {
 		Lua->Pop(topop);
 		return;
 	}
-
-
-	/*Lua->GetField(-1, "Cone");
-	if (!Lua->IsType(-1, LuaObjectType::NUMBER))
-	{
-		Lua->Pop(3);
-		return;
-	}
-	double out = Lua->GetNumber(-1);
-	Lua->Pop(3);*/
-
 }

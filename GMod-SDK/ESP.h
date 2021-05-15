@@ -53,8 +53,9 @@ void doEsp()
 				continue;
 			}
 			matrix3x4_t bones[128];
-			if (!entity->GetClientRenderable() || !entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime))
-				return;
+			if (!entity->GetClientRenderable() || 
+				!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, EngineClient->Time()))
+				continue;
 
 			int z = -1;
 
