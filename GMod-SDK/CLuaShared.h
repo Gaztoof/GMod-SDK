@@ -9,6 +9,7 @@ enum LuaFindResult
 {
 	IHaveNoIdea
 };
+
 class CLuaShared
 {
 public:

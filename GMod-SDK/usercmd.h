@@ -55,11 +55,8 @@ public:
 class CUserCmd
 {
 public:
-    
-
     // For matching server and client commands for debugging
     int     command_number;
-
     // the tick the client created this command
     int     tick_count;
 

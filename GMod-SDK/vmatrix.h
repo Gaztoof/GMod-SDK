@@ -252,3 +252,4 @@ public:
     // The matrix.
     vec_t		m[4][4];
 };
+

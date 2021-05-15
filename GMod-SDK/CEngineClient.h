@@ -6,6 +6,8 @@
 #include "C_BasePlayer.h"
 #include "CNetChan.h"
 
+// I have checked this, and it is the same, x86 / x64
+
 // Auto reconstructed from vtable block @ 0x004C62A0
 // from "engine.dylib", by ida_vtables.idc
 // Modified VTable dumper script obviously by t.me/Gaztoof.
@@ -20,20 +22,20 @@ public:
 	/*5*/	virtual void* GetScreenSize(int&, int&) = 0;
 	/*6*/	virtual void ServerCmd(char const*, bool) = 0;
 	/*7*/	virtual void ClientCmd(char const*) = 0;
-	/*8*/	virtual void* GetPlayerInfo(int, player_info_s*) = 0;
+	/*8*/	virtual bool GetPlayerInfo(int, player_info_s*) = 0;
 	/*9*/	virtual void* GetPlayerForUserID(int) = 0;
 	/*10*/	virtual void* TextMessageGet(char const*) = 0;
-	/*11*/	virtual void* Con_IsVisible(void) = 0;
+	/*11*/	virtual bool Con_IsVisible(void) = 0;
 	/*12*/	virtual int GetLocalPlayer(void) = 0;
 	/*13*/	virtual void* LoadModel(char const*, bool) = 0;
-	/*14*/	virtual void* Time(void) = 0;
-	/*15*/	virtual void* GetLastTimeStamp(void) = 0;
+	/*14*/	virtual float Time(void) = 0;
+	/*15*/	virtual float GetLastTimeStamp(void) = 0;
 	/*16*/	virtual void* GetSentence(void*) = 0;
-	/*17*/	virtual void* GetSentenceLength(void*) = 0;
+	/*17*/	virtual float GetSentenceLength(void*) = 0;
 	/*18*/	virtual bool IsStreaming(void*)const = 0;
-	/*19*/	virtual void* GetViewAngles(QAngle&) = 0;
+	/*19*/	virtual void GetViewAngles(QAngle&) = 0;
 	/*20*/	virtual void SetViewAngles(QAngle&) = 0;
-	/*21*/	virtual void* GetMaxClients(void) = 0;
+	/*21*/	virtual int GetMaxClients(void) = 0;
 	/*22*/	virtual void* Key_LookupBinding(char const*) = 0;
 	/*23*/	virtual void* Key_BindingForKey(ButtonCode_t) = 0;
 	/*24*/	virtual void* StartKeyTrapMode(void) = 0;
@@ -47,9 +49,9 @@ public:
 	/*32*/	virtual bool IsBoxInViewCluster(Vector const&, Vector const&) = 0;
 	/*33*/	virtual void* CullBox(Vector const&, Vector const&) = 0;
 	/*34*/	virtual void* Sound_ExtraUpdate(void) = 0;
-	/*35*/	virtual void* GetGameDirectory(void) = 0;
-	/*36*/	virtual void* WorldToScreenMatrix(void) = 0;
-	/*37*/	virtual void* WorldToViewMatrix(void) = 0;
+	/*35*/	virtual const char* GetGameDirectory(void) = 0;
+	/*36*/	virtual const VMatrix& WorldToScreenMatrix() = 0;
+	/*37*/	virtual const VMatrix& WorldToViewMatrix() = 0;
 	/*38*/	virtual void* GameLumpVersion(int)const = 0;
 	/*39*/	virtual void* GameLumpSize(int)const = 0;
 	/*40*/	virtual void* LoadGameLump(int, void*, int) = 0;
@@ -105,7 +107,7 @@ public:
 	/*90*/	virtual void* SetOcclusionParameters(void const*) = 0;
 	/*91*/	virtual void* GetUILanguage(char*, int) = 0;
 	/*92*/	virtual bool IsSkyboxVisibleFromPoint(Vector const&) = 0;
-	/*93*/	virtual void* GetMapEntitiesString(void) = 0;
+	/*93*/	virtual const char* GetMapEntitiesString(void) = 0;
 	/*94*/	virtual bool IsInEditMode(void) = 0;
 	/*95*/	virtual void* GetScreenAspectRatio(void) = 0;
 	/*96*/	virtual void* REMOVED_SteamRefreshLogin(char const*, bool) = 0;

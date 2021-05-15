@@ -40,6 +40,9 @@
     <Filter Include="Header Files\ImGui">
       <UniqueIdentifier>{93e599b6-7884-4ab8-a20e-7dd42e55044a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\hooks\menu">
+      <UniqueIdentifier>{a3a85829-1bf6-43cf-bf0c-2dc309a45bc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -75,14 +78,17 @@
     <ClCompile Include="ImGui\imgui_impl_dx9.cpp">
       <Filter>Header Files\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
-      <Filter>Header Files\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="ImGui\imgui_impl_win32.cpp">
       <Filter>Header Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>Header Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="CUniformRandomStream.h">
+      <Filter>Header Files\client</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionProperty.h">
+      <Filter>Header Files\client</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +221,6 @@
     <ClInclude Include="ImGui\imgui_impl_dx9.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>Header Files\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="ImGui\imgui_impl_win32.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
@@ -233,8 +236,76 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
+    <ClInclude Include="AntiAim.h">
       <Filter>Header Files\hacks</Filter>
     </ClInclude>
+    <ClInclude Include="LegitAim.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoWall.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="checksum_md5.h">
+      <Filter>Header Files\tier1</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Header Files\hooks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing.h">
+      <Filter>Header Files\hooks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuControls.h">
+      <Filter>Header Files\hooks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuBackground.h">
+      <Filter>Header Files\hooks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="GunHacks.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="CModelInfo.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CInput.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="Triggerbot.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientClass.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaseAnimating.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts.h">
+      <Filter>Header Files\hooks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Misc.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="CIVDebugOverlay.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameEventManager.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FireEvent.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigSystem.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="Executor.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ESP.h">
+      <Filter>Header Files\hacks</Filter>
+    </None>
   </ItemGroup>
 </Project>

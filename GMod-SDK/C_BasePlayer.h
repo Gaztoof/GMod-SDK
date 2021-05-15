@@ -8,26 +8,19 @@
 #include "imaterial.h"
 #include "c_basecombatweapon.h"
 #include "usercmd.h"
+#include "CCollisionProperty.h"
 
 typedef struct player_info_s
 {
-	int64_t __pad0;
-	union {
-		int64_t xuid;
-		struct {
-			int xuidlow;
-			int xuidhigh;
-		};
-	};
 	char name[128];
-	int userid;
-	char guid[33];
+	int userID; // local server user ID, unique while server is running <- THIS IS NOT STEAMID
+	char guid[33]; // that is Steamid
 	unsigned int friendsid;
 	char friendsname[128];
-	bool fakeplayer;
+	bool fakeplayer; // true, if player is a bot controlled by game.dll
 	bool ishltv;
-	unsigned int customfiles[4];
-	unsigned char filesdownloaded;
+	unsigned int customfiles[4]; // custom files CRC for this player
+	unsigned char filesdownloaded; // this counter increases each time the server downloaded a new file
 } player_info_t;
 
 // Auto reconstructed from vtable block @ 0x008830B8
@@ -52,37 +45,97 @@ enum LineOfSightCheckType
 // NON-PLAYER SPECIFIC (i.e., not used by GameMovement or the client .dll ) -- Can still be applied to players, though
 #define	FL_INWATER				(1<<9)	// In water
 
+#define 	AUTOAIM_2DEGREES   0.0348994967025
+
+#define 	AUTOAIM_5DEGREES   0.08715574274766
+
+#define 	AUTOAIM_8DEGREES   0.1391731009601
+
+#define 	AUTOAIM_10DEGREES   0.1736481776669
+
+#define 	AUTOAIM_20DEGREES   0.3490658503989
+
+class IClientRenderable
+{
+public:
+	virtual void* GetIClientUnknown() = 0;
+	virtual Vector const& GetRenderOrigin() = 0;
+	virtual QAngle const& GetRenderAngles() = 0;
+	virtual bool					ShouldDraw() = 0;
+	virtual bool					IsTransparent() = 0;
+	virtual bool					UsesPowerOfTwoFrameBufferTexture() = 0;
+	virtual bool					UsesFullFrameBufferTexture() = 0;
+	virtual void*	GetShadowHandle() = 0;
+	virtual void* RenderHandle() = 0;
+	virtual void* GetModel() = 0;
+	virtual void					DrawModel(int flags) = 0;
+	virtual int						GetBody() = 0;
+	virtual void					ComputeFxBled() = 0;
+	virtual int						GetFxBlend() = 0;
+	virtual void					GetColorModulation(float* color) = 0;
+	virtual bool					LODTest() = 0;
+	virtual bool					SetupBones(matrix3x4_t* pBoneToWorldOut, int nMaxBones, int boneMask, float currentTime) = 0;
+	virtual void					SetupWeights(const matrix3x4_t* pBoneToWorld, int nFlexWeightCount, float* pFlexWeights, float* pFlexDelayedWeights) = 0;
+	virtual void					DoAnimationEvents(void) = 0;
+	virtual void* GetPVSNotifyInterface() = 0;
+	virtual void					GetRenderBounds(Vector& mins, Vector& maxs) = 0;
+	virtual void					GetRenderBoundsWorldspace(Vector& mins, Vector& maxs) = 0;
+	virtual void					GetShadowRenderBounds(Vector& mins, Vector& maxs, void* shadowType) = 0;
+	virtual bool					ShouldReceiveProjectedTextures(int flags) = 0;
+	virtual bool					GetShadowCastDistance(float* pDist, void* shadowType) const = 0;
+	virtual bool					GetShadowCastDirection(Vector* pDirection, void* shadowType) const = 0;
+	virtual bool					IsShadowDirty() = 0;
+	virtual void					MarkShadowDirty(bool bDirty) = 0;
+	virtual IClientRenderable* GetShadowParent() = 0;
+	virtual IClientRenderable* FirstShadowChild() = 0;
+	virtual IClientRenderable* NextShadowPeer() = 0;
+	virtual void*			ShadowCastType() = 0;
+	virtual void					CreateModelInstance() = 0;
+	virtual void*	GetModelInstance() = 0;
+	virtual const matrix3x4_t& RenderableToWorldTransform() = 0;
+	virtual int						LookupAttachment(const char* pAttachmentName) = 0;
+	virtual	bool					GetAttachment(int number, Vector& origin, QAngle& angles) = 0;
+	virtual bool					GetAttachment(int number, matrix3x4_t& matrix) = 0;
+	virtual float* GetRenderClipPlane(void) = 0;
+	virtual int						GetSkin() = 0;
+	virtual bool					IsTwoPass(void) = 0;
+	virtual void					OnThreadedDrawSetup() = 0;
+	virtual bool					UsesFlexDelayedWeights() = 0;
+	virtual void					RecordToolMessage() = 0;
+	virtual bool					IgnoresZBuffer(void) const = 0;
+};
+
 class C_BasePlayer
 {
 public:
 	//Don't forget the constructor.
 	/*0*/	virtual void* destr1() = 0;
-	/*2*/	virtual void* SetRefEHandle(void*) = 0;
-	/*3*/	virtual void* GetRefEHandle(void)const = 0;
-	/*4*/	virtual void* GetCollideable(void) = 0;
-	/*5*/	virtual void* GetClientNetworkable(void) = 0;
-	/*6*/	virtual void* GetClientRenderable(void) = 0;
-	/*7*/	virtual void* GetIClientEntity(void) = 0;
-	/*8*/	virtual void* GetBaseEntity(void) = 0;
-	/*9*/	virtual void* GetClientThinkable(void) = 0;
-	/*11*/	virtual void* GetAbsOrigin(void)const = 0;
-	/*12*/	virtual void* GetAbsAngles(void)const = 0;
-	/*13*/	virtual void* GetMouth(void) = 0;
-	/*14*/	virtual void* GetSoundSpatialization(SpatializationInfo_t&) = 0;
-	/*17*/	virtual void* GetClientClass(void) = 0;
-	/*16*/	virtual void* YouForgotToImplementOrDeclareClientClass(void) = 0;
-	/*18*/	virtual void* GetPredDescMap(void) = 0;
-	/*19*/	virtual void* FireBullets(FireBulletsInfo_t const&) = 0;
-	/*20*/	virtual void* ModifyFireBulletsDamage(CTakeDamageInfo*) = 0;
-	/*21*/	virtual bool ShouldDrawUnderwaterBulletBubbles(void) = 0;
-	/*22*/	virtual bool ShouldDrawWaterImpacts(void) = 0;
-	/*23*/	virtual void* HandleShotImpactingWater(FireBulletsInfo_t const&,Vector const&,ITraceFilter*,Vector*) = 0;
-	/*24*/	virtual void* GetBeamTraceFilter(void) = 0;
-	/*25*/	virtual void* DispatchTraceAttack(CTakeDamageInfo const&,Vector const&,CGameTrace*, void*) = 0;
-	/*26*/	virtual void* TraceAttack(CTakeDamageInfo const&,Vector const&,CGameTrace*, void*) = 0;
-	/*27*/	virtual void* DoImpactEffect(CGameTrace&,int) = 0;
-	/*28*/	virtual void* MakeTracer(Vector const&,CGameTrace const&,int) = 0;
-	/*29*/	virtual void* GetTracerAttachment(void) = 0;
+	/*1*/	virtual void* SetRefEHandle(void*) = 0;
+	/*2*/	virtual void* GetRefEHandle(void)const = 0;
+	/*3*/	virtual CCollisionProperty* GetCollideable(void) = 0;
+	/*4*/	virtual void* GetClientNetworkable(void) = 0;
+	/*5*/	virtual IClientRenderable* GetClientRenderable(void) = 0;
+	/*6*/	virtual void* GetIClientEntity(void) = 0;
+	/*7*/	virtual void* GetBaseEntity(void) = 0;
+	/*8*/	virtual void* GetClientThinkable(void) = 0;
+	/*9*/	virtual Vector& GetAbsOrigin(void)const = 0;
+	/*10*/	virtual QAngle& GetAbsAngles(void)const = 0;
+	/*11*/	virtual void* GetMouth(void) = 0;
+	/*12*/	virtual void* GetSoundSpatialization(SpatializationInfo_t&) = 0;
+	/*13*/	virtual void* GetClientClass(void) = 0;
+	/*14*/	virtual void* YouForgotToImplementOrDeclareClientClass(void) = 0;
+	/*15*/	virtual void* GetPredDescMap(void) = 0;
+	/*16*/	virtual void* FireBullets(FireBulletsInfo_t const&) = 0;
+	/*17*/	virtual void* ModifyFireBulletsDamage(CTakeDamageInfo*) = 0;
+	/*18*/	virtual bool ShouldDrawUnderwaterBulletBubbles(void) = 0;
+	/*19*/	virtual bool ShouldDrawWaterImpacts(void) = 0;
+	/*20*/	virtual void* HandleShotImpactingWater(FireBulletsInfo_t const&,Vector const&,ITraceFilter*,Vector*) = 0;
+	/*21*/	virtual void* GetBeamTraceFilter(void) = 0;
+	/*22*/	virtual void* DispatchTraceAttack(CTakeDamageInfo const&,Vector const&,CGameTrace*, void*) = 0;
+	/*23*/	virtual void* TraceAttack(CTakeDamageInfo const&,Vector const&,CGameTrace*, void*) = 0;
+	/*24*/	virtual void* DoImpactEffect(CGameTrace&,int) = 0;
+	/*25*/	virtual void* MakeTracer(Vector const&,CGameTrace const&,int) = 0;
+	/*26*/	virtual void* GetTracerAttachment(void) = 0;
 	/*30*/	virtual Color BloodColor(void) = 0;
 	/*31*/	virtual void* GetTracerType(void) = 0;
 	/*32*/	virtual void* Spawn(void) = 0;
@@ -97,13 +150,16 @@ public:
 	/*41*/	virtual void* Init(int,int) = 0;
 	/*42*/	virtual void* GetIClientUnknown(void) = 0;
 	/*43*/	virtual void* GetBaseAnimating(void) = 0;
-	/*44*/	virtual void* SetClassname(char const*) = 0;
+	/*44*/	virtual const char* SetClassname(char const*) = 0;
 	/*66*/	virtual void* TestCollision(Ray_t const&,unsigned int,CGameTrace&) = 0;
 	/*67*/	virtual void* TestHitboxes(Ray_t const&,unsigned int,CGameTrace&) = 0;
 	/*68*/	virtual void* GetAttackDamageScale(void) = 0;
 	/*69*/	virtual void* NotifyShouldTransmit(void*) = 0;
-	/*70*/	virtual void* PreDataUpdate(void*) = 0;
-	/*71*/	virtual void* PostDataUpdate(void*) = 0;
+	// ^ A few of those might be wrong, let's hope not.
+	/*70*/	virtual bool IsDormantDONOTUSE(void) = 0; // <- Do not use it, that is wrong.
+	/*71*/	virtual void SetDormant(void*) = 0; // <- However, this is correct
+
+
 	/*83*/	virtual void* GetThinkHandle(void) = 0;
 	/*84*/	virtual void* SetThinkHandle(void*) = 0;
 	/*85*/	virtual bool ShouldSavePhysics(void) = 0;
@@ -132,12 +188,12 @@ public:
 	/*112*/	virtual void* GetSolidFlags(void)const = 0;
 	/*115*/	virtual void* GetAttachment(int,Vector&) = 0;
 	/*117*/	virtual void* GetAttachmentVelocity(int,Vector&,Quaternion&) = 0;
-	/*118*/	virtual void* GetTeam(void) = 0;
-	/*119*/	virtual void* GetTeamNumber(void)const = 0;
-	/*120*/	virtual void* ChangeTeam(int) = 0;
-	/*121*/	virtual void* GetRenderTeamNumber(void) = 0;
-	/*122*/	virtual void* InSameTeam(C_BaseEntity*) = 0;
-	/*123*/	virtual void* InLocalTeam(void) = 0;
+	/*118*/	virtual int GetTeam(void) = 0;
+	/*119*/	virtual int GetTeamNumber(void)const = 0;
+	/*120*/	virtual void ChangeTeam(int) = 0;
+	/*121*/	virtual int GetRenderTeamNumber(void) = 0;
+	/*122*/	virtual bool InSameTeam(C_BaseEntity*) = 0;
+	/*123*/	virtual bool InLocalTeam(void) = 0;
 	/*124*/	virtual bool IsValidIDTarget(void) = 0;
 	/*125*/	virtual void* GetIDString(void) = 0;
 	/*126*/	virtual void* ModifyEmitSoundParams(EmitSound_t&) = 0;
@@ -167,7 +223,7 @@ public:
 	/*151*/	virtual void* SetNextClientThink(float) = 0;
 	/*152*/	virtual void SetHealth(int) = 0;
 	/*153*/	virtual int GetHealth(void)const = 0;
-	/*154*/	virtual void* GetMaxHealth(void)const = 0;
+	/*154*/	virtual int GetMaxHealth(void)const = 0;
 
 	/*162*/	virtual void* AddDecal(Vector const&,Vector const&,Vector const&,int,int,bool,CGameTrace&,int) = 0;
 	/*163*/	virtual bool IsClientCreated(void)const = 0;
@@ -200,12 +256,12 @@ public:
 	/*189*/	virtual void* MyCombatWeaponPointer(void) = 0;
 	/*190*/	virtual bool IsBaseTrain(void)const = 0;
 	/*191*/	virtual Vector EyePosition(void) = 0;
-	/*192*/	virtual void* EyeAngles(void) = 0;
-	/*193*/	virtual void* LocalEyeAngles(void) = 0;
+	/*192*/	virtual QAngle& EyeAngles(void) = 0;
+	/*193*/	virtual QAngle& LocalEyeAngles(void) = 0;
 	/*194*/	virtual Vector EarPosition(void) = 0;
 	/*195*/	virtual bool ShouldCollide(int,int)const = 0;
-	/*196*/	virtual void* GetViewOffset(void)const = 0;
-	/*197*/	virtual void* SetViewOffset(Vector const&) = 0;
+	/*196*/	virtual Vector&  GetViewOffset(void) = 0;
+	/*197*/	virtual void SetViewOffset(Vector const&) = 0;
 	/*198*/	virtual void* GetBody(void) = 0;
 	/*199*/	virtual void* GetSkin(void) = 0;
 	/*200*/	virtual void* GetModelInstance(void) = 0;
@@ -219,10 +275,10 @@ public:
 	/*216*/	virtual void* GetRenderClipPlane(void) = 0;
 	/*218*/	virtual void* VPhysicsGetElement(int) = 0;
 	/*219*/	virtual bool IsARagdoll(void) = 0;
-	/*220*/	virtual void* SetMaterialOverride(char const*) = 0;
-	/*221*/	virtual void* SetMaterialOverridePointer(IMaterial*) = 0;
-	/*222*/	virtual void* GetMaterialOverridePointer(void) = 0;
-	/*223*/	virtual void* GetMaterialOverride(void) = 0;
+	/*220*/	virtual void SetMaterialOverride(char const*) = 0;
+	/*221*/	virtual void SetMaterialOverridePointer(IMaterial*) = 0;
+	/*222*/	virtual IMaterial* GetMaterialOverridePointer(void) = 0;
+	/*223*/	virtual char const* GetMaterialOverride(void) = 0;
 	/*224*/	virtual void* StartMaterialOverride(bool) = 0;
 	/*225*/	virtual void* EndMaterialOverride(bool) = 0;
 	/*226*/	virtual void* GetCreationTime(void) = 0;
@@ -230,10 +286,10 @@ public:
 	/*228*/	virtual bool IsWeapon(void)const = 0;
 	/*229*/	virtual bool IsVehicle(void)const = 0;
 	/*230*/	virtual bool IsJeep(void)const = 0;
-	/*231*/	virtual void* UsesLua(void) = 0;
-	/*232*/	virtual void* GetLuaEntityType(void) = 0;
-	/*233*/	virtual void* PushEntity(void) = 0;
-	/*234*/	virtual void* Push_This_Entity(void) = 0;
+	/*231*/	virtual bool UsesLua(void) = 0;
+	/*232*/	virtual int GetLuaEntityType(void) = 0;
+	/*233*/	virtual void PushEntity(void) = 0;
+	/*234*/	virtual void Push_This_Entity(void) = 0;
 	/*235*/	virtual void* SetEntity(char const*,C_BaseEntity*) = 0;
 	/*236*/	virtual void* GetParentPhysicsNum(void) = 0;
 	/*237*/	virtual void* SetParentPhysicsNum(int) = 0;
@@ -243,7 +299,7 @@ public:
 	/*241*/	virtual void* DetachObjectFromMotionController(void*) = 0;
 	/*242*/	virtual void* GetCustomisedRenderBounds(Vector&,Vector&) = 0;
 	/*243*/	virtual void* SetCustomisedRenderBounds(Vector*,Vector*) = 0;
-	/*244*/	virtual void* GetLuaScriptName(void) = 0;
+	/*244*/	virtual const char* GetLuaScriptName(void) = 0;
 	/*245*/	virtual void* SpawnedViaLua(void) = 0;
 	/*246*/	virtual void* OverridePosition(void) = 0;
 	/*247*/	virtual void* InitializeScriptedEntity(char const*) = 0;
@@ -341,7 +397,7 @@ public:
 	/*341*/	virtual void* Weapon_CanSwitchTo(void*) = 0;
 	/*342*/	virtual C_BaseCombatWeapon* GetActiveWeapon(void)const = 0;
 	/*343*/	virtual void* SharedSpawn(void) = 0;
-	/*344*/	virtual void* GetSteamID(void*) = 0;
+	/*344*/	virtual int GetSteamID(void*) = 0;
 	/*345*/	virtual void* GetPlayerMaxSpeed(void) = 0;
 	/*346*/	virtual void* CalcView(Vector&,QAngle&,float&,float&,float&) = 0;
 	/*347*/	virtual void* CalcViewModelView(Vector const&,QAngle const&) = 0;
@@ -349,13 +405,13 @@ public:
 	/*349*/	virtual void* SetPlayerUnderwater(bool) = 0;
 	/*194*/	virtual void* Weapon_ShootPosition(void) = 0;
 	/*351*/	virtual void* Weapon_DropPrimary(void) = 0;
-	/*352*/	virtual void* GetAutoaimVector(float) = 0;
+	/*352*/	virtual Vector GetAutoaimVector(float flDelta) = 0;
 	/*353*/	virtual void* CreateMove(float,CUserCmd*) = 0;
 	/*354*/	virtual void* AvoidPhysicsProps(CUserCmd*) = 0;
 	/*355*/	virtual void* PlayerUse(void) = 0;
 	/*356*/	virtual bool IsUseableEntity(C_BaseEntity*,unsigned int) = 0;
 	/*357*/	virtual void* GetObserverMode(void)const = 0;
-	/*358*/	virtual void* GetObserverTarget(void)const = 0;
+	/*358*/	virtual C_BasePlayer* GetObserverTarget(void)const = 0;
 	/*359*/	virtual void* GetRepresentativeRagdoll(void)const = 0;
 	/*360*/	virtual void* TeamChange(int) = 0;
 	/*361*/	virtual void* UpdateFlashlight(void) = 0;
@@ -385,7 +441,7 @@ public:
 	/*385*/	virtual void* UpdateClientData(void) = 0;
 	/*386*/	virtual double GetFOV(void) = 0;
 	/*387*/	virtual bool IsZoomed(void) = 0;
-	/*388*/	virtual void* ViewPunch(QAngle const&) = 0;
+	/*388*/	virtual void* ViewPunch(QAngle const& angleOffset) = 0;
 	/*389*/	virtual void* UpdateButtonState(int) = 0;
 	/*390*/	virtual void* OverrideView(void*) = 0;
 	/*391*/	virtual void* GetPlayerMins(void)const = 0;
@@ -419,7 +475,7 @@ public:
 	/*419*/	virtual double GetFallVelocity(void) = 0;
 	/*420*/	virtual void* RestrictPlayerPitch(void) = 0;
 	/*421*/	virtual void* FlashlightIsOn(void) = 0;
-	/*422*/	virtual void* GetPlayerViewOffset(bool) = 0;
+	/*422*/	virtual float GetPlayerViewOffset(bool) = 0;
 	/*423*/	virtual double GetSprintSpeed(void) = 0;
 	/*424*/	virtual double GetWalkSpeed(void) = 0;
 	/*425*/	virtual double GetSlowWalkSpeed(void) = 0;
@@ -439,17 +495,63 @@ public:
 	/*439*/	virtual void* SetMouseWheel(int) = 0;
 	/*440*/	virtual double GestureEndTime(void) = 0;
 
-	int getMoveType() { // notworking
+	// LMAO hard coding offsets
+	// i'll eventually make a dumper
+
+	int getMoveType() { // not working
 		return *(int*)((uintptr_t)this + 0x7C); // m_nRenderMode
 	}
 	int getFlags() {
+#ifdef _WIN64
+		return *(int*)((uintptr_t)this + 0x440);
+#else
 		return *(int*)((uintptr_t)this + 0x350); // m_fFlags
+#endif
 	}
 	Vector getVelocity() {
+#ifdef _WIN64
+		return *(Vector*)((uintptr_t)this + 0x148);
+#else
 		return *(Vector*)((uintptr_t)this + 0xF4);
+#endif
 	}
-	Vector getVecOrigin() {
-		return *(Vector*)((uintptr_t)this + 0x338); // m_vecOrigin
+	int hitboxSet()
+	{
+#ifdef _WIN64
+		return *(int*)((uintptr_t)this + 0x16C4);
+#else
+		return *(int*)((uintptr_t)this + 0x1398); // m_nHitboxSet
+#endif
 	}
+	void* GetModelPtr()
+	{
+		return *(void**)((uintptr_t)this + 0x16CC);
+	}
+	QAngle& GetViewPunch()
+	{
+#ifdef _WIN64
+		return *(QAngle*)((uintptr_t)this + 0x29F0);
+#else
+		return *(QAngle*)((uintptr_t)this + 0x24D0); // https://i.imgur.com/Y5hSyqS.png <- that's viewpunch offset. see screenshot above on how to get it, sig the stuff if u want to find it again
+#endif
+	}
+
+	QAngle& GetAimPunch()
+	{
+#ifdef _WIN64
+		//return *(QAngle*)((uintptr_t)this + 0x2A74);
+#else
+		return *(QAngle*)((uintptr_t)this + 0x250C); // that's aimpunch offset. viewpunch + 0x3C
+#endif
+	}
+	bool IsDormant()
+	{
+#ifdef _WIN64
+		return *(bool*)((uintptr_t)this + 0x1FA);
+#else
+		return *(bool*)((uintptr_t)this + 0x17E); // https://i.imgur.com/cRvUYqV.png Weirdly enough, I could not find GetDormant, but who cares as SetDormant gives the offset.
+#endif
+	}
+
 
 };

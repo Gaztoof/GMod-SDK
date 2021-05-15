@@ -163,12 +163,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CCollisionProperty.h" />
+    <ClCompile Include="CUniformRandomStream.h" />
     <ClCompile Include="C_BasePlayer.h" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="ImGui\imgui_impl_dx9.cpp" />
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
@@ -179,25 +180,39 @@
     <ClCompile Include="vmatrix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AntiAim.h" />
+    <ClInclude Include="AutoWall.h" />
     <ClInclude Include="basetypes.h" />
+    <ClInclude Include="CBaseAnimating.h" />
     <ClInclude Include="CClientEntityList.h" />
     <ClInclude Include="CEngineClient.h" />
+    <ClInclude Include="CGameEventManager.h" />
+    <ClInclude Include="checksum_md5.h" />
     <ClInclude Include="CHLClient.h" />
+    <ClInclude Include="CInput.h" />
     <ClInclude Include="CInputSystem.h" />
+    <ClInclude Include="CIVDebugOverlay.h" />
+    <ClInclude Include="ClientClass.h" />
     <ClInclude Include="ClientModeShared.h" />
     <ClInclude Include="CLuaConVars.h" />
     <ClInclude Include="CLuaInterface.h" />
     <ClInclude Include="CLuaShared.h" />
+    <ClInclude Include="CModelInfo.h" />
     <ClInclude Include="CNetChan.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ConCommand.h" />
+    <ClInclude Include="ConfigSystem.h" />
     <ClInclude Include="ConVar.h" />
     <ClInclude Include="CreateMove.h" />
     <ClInclude Include="CViewRender.h" />
     <ClInclude Include="CViewSetup.h" />
     <ClInclude Include="C_BaseCombatCharacter.h" />
     <ClInclude Include="c_basecombatweapon.h" />
+    <ClInclude Include="drawing.h" />
     <ClInclude Include="DrawModelExecute.h" />
+    <ClInclude Include="Executor.h" />
+    <ClInclude Include="FireEvent.h" />
+    <ClInclude Include="Fonts.h" />
     <ClInclude Include="FrameStageNotify.h" />
     <ClInclude Include="gametrace.h" />
     <ClInclude Include="globals.h" />
@@ -207,7 +222,6 @@
     <ClInclude Include="CMaterialSystem.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
-    <ClInclude Include="ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="ImGui\imgui_impl_dx9.h" />
     <ClInclude Include="ImGui\imgui_impl_win32.h" />
     <ClInclude Include="ImGui\imgui_internal.h" />
@@ -218,17 +232,27 @@
     <ClInclude Include="IStudioRender.h" />
     <ClInclude Include="CVRenderView.h" />
     <ClInclude Include="CModelRender.h" />
+    <ClInclude Include="json.h" />
     <ClInclude Include="KeyValues.h" />
+    <ClInclude Include="LegitAim.h" />
     <ClInclude Include="math_pfns.h" />
+    <ClInclude Include="MenuBackground.h" />
+    <ClInclude Include="MenuControls.h" />
+    <ClInclude Include="GunHacks.h" />
+    <ClInclude Include="Misc.h" />
     <ClInclude Include="Present.h" />
     <ClInclude Include="RenderView.h" />
     <ClInclude Include="shareddefs.h" />
     <ClInclude Include="soundinfo.h" />
     <ClInclude Include="takedamageinfo.h" />
     <ClInclude Include="trace.h" />
+    <ClInclude Include="Triggerbot.h" />
     <ClInclude Include="usercmd.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ESP.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

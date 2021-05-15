@@ -19,21 +19,66 @@ public:
 	/*4*/	virtual bool CanRunScript(const char* strFilename, unsigned long CRC) = 0;
 	/*5*/	virtual void onRunScript(const char* strFilename, bool bRun, const char* strScriptContents) = 0;
 };
+enum class LuaObjectType
+{
 
+	INVALID = -1,
+	NIL,
+	BOOL,
+	LIGHTUSERDATA,
+	NUMBER,
+	STRING,
+	TABLE,
+	FUNCTION,
+	USERDATA,
+	THREAD,
+
+	ENTITY,
+	VECTOR,
+	ANGLE,
+	PHYSOBJ,
+	SAVE,
+	RESTORE,
+	DAMAGEINFO,
+	EFFECTDATA,
+	MOVEDATA,
+	RECIPIENTFILTER,
+	USERCMD,
+	SCRIPTEDVEHICLE,
+
+	MATERIAL,
+	PANEL,
+	PARTICLE,
+	PARTICLEEMITTER,
+	TEXTURE,
+	USERMSG,
+
+	CONVAR,
+	IMESH,
+	MATRIX,
+	SOUND,
+	PIXELVISHANDLE,
+	DLIGHT,
+	VIDEO,
+	FILE,
+
+	COUNT
+};
+// https://github.com/Facepunch/gmod-module-base/blob/master/include/GarrysMod/Lua/LuaBase.h
 class CLuaInterface
 {
 public:
 	/*0*/	virtual void* Top(void) = 0;
-	/*1*/	virtual void* Push(int) = 0;
-	/*2*/	virtual void* Pop(int) = 0;
-	/*3*/	virtual void* GetTable(int) = 0;
-	/*4*/	virtual void* GetField(int, char const*) = 0;
-	/*5*/	virtual void* SetField(int, char const*) = 0;
+	/*1*/	virtual void* Push(int iStackPos) = 0;
+	/*2*/	virtual void* Pop(int iStackPos) = 0;
+	/*3*/	virtual void* GetTable(int iStackPos) = 0;
+	/*4*/	virtual void* const GetField(int iStackPos, char const*) = 0;
+	/*5*/	virtual void SetField(int iStackPos, char const*) = 0;
 	/*6*/	virtual void* CreateTable(void) = 0;
 	/*7*/	virtual void* SetTable(int) = 0;
 	/*8*/	virtual void* SetMetaTable(int) = 0;
 	/*9*/	virtual void* GetMetaTable(int) = 0;
-	/*10*/	virtual void* Call(int, int) = 0;
+	/*10*/	virtual void* Call(int iStackPos, int) = 0;
 	/*11*/	virtual void* PCall(int, int, int) = 0;
 	/*12*/	virtual void* Equal(int, int) = 0;
 	/*13*/	virtual void* RawEqual(int, int) = 0;
@@ -44,26 +89,26 @@ public:
 	/*18*/	virtual void* ThrowError(char const*) = 0;
 	/*19*/	virtual void* CheckType(int, int) = 0;
 	/*20*/	virtual void* ArgError(int, char const*) = 0;
-	/*21*/	virtual void* RawGet(int) = 0;
-	/*22*/	virtual void* RawSet(int) = 0;
-	/*23*/	virtual void* GetString(int, unsigned int*) = 0;
-	/*24*/	virtual void* GetNumber(int) = 0;
-	/*25*/	virtual void* GetBool(int) = 0;
+	/*21*/	virtual void* RawGet(int iStackPos) = 0;
+	/*22*/	virtual void* RawSet(int iStackPost) = 0;
+	/*23*/	virtual const char* GetString(int, unsigned int*) = 0;
+	/*24*/	virtual int GetNumber(int) = 0;
+	/*25*/	virtual bool GetBool(int) = 0;
 	/*26*/	virtual void* GetCFunction(int) = 0;
 	/*27*/	virtual void* GetUserdata(int) = 0;
-	/*28*/	virtual void* PushNil(void) = 0;
-	/*29*/	virtual void* PushString(char const*, unsigned int) = 0;
-	/*30*/	virtual void* PushNumber(double) = 0;
-	/*31*/	virtual void* PushBool(bool) = 0;
-	/*32*/	virtual void* PushCFunction(int (*)(void*)) = 0;
-	/*33*/	virtual void* PushCClosure(int (*)(void*), int) = 0;
-	/*34*/	virtual void* PushUserdata(void*) = 0;
+	/*28*/	virtual void PushNil(void) = 0;
+	/*29*/	virtual void PushString(char const*, unsigned int) = 0;
+	/*30*/	virtual void PushNumber(double) = 0;
+	/*31*/	virtual void PushBool(bool) = 0;
+	/*32*/	virtual void PushCFunction(int (*)(void*)) = 0;
+	/*33*/	virtual void PushCClosure(int (*)(void*), int) = 0;
+	/*34*/	virtual void PushUserdata(void*) = 0;
 	/*35*/	virtual void* ReferenceCreate(void) = 0;
 	/*36*/	virtual void* ReferenceFree(int) = 0;
 	/*37*/	virtual void* ReferencePush(int) = 0;
 	/*38*/	virtual void* PushSpecial(int) = 0;
-	/*39*/	virtual bool IsType(int, int) = 0;
-	/*40*/	virtual void* GetType(int) = 0;
+	/*39*/	virtual bool IsType(int, LuaObjectType) = 0;
+	/*40*/	virtual LuaObjectType GetType(int) = 0;
 	/*41*/	virtual void* GetTypeName(int) = 0;
 	/*42*/	virtual void* CreateMetaTableType(char const*, int) = 0;
 	/*43*/	virtual void* CheckString(int) = 0;

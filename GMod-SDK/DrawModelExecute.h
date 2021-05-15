@@ -11,33 +11,43 @@ _DrawModelExecute oDrawModelExecute;
 
 
 
-void __fastcall hkDrawModelExecute(CModelRender* modelrender, void*, const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld = NULL)
+void __fastcall hkDrawModelExecute(CModelRender* modelrender, 
+#ifndef _WIN64
+	void*, // __fastcall does literally nothing in x64, so that's why we make it inactive
+#endif 
+const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld = NULL)
 {
 	if (pInfo.entity_index)
 	{
 		//std::cout << pInfo.pModel->name << std::endl;
 		C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(pInfo.entity_index);
-		if(!entity || !entity->IsAlive() || (!entity->IsPlayer() && !entity->IsRagdoll() && !entity->IsBaseCombatCharacter() && !entity->IsWeapon() && !entity->IsARagdoll() && (!strstr(pInfo.pModel->name, "models/weapons/") || !hideHands)))
+		if(!entity || !entity->IsAlive() || (!entity->IsPlayer() && !entity->IsRagdoll() && !entity->IsBaseCombatCharacter() && !entity->IsWeapon() && !entity->IsARagdoll() && (!strstr(pInfo.pModel->name, "models/weapons/") || !Settings::Misc::removeHands)))
 			return oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
 		chamsSetting setting;
 
-		if (entity->IsPlayer())
+		if (entity == localPlayer)
 		{
-			setting = playerChamsSettings;
+			setting = Settings::Chams::localPlayerChamsSettings;
+		}
+		else if (entity->IsPlayer())
+		{
+			if(entity->InLocalTeam())
+			setting = Settings::Chams::teamMateSettings;
+			else setting = Settings::Chams::playerChamsSettings;
 		}
 		else if (entity->IsBaseCombatCharacter() && !entity->IsPlayer()) // IF ITS A NPC
 		{
-			setting = npcChamsSettings;
+			setting = Settings::Chams::npcChamsSettings;
 		}
 		else if (entity->IsRagdoll() || entity->IsARagdoll()) // Isragdoll = ragdoll entity, isaragdoll = ragdolled player cuz dead
 		{
-			setting = ragdollChamsSettings;
+			setting = Settings::Chams::ragdollChamsSettings;
 		}
 		else if (entity->IsWeapon())
 		{
-			setting = weaponChamsSettings;
+			setting = Settings::Chams::weaponChamsSettings;
 		}
-		else if (!entity->IsWeapon() && strstr(pInfo.pModel->name, "models/weapons/") && hideHands)
+		else if (!entity->IsWeapon() && strstr(pInfo.pModel->name, "models/weapons/") && Settings::Misc::removeHands)
 		{
 			return;
 		}
@@ -46,29 +56,31 @@ void __fastcall hkDrawModelExecute(CModelRender* modelrender, void*, const DrawM
 		}
 
 		IMaterial* DebugWhite = MaterialSystem->FindMaterial("models/debug/debugwhite", TEXTURE_GROUP_MODEL);
+		DebugWhite->AddRef(); // that's so the game loads it, if 0 stuff on the map uses this texture, the game will simply unload it
+
 		bool didDraw = false;
-		if (setting.enableHidden)
+		if (setting.hiddenMaterial)
 		{
 			didDraw = true;
 			DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, true); // xqz = true, normal = false
 
-			if(setting.hiddenMaterial == 0)
+			if(setting.hiddenMaterial == 1)
 				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, false);
-			else if(setting.hiddenMaterial == 1)
+			else if(setting.hiddenMaterial == 2)
 				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, true);
 
 			RenderView->SetColorModulation(setting.hiddenColor.fCol);
 			modelrender->ForcedMaterialOverride(DebugWhite); //entity->SetMaterialOverridePointer(DebugWhite); <- this works too
 			oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
 		}
-		if (setting.enableVisible)
+		if (setting.visibleMaterial)
 		{
 			didDraw = true;
 			DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false); // xqz = true, normal = false
 
-			if (setting.visibleMaterial == 0)
+			if (setting.visibleMaterial == 1)
 				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, false);
-			else if (setting.visibleMaterial == 1)
+			else if (setting.visibleMaterial == 2)
 				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, true);
 
 			RenderView->SetColorModulation(setting.visibleColor.fCol);

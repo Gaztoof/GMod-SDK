@@ -39,8 +39,31 @@ public:
 	/*23*/	virtual void SetRumble(float, float, int) = 0;
 	/*24*/	virtual void StopRumble(void) = 0;
 
+	/*25*/	virtual void Undocumented5(void) = 0;
+	/*26*/	virtual void Undocumented6(void) = 0;
+	/*27*/	virtual void Undocumented7(void) = 0;
+	/*28*/	virtual void Undocumented8(void) = 0;
+	/*29*/	virtual void Undocumented9(void) = 0;
+	/*30*/	virtual void Undocumented10(void) = 0;
+	/*31*/	virtual void Undocumented11(void) = 0;
+	/*32*/	virtual void Undocumented12(void) = 0;
+	/*33*/	virtual void Undocumented13(void) = 0;
+	/*34*/	virtual void Undocumented14(void) = 0;
+	/*35*/	virtual void Undocumented15(void) = 0;
+
+	/*36*/	virtual const char* ButtonCodeToString(ButtonCode_t code) const = 0;
+	/*37*/	virtual const char* AnalogCodeToString(void* code) const = 0; // AnalogCode_t
+	/*38*/	virtual ButtonCode_t StringToButtonCode(const char* pString) const = 0;
+	/*39*/	virtual void* StringToAnalogCode(const char* pString) const = 0;
+
+	/*40*/	virtual void SleepUntilInput(int nMaxSleepTimeMS = -1) = 0;
+
+	/*41*/	virtual ButtonCode_t VirtualKeyToButtonCode(int nVirtualKey) const = 0;
+	/*42*/	virtual int ButtonCodeToVirtualKey(ButtonCode_t code) const = 0;
+
 	/*
 	* Every following function was a real pain to reverse. For some reasons, the MacOS inputsystem is totally different from the Windows one.
+	* There's a lot of functions I named "undocumented" as I was lazy to find out what they were doing.
 	*/
 
 };

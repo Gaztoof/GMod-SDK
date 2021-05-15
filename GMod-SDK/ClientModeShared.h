@@ -1,5 +1,4 @@
 #pragma once
-#include "C_BaseEntity.h"
 #include "C_BasePlayer.h"
 #include "usercmd.h"
 
@@ -44,8 +43,8 @@ public:
 	/*32*/	virtual void* GetViewModelFOV(void) = 0;
 	/*33*/	virtual void* CanRecordDemo(char*,int)const = 0;
 	/*34*/	virtual void* ComputeVguiResConditions(void*) = 0;
-	/*35*/	virtual void* GetServerName(void) = 0;
-	/*36*/	virtual void* SetServerName(wchar_t*) = 0;
+	/*35*/	virtual const char* GetServerName(void) = 0;
+	/*36*/	virtual const char* SetServerName(wchar_t*) = 0;
 	/*37*/	virtual void* GetMapName(void) = 0;
 	/*38*/	virtual void* SetMapName(wchar_t*) = 0;
 	/*39*/	virtual void* DoPostScreenSpaceEffects(void const*) = 0;

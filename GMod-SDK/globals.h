@@ -1,5 +1,10 @@
 #pragma once
 
+#include <map>
+#include <mutex>
+#include <d3dx9.h>
+#include <d3d9.h>
+
 #include "CLuaInterface.h"
 #include "CLuaShared.h"
 #include "CClientEntityList.h"
@@ -16,13 +21,43 @@
 #include "Color.h"
 #include "Vector.h"
 #include "ConVar.h"
+#include "CUniformRandomStream.h"
+#include "CModelInfo.h"
+#include "CInput.h"
+#include "CModelInfo.h"
+#include "CIVDebugOverlay.h"
+#include "CGameEventManager.h"
+
+#ifdef _WIN64
+#define ViewRenderOffset 0xC4
+#define GlobalVarsOffset 0x94
+#define ClientModeOffset 0x0
+#define InputOffset 0x0
+#define RandomSeedOffset 0x2
+#define PresentModule "gameoverlayrenderer64"
+#define PresentPattern "\xFF\x15????\x8B\xF8\x48\x85\xDB\x74\x37\x85\xC0\x75\x33\x38\x43\x5B\x74\x2E\xF3\x0F\x10\x05????\x44\x8D\x48\x01\x4C\x8B\x16\x45\x33\xC0\x89\x44\x24\x30\x33\xD2\xF3\x0F\x11\x44\x24?\x48\x8B\xCE\x89\x44\x24\x20\x41\xFF\x92????\x8B\xC7\x4C\x8D\x9C\x24????"
+#else
+#define ViewRenderOffset 0xA4
+#define GlobalVarsOffset 0x59
+#define ClientModeOffset 0x2
+#define InputOffset 0x2
+#define RandomSeedOffset 0x3
+#define PresentModule "gameoverlayrenderer"
+#define PresentPattern  "\xFF\x15????\x8B\xF8\x85\xDB"
+#endif
+
+typedef HRESULT(__stdcall* _Present)(IDirect3DDevice9*, CONST RECT*, CONST RECT*, HWND, CONST RGNDATA*);
+typedef bool(__thiscall* _FireEvent)(CGameEventManager*, IGameEvent*);
+
+_FireEvent oFireEvent;
+char* present; // clean that
 
 CLuaShared* LuaShared;
 CClientEntityList* ClientEntityList;
 CHLClient* CHLclient;
-ClientModeShared* clientMode;
+ClientModeShared* ClientMode;
 CGlobalVarsBase* GlobalVars;
-IEngineTrace* engineTrace;
+IEngineTrace* EngineTrace;
 CLuaInterface* LuaInterface;
 C_BasePlayer* localPlayer;
 CEngineClient *EngineClient;
@@ -32,52 +67,169 @@ CModelRender* ModelRender;
 CMaterialSystem* MaterialSystem;
 CVRenderView* RenderView;
 CCvar* CVar;
+CUniformRandomStream* UniformRandomStream;
+CModelInfo* ModelInfo;
+CInput* Input;
+CIVDebugOverlay* IVDebugOverlay;
+CGameEventManager* GameEventManager;
 
-bool disableSkyBox = true;
-bool openMenu = true;
-bool styleSingleWindow = false;
+int screenWidth, screenHeight;
 
-
-bool visualsOpen = false;
-
-
+QAngle lastRealAngles;
 struct chamsSetting {
 	Color hiddenColor = Color(255, 255, 255, 255);
 	Color visibleColor = Color(255, 255, 255, 255);
 	int hiddenMaterial = 0;
 	int visibleMaterial = 0;
-	bool enableVisible = false;
-	bool enableHidden = false;
 	chamsSetting(){
 		hiddenColor = Color(255, 255, 255, 255);
 		visibleColor = Color(255, 255, 255, 255);
 		hiddenMaterial = 0;
 		visibleMaterial = 0;
-		enableVisible = false;
-		enableHidden = false;
 	}
-	chamsSetting(Color hiddenCol, Color visibleCol, int hiddenmaterial, int visiblematerial, bool visible, bool hidden)
+	chamsSetting(Color hiddenCol, Color visibleCol, int hiddenmaterial, int visiblematerial)
 	{
 		hiddenColor = hiddenCol;
 		visibleColor = visibleCol;
 		hiddenMaterial = hiddenmaterial;
 		visibleMaterial = visiblematerial;
-		enableVisible = visible;
-		enableHidden = hidden;
 	}
 };
-chamsSetting playerChamsSettings;
 
-chamsSetting ragdollChamsSettings;
-chamsSetting weaponChamsSettings;
+namespace Settings {
+	bool openMenu = true;
+	ButtonCode_t menuKey = KEY_INSERT;
+	int menuKeyStyle = 1;
+	Color menuColor(0, 255, 0);
+	bool nothing;
+	bool Untrusted;
+	CUserCmd lastCmd;
+	CUserCmd lastRealCmd;
 
-chamsSetting npcChamsSettings;
+	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
+	std::map<const char*, bool> luaEntList;
 
-chamsSetting armChamsSettings;
+	std::mutex friendListMutex;
+	std::mutex luaEntListMutex;
+	char ScriptInput[131070];
 
-Color worldColor(17.f, 33.f, 71.f, 255.f);
+	bool currentlyInFreeCam;
+	namespace Chams {
+		chamsSetting playerChamsSettings;
 
-float fov = 130.f;
-float viewModelFOV = 130.f;
+		chamsSetting teamMateSettings;
 
-bool hideHands = false;
+		chamsSetting ragdollChamsSettings;
+		chamsSetting weaponChamsSettings;
+
+		chamsSetting npcChamsSettings;
+
+		chamsSetting armChamsSettings;
+
+		chamsSetting localPlayerChamsSettings;
+	}
+	namespace ESP {
+		int infosEmplacement;
+		bool espDormant;
+		bool espBoundingBox;
+		Color espBoundingBoxColor(255, 255, 255);
+		bool espHealthBar;
+		bool espName;
+		bool weaponText;
+		bool weaponAmmo;
+		bool espDistance;
+		bool skeletonEsp;
+		bool skeletonDetails;
+		Color skeletonEspColor(255, 255, 255);
+		int espShapeInt = 0;
+
+		bool entEsp = false;
+
+	}
+	namespace Visuals {
+		float fov = 130.f;
+		float viewModelFOV = 130.f;
+		bool noVisualRecoil;
+		Color worldColor(17.f, 33.f, 71.f, 255.f);
+		bool changeWorldColor;
+
+		bool disableSkyBox;
+
+	}
+	namespace AntiAim {
+		int currentAntiAimPitch = 0;
+		int currentAntiAimYaw = 0;
+		bool enableAntiAim;
+		ButtonCode_t antiAimKey = KEY_NONE;
+		int antiAimKeyStyle = 1; // KEY_NONE;
+		float fakePitch;
+	}
+	namespace Aimbot {
+		float aimbotFOV;
+		bool silentAim;
+		bool lockOnTarget;
+		ButtonCode_t aimbotKey = KEY_NONE;
+		int aimbotKeyStyle = 1;
+		bool enableAimbot;
+		int aimbotHitbox;
+		bool aimbotAutoWall;
+		bool aimbotAutoFire;
+		float aimbotMinDmg;
+		bool aimbotFovEnabled;
+		bool drawAimbotFov;
+		int aimbotSelection;
+		bool drawAimbotHeadlines;
+		bool aimAtTeammates;
+		C_BasePlayer* finalTarget = nullptr;
+
+		bool aimAtFriends;
+		bool onlyAimAtFriends;
+	}
+	namespace Misc {
+
+		bool drawSpectators;
+		bool drawCrosshair;
+
+		bool quickStop;
+
+		bool killMessage;
+		bool killMessageOOC;
+
+		bool bunnyHop;
+		bool autoStrafe;
+		int autoStrafeStyle;
+
+		float crosshairSize;
+
+		bool thirdperson;
+		ButtonCode_t thirdpersonKey = KEY_NONE;
+		int thirdpersonKeyStyle = 1;
+		float thirdpersonDistance;
+
+		bool removeHands;
+
+		bool flashlightSpam;
+		bool useSpam;
+
+		bool noRecoil;
+		bool noSpread;
+
+		bool freeCam;
+		ButtonCode_t freeCamKey = KEY_NONE;
+		int freeCamKeyStyle = 1;
+
+		bool hitmarkerSoundEnabled;
+		int hitmarkerSound;
+		bool hitmarker;
+
+
+	}
+	namespace Triggerbot {
+		bool triggerBot;
+		bool triggerBotHead;
+		bool triggerBotChest;
+		bool triggerBotStomach;
+		bool triggerbotFastShoot;
+	}
+}
+// Make sure to add everything to ConfigSystem.h too! both ResetConfig, LoadConfig, and SaveConfig!!

@@ -28,6 +28,38 @@
 #endif
 #define ANIMATION_CYCLE_MINFRAC		(1.0f / (1<<ANIMATION_CYCLE_BITS))
 
+#define BONE_CALCULATE_MASK			0x1F
+#define BONE_PHYSICALLY_SIMULATED	0x01	// bone is physically simulated when physics are active
+#define BONE_PHYSICS_PROCEDURAL		0x02	// procedural when physics is active
+#define BONE_ALWAYS_PROCEDURAL		0x04	// bone is always procedurally animated
+#define BONE_SCREEN_ALIGN_SPHERE	0x08	// bone aligns to the screen, not constrained in motion.
+#define BONE_SCREEN_ALIGN_CYLINDER	0x10	// bone aligns to the screen, constrained by it's own axis.
+
+#define BONE_USED_MASK				0x0007FF00
+#define BONE_USED_BY_ANYTHING		0x0007FF00
+#define BONE_USED_BY_HITBOX			0x00000100	// bone (or child) is used by a hit box
+#define BONE_USED_BY_ATTACHMENT		0x00000200	// bone (or child) is used by an attachment point
+#define BONE_USED_BY_VERTEX_MASK	0x0003FC00
+#define BONE_USED_BY_VERTEX_LOD0	0x00000400	// bone (or child) is used by the toplevel model via skinned vertex
+#define BONE_USED_BY_VERTEX_LOD1	0x00000800	
+#define BONE_USED_BY_VERTEX_LOD2	0x00001000  
+#define BONE_USED_BY_VERTEX_LOD3	0x00002000
+#define BONE_USED_BY_VERTEX_LOD4	0x00004000
+#define BONE_USED_BY_VERTEX_LOD5	0x00008000
+#define BONE_USED_BY_VERTEX_LOD6	0x00010000
+#define BONE_USED_BY_VERTEX_LOD7	0x00020000
+#define BONE_USED_BY_BONE_MERGE		0x00040000	// bone is available for bone merge to occur against it
+
+#define BONE_USED_BY_VERTEX_AT_LOD(lod) ( BONE_USED_BY_VERTEX_LOD0 << (lod) )
+#define BONE_USED_BY_ANYTHING_AT_LOD(lod) ( ( BONE_USED_BY_ANYTHING & ~BONE_USED_BY_VERTEX_MASK ) | BONE_USED_BY_VERTEX_AT_LOD(lod) )
+
+#define MAX_NUM_LODS 8
+
+#define BONE_TYPE_MASK				0x00F00000
+#define BONE_FIXED_ALIGNMENT		0x00100000	// bone can't spin 360 degrees, all interpolation is normalized around a fixed orientation
+
+#define BONE_HAS_SAVEFRAME_POS		0x00200000	// Vector48
+#define BONE_HAS_SAVEFRAME_ROT		0x00400000	// Quaternion64
 
 enum ButtonCode_t
 {
@@ -142,7 +174,7 @@ enum ButtonCode_t
 	KEY_F12,
 	KEY_CAPSLOCKTOGGLE,
 	KEY_NUMLOCKTOGGLE,
-	KEY_SCROLLLOCKTOGGLE,
+	KEY_SCROLLLOCKTOGGLE, // 106
 
 	KEY_LAST = KEY_SCROLLLOCKTOGGLE,
 	KEY_COUNT = KEY_LAST - KEY_FIRST + 1,
@@ -150,7 +182,7 @@ enum ButtonCode_t
 	// Mouse
 	MOUSE_FIRST = KEY_LAST + 1,
 
-	MOUSE_LEFT = MOUSE_FIRST,
+	MOUSE_LEFT = MOUSE_FIRST, // 107
 	MOUSE_RIGHT,
 	MOUSE_MIDDLE,
 	MOUSE_4,
@@ -161,6 +193,7 @@ enum ButtonCode_t
 	MOUSE_LAST = MOUSE_WHEEL_DOWN,
 	MOUSE_COUNT = MOUSE_LAST - MOUSE_FIRST + 1,
 };
+
 
 // Each mod defines these for itself.
 class CViewVectors

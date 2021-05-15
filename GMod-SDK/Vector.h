@@ -164,7 +164,7 @@ public:
 
 		return delta.LengthSqr();
 	}
-
+	FORCEINLINE QAngle AngleTo(const Vector& vOther);
 	// Copy
 	void	CopyToArray(float* rgfl) const;
 
@@ -1806,25 +1806,26 @@ public:
 	// No assignment operators either...
 	QAngle& operator=(const QAngle& src);
 
-	QAngle &ClampAngles()
+	QAngle &FixAngles()
 	{
-		if (y > 180.0f)
-			y = 180.0f;
-		else if (y < -180.0f)
-			y = -180.0f;
+		while (y <= -180.f)y += 360.f;
+		while (y > 180.f) y -= 360.f;
 
-		if (x > 89.0f)
-			x = 89.0f;
-		else if (x < -89.0f)
-			x = -89.0f;
-
+		if (x > 89.f) x = 89.f;
+		if (x < -89.f) x = -89.f;
+		
 		z = 0;
 		return *this;
 	};
 	FORCEINLINE Vector toVector() const
 	{
 		return Vector(std::cos(degreesToRadians(x)) * std::cos(degreesToRadians(y)), std::cos(degreesToRadians(x)) * std::sin(degreesToRadians(y)), -std::sin(degreesToRadians(x)));
-	}
+	};
+	FORCEINLINE Vector SideVector() const
+	{
+		return Vector(std::cos(degreesToRadians(x)) * std::cos(degreesToRadians(y+90.f)), std::cos(degreesToRadians(x)) * std::sin(degreesToRadians(y + 90.f)), 0.f);
+	};
+
 #ifndef VECTOR_NO_SLOW_OPERATIONS
 	// copy constructors
 
@@ -2233,7 +2234,7 @@ FORCEINLINE float VectorNormalize(Vector& vec)
 	vec.z *= invlen;
 	return sqrlen * invlen;
 #else
-	extern float (FASTCALL * pfVectorNormalize)(Vector & v);
+	extern float (__fastcall * pfVectorNormalize)(Vector & v);
 	return (*pfVectorNormalize)(vec);
 #endif
 }
@@ -2333,4 +2334,19 @@ inline QAngle Vector::toAngle()
 	return QAngle(radiansToDegrees(atan2(-z, hypot(x, y))),
 		radiansToDegrees(atan2(y, x)),
 		0.0f);
+}
+FORCEINLINE QAngle Vector::AngleTo(const Vector& vOther)
+{
+	Vector deltaVec = Vector(*this - vOther);
+
+	float deltaVecLength = (float)(sqrt(deltaVec.x * deltaVec.x + deltaVec.y * deltaVec.y + deltaVec.z * deltaVec.z));
+
+	float pitch = (float)(-asin(deltaVec.z / deltaVecLength) * (180 / 3.141592653589793238462643383279));
+	float yaw = (float)(atan2(deltaVec.y, deltaVec.x) * (180 / 3.141592653589793238462643383279));
+
+	if (pitch >= -89 && pitch <= 89 && yaw >= -180 && yaw <= 180)
+	{
+		return QAngle(pitch, yaw, 0);
+	}
+	return QAngle(0, 0, 0);
 }
