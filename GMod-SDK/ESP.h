@@ -9,7 +9,7 @@ void doEsp()
 	for (int i = 0; i < ClientEntityList->GetHighestEntityIndex(); i++)
 	{
 		C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(i);
-		if (entity == nullptr || entity == localPlayer || entity->GetTeamNumber() == 1002) // https://wiki.facepunch.com/gmod/Enums/TEAM
+		if (entity == nullptr || entity == localPlayer || entity->getTeamNum() == 1002) // https://wiki.facepunch.com/gmod/Enums/TEAM
 			continue;
 		if (!Settings::ESP::espDormant && entity->IsDormant())
 			continue;
