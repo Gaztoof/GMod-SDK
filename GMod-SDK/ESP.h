@@ -53,7 +53,7 @@ void doEsp()
 				continue;
 			}
 			matrix3x4_t bones[128];
-			if(!entity->GetClientRenderable() < 0x1000 ||
+			if((uintptr_t)entity->GetClientRenderable() < 0x1000 ||
 				!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, EngineClient->Time()))
 				continue;
 
