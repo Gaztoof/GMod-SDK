@@ -7,14 +7,23 @@ I've spent the past few days reversing a few modules of the game, in order to ge
 
 Note that this is still WIP!
 
-Note that for now, this only works in x86
+This works in both x86, and x64.
 
-I will eventually upload the latest dylibs and idb that I made while reversing the game.
+I've uploaded every idb / dylib i've made while reversing the game, except x64 client.dll as it takes too much space for github.
 
+The gui is an almost-perfect gamesense clone.
+
+This also comes in with a built-in lua executor.
+
+![](https://i.imgur.com/TecyXLF.png)
+![](https://i.imgur.com/So6vWVn.png)
+![](https://i.imgur.com/85YRzrO.png)
+![](https://i.imgur.com/SouXE7G.png)
+![](https://i.imgur.com/yxpwGHi.png)
 
 ## Usage
 
-Compile as x86 Release. Debug works too.
+Compile as x86/x64 Release. Debug works too.
 
 Get yourself an injector, select Garry's Mod, and inject the compiled .DLL into the target process.
 
@@ -40,6 +49,7 @@ You can contact me on [Telegram](https://t.me/Gaztoof), at t.me/@Gaztoof
 
 * [IDA Pro](http://www.dropwizard.io/1.0.2/docs/) - The software I used to reverse the game.
 * [VMT Dumper](https://pastebin.com/eVHDkHZX) - The IDA script I used for dumping the VTables. I've found it on a forum and modified it.
+* [IMGui](https://github.com/ocornut/imgui) - The GUI is just modified pure ImGui.
 
 ## Contributing
 
