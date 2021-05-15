@@ -41,6 +41,18 @@ enum LineOfSightCheckType
 #define FL_ATCONTROLS			(1<<6) // Player can't move, but keeps key inputs for controlling another entity
 #define	FL_CLIENT				(1<<7)	// Is a player
 #define FL_FAKECLIENT			(1<<8)	// Fake client, simulated server side; don't send network messages to them
+#define MOVETYPE_NONE		0	
+#define MOVETYPE_ISOMETRIC	1
+#define MOVETYPE_WALK		2	
+#define MOVETYPE_STEP		3	
+#define MOVETYPE_FLY		4	
+#define MOVETYPE_FLYGRAVITY	5
+#define MOVETYPE_VPHYSICS	6
+#define MOVETYPE_PUSH		7
+#define MOVETYPE_NOCLIP		8
+#define MOVETYPE_LADDER		9
+#define MOVETYPE_OBSERVER	10
+#define MOVETYPE_CUSTOM		11
 
 // NON-PLAYER SPECIFIC (i.e., not used by GameMovement or the client .dll ) -- Can still be applied to players, though
 #define	FL_INWATER				(1<<9)	// In water
@@ -498,8 +510,12 @@ public:
 	// LMAO hard coding offsets
 	// i'll eventually make a dumper
 
-	int getMoveType() { // not working
-		return *(int*)((uintptr_t)this + 0x7C); // m_nRenderMode
+	BYTE getMoveType() { // not working
+#ifdef _WIN64
+		return *(BYTE*)((uintptr_t)this + 0x1F4); // https://i.imgur.com/NV5vl7c.png
+#else
+		return *(BYTE*)((uintptr_t)this + 0x178); // https://i.imgur.com/oRWjTg9.png
+#endif
 	}
 	int getFlags() {
 #ifdef _WIN64

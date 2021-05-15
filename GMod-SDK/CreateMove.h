@@ -59,8 +59,6 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 		TriggerBot(cmd);
 
-		// implement localplayer->movetype() and make sure it's not ladder or noclip before bhopping
-
 		if (currWeapon && currWeapon->SecondaryAmmoCount() > 0 && currWeapon->PrimaryAmmoCount() == 0)
 		{
 			cmd->buttons |= IN_RELOAD;

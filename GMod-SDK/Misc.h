@@ -152,6 +152,8 @@ void UseSpam(CUserCmd* cmd)
 }
 void BunnyHop(CUserCmd* cmd)
 {
+    if (localPlayer->getMoveType() == MOVETYPE_FLY || localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER)
+        return;
     if (InputSystem->IsButtonDown(KEY_SPACE)) {
         int flags = localPlayer->getFlags();
         if (Settings::Misc::bunnyHop)

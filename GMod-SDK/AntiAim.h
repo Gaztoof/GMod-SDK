@@ -99,6 +99,8 @@ void AntiAimPitch(CUserCmd* cmd, int kind)
 }
 void AntiAimYaw(CUserCmd* cmd, int kind, bool& sendpacket)
 {
+    if (localPlayer->getMoveType() == MOVETYPE_FLY || localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER)
+        return;
     switch (kind)
     {
     case 0:
