@@ -161,7 +161,7 @@ void BunnyHop(CUserCmd* cmd)
             else
                 cmd->buttons |= IN_JUMP;
         }
-        if (Settings::Misc::autoStrafe)
+        if (Settings::Misc::autoStrafe && !(flags & FL_ONGROUND))
         {
             if (Settings::Misc::autoStrafeStyle == 0) // Legit
             {

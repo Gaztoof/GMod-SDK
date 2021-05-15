@@ -91,6 +91,7 @@ namespace ConfigSystem
 		j["Aimbot"]["aimbotFOV"] = Settings::Aimbot::aimbotFOV;
 		j["Aimbot"]["silentAim"] = Settings::Aimbot::silentAim;
 		j["Aimbot"]["lockOnTarget"] = Settings::Aimbot::lockOnTarget;
+		j["Aimbot"]["aimbotKey"] = Settings::Aimbot::aimbotKey;
 		j["Aimbot"]["aimbotKeyStyle"] = Settings::Aimbot::aimbotKeyStyle;
 		j["Aimbot"]["enableAimbot"] = Settings::Aimbot::enableAimbot;
 		j["Aimbot"]["aimbotHitbox"] = Settings::Aimbot::aimbotHitbox;
@@ -153,98 +154,104 @@ namespace ConfigSystem
 		}
 		i >> j;
 
+		try {
+			Settings::menuKey = j["Globals"]["menuKey"];
+			Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
+			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor.fCol);
+			Settings::Untrusted = j["Globals"]["untrusted"];
 
-		Settings::menuKey = j["Globals"]["menuKey"];
-		Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
-		from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor.fCol);
-		Settings::Untrusted = j["Globals"]["untrusted"];
+			Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
+			Settings::Chams::teamMateSettings = from_jsonchams(j["Chams"]["teamMate"]);
+			Settings::Chams::ragdollChamsSettings = from_jsonchams(j["Chams"]["ragdollChams"]);
+			Settings::Chams::weaponChamsSettings = from_jsonchams(j["Chams"]["weaponChams"]);
+			Settings::Chams::npcChamsSettings = from_jsonchams(j["Chams"]["npcChams"]);
+			Settings::Chams::armChamsSettings = from_jsonchams(j["Chams"]["armChams"]);
+			Settings::Chams::localPlayerChamsSettings = from_jsonchams(j["Chams"]["localPlayerChams"]);
 
-		Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
-		Settings::Chams::teamMateSettings = from_jsonchams(j["Chams"]["teamMate"]);
-		Settings::Chams::ragdollChamsSettings = from_jsonchams(j["Chams"]["ragdollChams"]);
-		Settings::Chams::weaponChamsSettings = from_jsonchams(j["Chams"]["weaponChams"]);
-		Settings::Chams::npcChamsSettings = from_jsonchams(j["Chams"]["npcChams"]);
-		Settings::Chams::armChamsSettings = from_jsonchams(j["Chams"]["armChams"]);
-		Settings::Chams::localPlayerChamsSettings = from_jsonchams(j["Chams"]["localPlayerChams"]);
+			Settings::ESP::infosEmplacement = j["ESP"]["infosEmplacement"];
+			Settings::ESP::espDormant = j["ESP"]["espDormant"];
+			Settings::ESP::espBoundingBox = j["ESP"]["espBoundingBox"];
+			from_jsonfcol(j["ESP"]["espBoundingBoxColor"], Settings::ESP::espBoundingBoxColor.fCol);
+			Settings::ESP::espHealthBar = j["ESP"]["espHealthBar"];
+			Settings::ESP::espName = j["ESP"]["espName"];
+			Settings::ESP::weaponText = j["ESP"]["weaponText"];
+			Settings::ESP::weaponAmmo = j["ESP"]["weaponAmmo"];
+			Settings::ESP::espDistance = j["ESP"]["espDistance"];
+			Settings::ESP::skeletonEsp = j["ESP"]["skeletonEsp"];
+			Settings::ESP::skeletonDetails = j["ESP"]["skeletonDetails"];
+			from_jsonfcol(j["ESP"]["skeletonEspColor"], Settings::ESP::skeletonEspColor.fCol);
 
-		Settings::ESP::infosEmplacement = j["ESP"]["infosEmplacement"];
-		Settings::ESP::espDormant = j["ESP"]["espDormant"];
-		Settings::ESP::espBoundingBox = j["ESP"]["espBoundingBox"];
-		from_jsonfcol(j["ESP"]["espBoundingBoxColor"], Settings::ESP::espBoundingBoxColor.fCol);
-		Settings::ESP::espHealthBar = j["ESP"]["espHealthBar"];
-		Settings::ESP::espName = j["ESP"]["espName"];
-		Settings::ESP::weaponText = j["ESP"]["weaponText"];
-		Settings::ESP::weaponAmmo = j["ESP"]["weaponAmmo"];
-		Settings::ESP::espDistance = j["ESP"]["espDistance"];
-		Settings::ESP::skeletonEsp = j["ESP"]["skeletonEsp"];
-		Settings::ESP::skeletonDetails = j["ESP"]["skeletonDetails"];
-		from_jsonfcol(j["ESP"]["skeletonEspColor"], Settings::ESP::skeletonEspColor.fCol);
+			Settings::ESP::espShapeInt = j["ESP"]["espShapeInt"];
+			Settings::ESP::entEsp = j["ESP"]["entEsp"];
 
-		Settings::ESP::espShapeInt = j["ESP"]["espShapeInt"];
-		Settings::ESP::entEsp = j["ESP"]["entEsp"];
+			Settings::Visuals::fov = j["Visuals"]["fov"];
+			Settings::Visuals::viewModelFOV = j["Visuals"]["viewModelFOV"];
+			Settings::Visuals::noVisualRecoil = j["Visuals"]["noVisualRecoil"];
+			from_jsonfcol(j["Visuals"]["worldColor"], Settings::Visuals::worldColor.fCol);
+			Settings::Visuals::changeWorldColor = j["Visuals"]["changeWorldColor"];
+			Settings::Visuals::disableSkyBox = j["Visuals"]["disableSkyBox"];
 
-		Settings::Visuals::fov = j["Visuals"]["fov"];
-		Settings::Visuals::viewModelFOV = j["Visuals"]["viewModelFOV"];
-		Settings::Visuals::noVisualRecoil = j["Visuals"]["noVisualRecoil"];
-		from_jsonfcol(j["Visuals"]["worldColor"], Settings::Visuals::worldColor.fCol);
-		Settings::Visuals::changeWorldColor = j["Visuals"]["changeWorldColor"];
-		Settings::Visuals::disableSkyBox = j["Visuals"]["disableSkyBox"];
+			Settings::AntiAim::currentAntiAimPitch = j["AntiAim"]["currentAntiAimPitch"];
+			Settings::AntiAim::currentAntiAimYaw = j["AntiAim"]["currentAntiAimYaw"];
+			Settings::AntiAim::enableAntiAim = j["AntiAim"]["enableAntiAim"];
+			Settings::AntiAim::antiAimKey = j["AntiAim"]["antiAimKey"];
+			Settings::AntiAim::antiAimKeyStyle = j["AntiAim"]["antiAimKeyStyle"];
+			Settings::AntiAim::fakePitch = j["AntiAim"]["fakePitch"];
 
-		Settings::AntiAim::currentAntiAimPitch = j["AntiAim"]["currentAntiAimPitch"];
-		Settings::AntiAim::currentAntiAimYaw = j["AntiAim"]["currentAntiAimYaw"];
-		Settings::AntiAim::enableAntiAim = j["AntiAim"]["enableAntiAim"];
-		Settings::AntiAim::antiAimKey = j["AntiAim"]["antiAimKey"];
-		Settings::AntiAim::antiAimKeyStyle = j["AntiAim"]["antiAimKeyStyle"];
-		Settings::AntiAim::fakePitch = j["AntiAim"]["fakePitch"];
+			Settings::Aimbot::aimbotFOV = j["Aimbot"]["aimbotFOV"];
+			Settings::Aimbot::silentAim = j["Aimbot"]["silentAim"];
+			Settings::Aimbot::lockOnTarget = j["Aimbot"]["lockOnTarget"];
+			Settings::Aimbot::aimbotKey = j["Aimbot"]["aimbotKey"];
+			Settings::Aimbot::aimbotKeyStyle = j["Aimbot"]["aimbotKeyStyle"];
+			Settings::Aimbot::enableAimbot = j["Aimbot"]["enableAimbot"];
+			Settings::Aimbot::aimbotHitbox = j["Aimbot"]["aimbotHitbox"];
+			Settings::Aimbot::aimbotAutoWall = j["Aimbot"]["aimbotAutoWall"];
+			Settings::Aimbot::aimbotAutoFire = j["Aimbot"]["aimbotAutoFire"];
+			Settings::Aimbot::aimbotMinDmg = j["Aimbot"]["aimbotMinDmg"];
+			Settings::Aimbot::aimbotFovEnabled = j["Aimbot"]["aimbotFovEnabled"];
+			Settings::Aimbot::drawAimbotFov = j["Aimbot"]["drawAimbotFov"];
+			Settings::Aimbot::aimbotSelection = j["Aimbot"]["aimbotSelection"];
+			Settings::Aimbot::drawAimbotHeadlines = j["Aimbot"]["drawAimbotHeadlines"];
+			Settings::Aimbot::aimAtTeammates = j["Aimbot"]["aimAtTeammates"];
+			Settings::Aimbot::aimAtFriends = j["Aimbot"]["aimAtFriends"];
+			Settings::Aimbot::onlyAimAtFriends = j["Aimbot"]["onlyAimAtFriends"];
 
-		Settings::Aimbot::aimbotFOV = j["Aimbot"]["aimbotFOV"];
-		Settings::Aimbot::silentAim = j["Aimbot"]["silentAim"];
-		Settings::Aimbot::lockOnTarget = j["Aimbot"]["lockOnTarget"];
-		Settings::Aimbot::aimbotKeyStyle = j["Aimbot"]["aimbotKeyStyle"];
-		Settings::Aimbot::enableAimbot = j["Aimbot"]["enableAimbot"];
-		Settings::Aimbot::aimbotHitbox = j["Aimbot"]["aimbotHitbox"];
-		Settings::Aimbot::aimbotAutoWall = j["Aimbot"]["aimbotAutoWall"];
-		Settings::Aimbot::aimbotAutoFire = j["Aimbot"]["aimbotAutoFire"];
-		Settings::Aimbot::aimbotMinDmg = j["Aimbot"]["aimbotMinDmg"];
-		Settings::Aimbot::aimbotFovEnabled = j["Aimbot"]["aimbotFovEnabled"];
-		Settings::Aimbot::drawAimbotFov = j["Aimbot"]["drawAimbotFov"];
-		Settings::Aimbot::aimbotSelection = j["Aimbot"]["aimbotSelection"];
-		Settings::Aimbot::drawAimbotHeadlines = j["Aimbot"]["drawAimbotHeadlines"];
-		Settings::Aimbot::aimAtTeammates = j["Aimbot"]["aimAtTeammates"];
-		Settings::Aimbot::aimAtFriends = j["Aimbot"]["aimAtFriends"];
-		Settings::Aimbot::onlyAimAtFriends = j["Aimbot"]["onlyAimAtFriends"];
+			Settings::Misc::drawSpectators = j["Misc"]["drawSpectators"];
+			Settings::Misc::drawCrosshair = j["Misc"]["drawCrosshair"];
+			Settings::Misc::quickStop = j["Misc"]["quickStop"];
+			Settings::Misc::killMessage = j["Misc"]["killMessage"];
+			Settings::Misc::killMessageOOC = j["Misc"]["killMessageOOC"];
+			Settings::Misc::bunnyHop = j["Misc"]["bunnyHop"];
+			Settings::Misc::autoStrafe = j["Misc"]["autoStrafe"];
+			Settings::Misc::autoStrafeStyle = j["Misc"]["autoStrafeStyle"];
+			Settings::Misc::crosshairSize = j["Misc"]["crosshairSize"];
+			Settings::Misc::thirdperson = j["Misc"]["thirdperson"];
+			Settings::Misc::thirdpersonKey = j["Misc"]["thirdpersonKey"];
+			Settings::Misc::thirdpersonKeyStyle = j["Misc"]["thirdpersonKeyStyle"];
+			Settings::Misc::thirdpersonDistance = j["Misc"]["thirdpersonDistance"];
+			Settings::Misc::removeHands = j["Misc"]["removeHands"];
+			Settings::Misc::flashlightSpam = j["Misc"]["flashlightSpam"];
+			Settings::Misc::useSpam = j["Misc"]["useSpam"];
+			Settings::Misc::noRecoil = j["Misc"]["noRecoil"];
+			Settings::Misc::noSpread = j["Misc"]["noSpread"];
+			Settings::Misc::freeCam = j["Misc"]["freeCam"];
+			Settings::Misc::freeCamKey = j["Misc"]["freeCamKey"];
+			Settings::Misc::freeCamKeyStyle = j["Misc"]["freeCamKeyStyle"];
+			Settings::Misc::hitmarkerSoundEnabled = j["Misc"]["hitmarkerSoundEnabled"];
+			Settings::Misc::hitmarkerSound = j["Misc"]["hitmarkerSound"];
+			Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
 
-		Settings::Misc::drawSpectators = j["Misc"]["drawSpectators"];
-		Settings::Misc::drawCrosshair = j["Misc"]["drawCrosshair"];
-		Settings::Misc::quickStop = j["Misc"]["quickStop"];
-		Settings::Misc::killMessage = j["Misc"]["killMessage"];
-		Settings::Misc::killMessageOOC = j["Misc"]["killMessageOOC"];
-		Settings::Misc::bunnyHop = j["Misc"]["bunnyHop"];
-		Settings::Misc::autoStrafe = j["Misc"]["autoStrafe"];
-		Settings::Misc::autoStrafeStyle = j["Misc"]["autoStrafeStyle"];
-		Settings::Misc::crosshairSize = j["Misc"]["crosshairSize"];
-		Settings::Misc::thirdperson = j["Misc"]["thirdperson"];
-		Settings::Misc::thirdpersonKey = j["Misc"]["thirdpersonKey"];
-		Settings::Misc::thirdpersonKeyStyle = j["Misc"]["thirdpersonKeyStyle"];
-		Settings::Misc::thirdpersonDistance = j["Misc"]["thirdpersonDistance"];
-		Settings::Misc::removeHands = j["Misc"]["removeHands"];
-		Settings::Misc::flashlightSpam = j["Misc"]["flashlightSpam"];
-		Settings::Misc::useSpam = j["Misc"]["useSpam"];
-		Settings::Misc::noRecoil = j["Misc"]["noRecoil"];
-		Settings::Misc::noSpread = j["Misc"]["noSpread"];
-		Settings::Misc::freeCam = j["Misc"]["freeCam"];
-		Settings::Misc::freeCamKey = j["Misc"]["freeCamKey"];
-		Settings::Misc::freeCamKeyStyle = j["Misc"]["freeCamKeyStyle"];
-		Settings::Misc::hitmarkerSoundEnabled = j["Misc"]["hitmarkerSoundEnabled"];
-		Settings::Misc::hitmarkerSound = j["Misc"]["hitmarkerSound"];
-		Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
-
-		Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
-		Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
-		Settings::Triggerbot::triggerBotChest = j["Triggerbot"]["triggerBotChest"];
-		Settings::Triggerbot::triggerBotStomach = j["Triggerbot"]["triggerBotStomach"];
-		Settings::Triggerbot::triggerbotFastShoot = j["Triggerbot"]["triggerbotFastShoot"];
-
+			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
+			Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
+			Settings::Triggerbot::triggerBotChest = j["Triggerbot"]["triggerBotChest"];
+			Settings::Triggerbot::triggerBotStomach = j["Triggerbot"]["triggerBotStomach"];
+			Settings::Triggerbot::triggerbotFastShoot = j["Triggerbot"]["triggerbotFastShoot"];
+		}
+		catch(...)
+		{
+			SaveConfig(configName);
+			return LoadConfig(configName);
+		}
 		std::ofstream o(std::string("settings\\") + configName);
 		if (o.bad())return;
 		o << std::setw(4) << j << std::endl;
@@ -299,6 +306,7 @@ namespace ConfigSystem
 		Settings::Aimbot::aimbotFOV = 5.f;
 		Settings::Aimbot::silentAim = NULL;
 		Settings::Aimbot::lockOnTarget = NULL;
+		Settings::Aimbot::aimbotKeyStyle = KEY_NONE;
 		Settings::Aimbot::aimbotKeyStyle = NULL;
 		Settings::Aimbot::enableAimbot = NULL;
 		Settings::Aimbot::aimbotHitbox = NULL;

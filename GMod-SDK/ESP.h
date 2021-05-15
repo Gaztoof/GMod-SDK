@@ -53,8 +53,9 @@ void doEsp()
 				continue;
 			}
 			matrix3x4_t bones[128];
-			if((uintptr_t)entity->GetClientRenderable() < 0x1000 ||
-				!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, EngineClient->Time()))
+			if(((Settings::ESP::skeletonEsp) || Settings::Aimbot::drawAimbotHeadlines) && // Sometimes SetupBones will crash, and so adding these checks won't make you crash at round beginning if you disable features that need setupbones
+				((uintptr_t)entity->GetClientRenderable() < 0x1000 ||
+				!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, EngineClient->Time())))
 				continue;
 
 			int z = -1;

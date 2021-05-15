@@ -116,7 +116,7 @@ void DrawVisuals()
 
 			InsertCombo("Infos emplacement", Settings::ESP::infosEmplacement, plyInfoEmplacement);
 
-			InsertCheckbox("Skeleton", Settings::ESP::skeletonEsp);
+			InsertCheckbox("Skeleton (can crash at roundstart)", Settings::ESP::skeletonEsp);
 			InsertColorPicker("##Skeleton color", Settings::ESP::skeletonEspColor.fCol, false);
 			InsertCheckbox("Detail skeleton", Settings::ESP::skeletonDetails);
 
@@ -231,7 +231,7 @@ void DrawAimbot() {
 			InsertCheckbox("Check FOV", Settings::Aimbot::aimbotFovEnabled);
 			InsertSlider("FOV", Settings::Aimbot::aimbotFOV, 5, 720);
 			InsertCheckbox("Draw FOV Circle", Settings::Aimbot::drawAimbotFov);
-			InsertCheckbox("Draw FOV Headlines", Settings::Aimbot::drawAimbotHeadlines);
+			InsertCheckbox("Draw FOV Headlines (can crash at roundstart)", Settings::Aimbot::drawAimbotHeadlines);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
