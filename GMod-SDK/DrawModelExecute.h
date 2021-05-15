@@ -31,7 +31,7 @@ const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCus
 		}
 		else if (entity->IsPlayer())
 		{
-			if(entity->InLocalTeam())
+			if(entity->getTeamNum() == localPlayer->getTeamNum())
 			setting = Settings::Chams::teamMateSettings;
 			else setting = Settings::Chams::playerChamsSettings;
 		}

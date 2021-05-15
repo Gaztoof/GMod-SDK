@@ -517,6 +517,15 @@ public:
 	* There's your offset.
 	* For exemple, in https://i.imgur.com/88fYuYY.png this case, the offset will be 0x01F4 AND NOT 0x010F4 !
 	*/
+
+	int getTeamNum() {
+#ifdef _WIN64
+		return *(int*)((uintptr_t)this + 0xD4); // m_iTeamNum
+#else
+		return *(int*)((uintptr_t)this + 0x9C); // m_iTeamNum
+#endif
+	}
+
 	int getMoveType() {
 #ifdef _WIN64
 		return *(int*)((uintptr_t)this + 0x1F4); // https://i.imgur.com/NV5vl7c.png

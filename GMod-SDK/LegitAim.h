@@ -31,7 +31,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 			if (!entity || !entity->IsAlive() || !entity->IsPlayer() || entity == localPlayer)
 				continue;
 
-			if (!Settings::Aimbot::aimAtTeammates && entity->InLocalTeam())
+			if (!Settings::Aimbot::aimAtTeammates && entity->getTeamNum() == localPlayer->getTeamNum())
 				continue;
 			bool isFriend = false;
 			Settings::friendListMutex.lock();

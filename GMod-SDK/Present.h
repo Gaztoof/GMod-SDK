@@ -266,8 +266,9 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 			ImGui::PopFont();
 		}
 		ImGui::End();
-		SpectatorList();
 	}
+	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
+	SpectatorList();
 
 	ImGui::EndFrame();
 	ImGui::Render();
