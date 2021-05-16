@@ -42,7 +42,6 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	static bool initialized = false;
 	if (!initialized)
 	{
-		EngineClient->GetScreenSize(screenWidth, screenHeight);
 		InitRenderer(pDevice);
 
 		ImGui::CreateContext();
@@ -74,6 +73,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		initialized = true;
 	}
+	EngineClient->GetScreenSize(screenWidth, screenHeight);
 	bool tempState = GetAsyncKeyState(InputSystem->ButtonCodeToVirtualKey(Settings::menuKey));
 	
 	static bool lastState = false;
