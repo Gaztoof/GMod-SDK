@@ -129,6 +129,7 @@ mstudiobone_t* Studio_BoneIndexByName(studiohdr_t* pStudioHdr, char const* pName
 	return nullptr;
 }
 
+
 int GetUserId(int entListIndex) 
 {
 	player_info_s info;

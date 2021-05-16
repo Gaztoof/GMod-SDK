@@ -58,7 +58,7 @@ ClientFrameStage_t stage)
 			}
 #pragma endregion
 #pragma region PropColor
-			if (Settings::Visuals::changeWorldColor && !strcmp(material->GetTextureGroupName(), TEXTURE_GROUP_MODEL))
+			if (Settings::Visuals::changeWorldColor && (!strcmp(material->GetTextureGroupName(), TEXTURE_GROUP_MODEL) || strstr(material->GetName(), "models/prop") != 0))
 			{
 				if (Settings::Visuals::changeWorldColor)
 				{

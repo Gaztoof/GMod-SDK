@@ -52,8 +52,9 @@ void doEsp()
 					DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[3] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[0] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[1] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[2] * 255)));
 				continue;
 			}
+
 			matrix3x4_t bones[128];
-			if(((Settings::ESP::skeletonEsp) || Settings::Aimbot::drawAimbotHeadlines) && // Sometimes SetupBones will crash, and so adding these checks won't make you crash at round beginning if you disable features that need setupbones
+			if(((Settings::ESP::skeletonEsp) || Settings::Aimbot::drawAimbotHeadlines)  && // Sometimes SetupBones will crash, and so adding these checks won't make you crash at round beginning if you disable features that need setupbones
 				((uintptr_t)entity->GetClientRenderable() < 0x1000 ||
 				!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, EngineClient->Time())))
 				continue;
@@ -61,24 +62,31 @@ void doEsp()
 			int z = -1;
 
 			studiohdr_t* studioHdr = ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel());
+
 			if(Settings::ESP::skeletonEsp)
 			for (int z = 0; z < studioHdr->numbones; z++)
 			{
 				auto bone = studioHdr->pBone(z);
-				if (bone && bone->parent >= 0 )
+				if (bone && bone->parent >= 0)
 				{
 					if (!Settings::ESP::skeletonDetails && !(bone->flags & 256))
 						continue;
-					Vector bonePosFrom;
-					Vector bonePosTo;
-					if (!WorldToScreen(Vector(bones[z][0][3], bones[z][1][3], bones[z][2][3]), bonePosFrom) || !WorldToScreen(Vector(bones[bone->parent][0][3], bones[bone->parent][1][3], bones[bone->parent][2][3]), bonePosTo))
+					Vector normalBonePos = Vector(bones[z][0][3], bones[z][1][3], bones[z][2][3]);
+					Vector normalParentBonePos = Vector(bones[bone->parent][0][3], bones[bone->parent][1][3], bones[bone->parent][2][3]);
+					if (normalBonePos == Vector(0, 0, 0) || normalParentBonePos == Vector(0, 0, 0))
 						continue;
-					DrawLine(bonePosFrom, bonePosTo, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::skeletonEspColor.fCol[3] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[0] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[1] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[2] * 255)));
+
+					Vector bonePosFrom;
+					Vector parentBonePos;
+					if (!WorldToScreen(normalBonePos, bonePosFrom) || !WorldToScreen(normalParentBonePos, parentBonePos))
+						continue;
+					DrawLine(bonePosFrom, parentBonePos, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::skeletonEspColor.fCol[3] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[0] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[1] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[2] * 255)));
+					//DrawTextW(bonePosFrom, std::to_wstring(z), 0xFFFFFFFF, true); // write bone ids
 				}
 			}
 			
 			int selectedHitBox = 0;
-			Studio_BoneIndexByName(ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel()), IntToBoneName(Settings::Aimbot::aimbotHitbox), &selectedHitBox);
+			Studio_BoneIndexByName(studioHdr, IntToBoneName(Settings::Aimbot::aimbotHitbox), &selectedHitBox);
 
 			Vector screenEyePos;
 			screenEyePos.z = 0;

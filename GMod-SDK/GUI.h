@@ -187,7 +187,6 @@ void DrawVisuals()
 			InsertCheckbox("Remove visual recoil", Settings::Visuals::noVisualRecoil);
 			InsertCheckbox("Remove hands", Settings::Misc::removeHands);
 
-			InsertCheckbox("Remove skybox", Settings::Visuals::disableSkyBox);
 			InsertCheckbox("Third person", Settings::Misc::thirdperson);
 			ImGui::Keybind("thirdperson", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
 			InsertSlider("Third person distance", Settings::Misc::thirdpersonDistance, 20, 300);

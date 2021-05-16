@@ -87,7 +87,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		if (Settings::Aimbot::drawAimbotFov)
 		{
-			DrawCircle(Vector(3440 / 2, 1440 / 2, 0), Settings::Aimbot::aimbotFOV, Settings::Aimbot::aimbotFOV, 0xFFFFFFFF);
+			DrawCircle(Vector(screenWidth / 2, screenHeight / 2, 0), Settings::Aimbot::aimbotFOV, Settings::Aimbot::aimbotFOV, 0xFFFFFFFF);
 		}
 		if (Settings::Misc::drawCrosshair) {
 			DrawLine(Vector(screenWidth / 2 - Settings::Misc::crosshairSize, screenHeight / 2, 0), Vector(screenWidth / 2 + Settings::Misc::crosshairSize, screenHeight / 2, 0), 0xFFFFFFFF);

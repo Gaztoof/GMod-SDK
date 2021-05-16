@@ -54,7 +54,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 			if (!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime))
 				continue;
 
-			auto bone = Studio_BoneIndexByName(ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel()), IntToBoneName(Settings::Aimbot::aimbotHitbox), &selectedHitBox);
+			auto bone = Studio_BoneIndexByName(ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel()), IntToBoneName(Settings::Aimbot::aimbotHitbox),&selectedHitBox);
 
 			Vector entPos = Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]); // 6 = hitbox https://i.imgur.com/0WZNkbC.jpg
 			canHit = CanHit(entity, eyePos, entPos);
