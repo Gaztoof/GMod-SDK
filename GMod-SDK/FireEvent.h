@@ -2,7 +2,6 @@
 
 #include "globals.h"
 #include "Misc.h"
-#include <iostream>
 
 
 void DoEvent(IGameEvent* event)

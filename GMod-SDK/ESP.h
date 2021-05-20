@@ -121,7 +121,7 @@ void doEsp()
 				}
 				if (Settings::ESP::weaponAmmo)
 				{
-					//playerInfo += L"Ammos: " + std::to_wstring(entity->GetActiveWeapon()->PrimaryAmmoCount()) + L"\n"; // that doesn't works, ammo's always 0
+					playerInfo += L"Ammos: " + std::to_wstring(entity->GetActiveWeapon()->PrimaryAmmoCount()) + L"\n";
 				}
 				if (Settings::ESP::espDistance)
 				{

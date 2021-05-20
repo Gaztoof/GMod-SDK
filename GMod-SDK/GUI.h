@@ -26,8 +26,8 @@ const char* chamsMaterials[] =
 const char* antiAimPitch[] =
 {
     "None",
-    "Down",
-    "Up",
+    "Fake Down",
+    "Fake Up",
     "Jitter",
 };
 const char* antiAimYaw[] =
@@ -37,7 +37,7 @@ const char* antiAimYaw[] =
     "Slow Spin",
     "Back Jitter",
     "Inverse",
-	"Sideways",
+	"Fake Sideways",
 };
 
 const char* targetSelection[] =
@@ -98,19 +98,19 @@ void DrawVisuals()
 			ImGui::CustomSpacing(9.f);
 
 			// to do : activation hotkey
-			InsertCheckbox("Dormant", Settings::ESP::espDormant);
 
 			InsertCheckbox("Bounding box", Settings::ESP::espBoundingBox);
 			InsertColorPicker("##Bounding box color", Settings::ESP::espBoundingBoxColor.fCol, false);
 
 			InsertCombo("Bouding Box Shape", Settings::ESP::espShapeInt, espShape);
+			InsertCheckbox("Dormant", Settings::ESP::espDormant);
 			InsertCheckbox("Health", Settings::ESP::espHealthBar);
 
 			InsertCheckbox("Name", Settings::ESP::espName);
 
 			InsertCheckbox("Weapon name", Settings::ESP::weaponText);
 
-			InsertCheckbox("Ammo (broken)", Settings::ESP::weaponAmmo);
+			InsertCheckbox("Ammo", Settings::ESP::weaponAmmo);
 
 			InsertCheckbox("Distance", Settings::ESP::espDistance);
 
@@ -166,6 +166,10 @@ void DrawVisuals()
 			InsertSlider("FOV", Settings::Visuals::fov, 30, 150);
 			InsertSlider("ViewModel FOV", Settings::Visuals::viewModelFOV, 30, 150);
 
+			InsertCheckbox("Zoom", Settings::Misc::zoom);
+			ImGui::Keybind("zoomkey", (int*)&Settings::Misc::zoomKey, &Settings::Misc::zoomKeyStyle);
+			InsertSlider("Zoom FOV", Settings::Misc::zoomFOV, 10.f, 90.f);
+
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
 
@@ -188,8 +192,8 @@ void DrawVisuals()
 			InsertCheckbox("Remove hands", Settings::Misc::removeHands);
 
 			InsertCheckbox("Third person", Settings::Misc::thirdperson);
-			ImGui::Keybind("thirdperson", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
-			InsertSlider("Third person distance", Settings::Misc::thirdpersonDistance, 20, 300);
+			ImGui::Keybind("thirdpersonkey", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
+			InsertSlider("Third person distance", Settings::Misc::thirdpersonDistance, 20, 1000);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
@@ -211,7 +215,7 @@ void DrawAimbot() {
 			ImGui::CustomSpacing(9.f);
 
 			InsertCheckbox("Enabled", Settings::Aimbot::enableAimbot);
-			ImGui::Keybind("aimbot", (int*)&Settings::Aimbot::aimbotKey, &Settings::Aimbot::aimbotKeyStyle);
+			ImGui::Keybind("aimbotkey", (int*)&Settings::Aimbot::aimbotKey, &Settings::Aimbot::aimbotKeyStyle);
 
 			InsertCombo("Target selection", Settings::Aimbot::aimbotSelection, targetSelection);
 
@@ -264,6 +268,8 @@ void DrawAimbot() {
 
 			InsertCheckbox("Remove spread", Settings::Misc::noSpread);
 			InsertCheckbox("Remove recoil", Settings::Misc::noRecoil);
+			InsertCheckbox("Fake-Lag", Settings::Misc::fakeLag);
+			ImGui::Keybind("fakelagkey", (int*)&Settings::Misc::fakeLagKey, &Settings::Misc::fakeLagKeyStyle);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
@@ -461,6 +467,7 @@ void DrawMisc() {
 
 			InsertCheckbox("Free-cam", Settings::Misc::freeCam);
 			ImGui::Keybind("freecamkey", (int*)&Settings::Misc::freeCamKey, &Settings::Misc::freeCamKeyStyle);
+			InsertSlider("Free-cam speed", Settings::Misc::freeCamSpeed, 1.f, 5.f);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
@@ -526,13 +533,14 @@ void DrawMisc() {
 			InsertButtonMiddleV("Unload", unloadPressed);
 			if (unloadPressed)
 			{
-				VMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
-				VMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
-				VMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
-				VMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
-				VMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
+				RestoreVMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
+				RestoreVMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
+				RestoreVMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
+				RestoreVMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
+				RestoreVMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
 
-				VMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
+				RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
+				*bSendpacket = true;
 
 				extern _Present oPresent;
 #ifdef _WIN64

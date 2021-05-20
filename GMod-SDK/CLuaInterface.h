@@ -92,7 +92,7 @@ public:
 	/*21*/	virtual void* RawGet(int iStackPos) = 0;
 	/*22*/	virtual void* RawSet(int iStackPost) = 0;
 	/*23*/	virtual const char* GetString(int, unsigned int*) = 0;
-	/*24*/	virtual int GetNumber(int) = 0;
+	/*24*/	virtual double GetNumber(int) = 0;
 	/*25*/	virtual bool GetBool(int) = 0;
 	/*26*/	virtual void* GetCFunction(int) = 0;
 	/*27*/	virtual void* GetUserdata(int) = 0;

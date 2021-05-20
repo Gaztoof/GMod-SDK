@@ -7,8 +7,8 @@
 class CNetChan
 {
 public:
-	/*0*/	virtual char* GetName(void)const = 0;
-	/*1*/	virtual void* GetAddress(void)const = 0;
+	/*0*/	virtual const char* GetName(void)const = 0;
+	/*1*/	virtual const char* GetAddress(void)const = 0;
 	/*2*/	virtual float GetTime(void)const = 0;
 	/*3*/	virtual float GetTimeConnected(void)const = 0;
 	/*4*/	virtual int GetBufferSize(void)const = 0;
@@ -16,7 +16,7 @@ public:
 	/*6*/	virtual bool IsLoopback(void)const = 0;
 	/*7*/	virtual bool IsTimingOut(void)const = 0;
 	/*8*/	virtual bool IsPlayback(void)const = 0;
-	/*9*/	virtual void* GetLatency(int)const = 0;
+	/*9*/	virtual float GetLatency(int)const = 0;
 	/*10*/	virtual float GetAvgLatency(int)const = 0;
 	/*11*/	virtual float GetAvgLoss(int)const = 0;
 	/*12*/	virtual float GetAvgChoke(int)const = 0;
@@ -26,8 +26,8 @@ public:
 	/*16*/	virtual int GetSequenceNr(int)const = 0;
 	/*17*/	virtual bool IsValidPacket(int, int)const = 0;
 	/*18*/	virtual float GetPacketTime(int, int)const = 0;
-	/*19*/	virtual void* GetPacketBytes(int, int, int)const = 0;
-	/*20*/	virtual void GetStreamProgress(int, int*, int*)const = 0;
+	/*19*/	virtual int GetPacketBytes(int, int, int)const = 0;
+	/*20*/	virtual bool GetStreamProgress(int, int*, int*)const = 0;
 	/*21*/	virtual float GetTimeSinceLastReceived(void)const = 0;
 	/*22*/	virtual float GetCommandInterpolationAmount(int, int)const = 0;
 	/*23*/	virtual float GetPacketResponseLatency(int, int, int*, int*)const = 0;
@@ -53,7 +53,7 @@ public:
 	/*43*/	virtual void* SendFile(char const*, unsigned int) = 0;
 	/*44*/	virtual void* DenyFile(unsigned int) = 0;
 	/*45*/	virtual void* RequestFile_OLD(char const*, unsigned int) = 0;
-	/*46*/	virtual void* SetChoked(void) = 0;
+	/*46*/	virtual void SetChoked(void) = 0; // m_outSequenceNr++; m_nChokedPackets;
 	/*47*/	virtual void* SendDatagram(void*) = 0;
 	/*48*/	virtual void* Transmit(bool) = 0;
 	/*49*/	virtual void* GetRemoteAddress(void)const = 0;
@@ -79,4 +79,23 @@ public:
 	/*69*/	virtual void* SetMaxRoutablePayloadSize(int) = 0;
 	/*70*/	virtual void* GetMaxRoutablePayloadSize(void) = 0;
 	/*71*/	virtual void* GetProtocolVersion(void) = 0;
+
+	// https://i.imgur.com/PxwCKE9.png
+
+	int unknown;
+
+	// last send outgoing sequence number
+	int			m_nOutSequenceNr;
+	// last received incoming sequnec number
+	int			m_nInSequenceNr;
+	// last received acknowledge outgoing sequnce number
+	int			m_nOutSequenceNrAck;
+	// state of outgoing reliable data (0/1) flip flop used for loss detection
+	int			m_nOutReliableState;
+	// state of incoming reliable data
+	int			m_nInReliableState;
+
+
+	int			m_nChokedPackets; //number of choked packets
+
 };

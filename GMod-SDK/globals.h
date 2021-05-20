@@ -37,6 +37,9 @@
 #define RandomSeedOffset 0x2
 #define PresentModule "gameoverlayrenderer64"
 #define PresentPattern "\xFF\x15????\x8B\xF8\x48\x85\xDB\x74\x37\x85\xC0\x75\x33\x38\x43\x5B\x74\x2E\xF3\x0F\x10\x05????\x44\x8D\x48\x01\x4C\x8B\x16\x45\x33\xC0\x89\x44\x24\x30\x33\xD2\xF3\x0F\x11\x44\x24?\x48\x8B\xCE\x89\x44\x24\x20\x41\xFF\x92????\x8B\xC7\x4C\x8D\x9C\x24????"
+#define GetClassNamePattern "\xE8????\x4D\x8B\x47\x10"
+#define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
+#define BSendPacketOffset 0x62
 #else
 #define ViewRenderOffset 0xA4
 #define GlobalVarsOffset 0x59
@@ -45,15 +48,20 @@
 #define RandomSeedOffset 0x3
 #define PresentModule "gameoverlayrenderer"
 #define PresentPattern  "\xFF\x15????\x8B\xF8\x85\xDB"
+#define GetClassNamePattern "\xE8????\x50\x8B\x43\x08"
+#define CL_MovePattern "\xE8????\x83\xC4\x08\xFF\x15????\xDC\x25????"
+#define BSendPacketOffset 0x2F
 #endif
 
 typedef HRESULT(__stdcall* _Present)(IDirect3DDevice9*, CONST RECT*, CONST RECT*, HWND, CONST RGNDATA*);
 typedef bool(__thiscall* _FireEvent)(CGameEventManager*, IGameEvent*);
 typedef void(__thiscall* _PaintTraverse)(void*, VPanel*, bool, bool);
+typedef const char* (__thiscall* _GetClassName)(C_BasePlayer*);
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
 char* present; // clean that
+bool* bSendpacket;
 
 CLuaShared* LuaShared;
 CClientEntityList* ClientEntityList;
@@ -80,7 +88,6 @@ VPanelWrapper* PanelWrapper;
 
 int screenWidth, screenHeight;
 
-QAngle lastRealAngles;
 struct chamsSetting {
 	Color hiddenColor = Color(255, 255, 255, 255);
 	Color visibleColor = Color(255, 255, 255, 255);
@@ -110,6 +117,8 @@ namespace Settings {
 	bool Untrusted;
 	CUserCmd lastCmd;
 	CUserCmd lastRealCmd;
+	CUserCmd lastNetworkedCmd;
+	bool choke; 
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::map<const char*, bool> luaEntList;
@@ -132,6 +141,7 @@ namespace Settings {
 		chamsSetting armChamsSettings;
 
 		chamsSetting localPlayerChamsSettings;
+
 	}
 	namespace ESP {
 		int infosEmplacement;
@@ -189,6 +199,7 @@ namespace Settings {
 
 		bool aimAtFriends;
 		bool onlyAimAtFriends;
+
 	}
 	namespace Misc {
 
@@ -222,11 +233,20 @@ namespace Settings {
 		bool freeCam;
 		ButtonCode_t freeCamKey = KEY_NONE;
 		int freeCamKeyStyle = 1;
+		float freeCamSpeed;
 
 		bool hitmarkerSoundEnabled;
 		int hitmarkerSound;
 		bool hitmarker;
 
+		bool fakeLag;
+		ButtonCode_t fakeLagKey = KEY_NONE;
+		int fakeLagKeyStyle = 1;
+
+		bool zoom;
+		ButtonCode_t zoomKey = KEY_NONE;
+		int zoomKeyStyle = 1;
+		float zoomFOV = 90.f;
 
 	}
 	namespace Triggerbot {

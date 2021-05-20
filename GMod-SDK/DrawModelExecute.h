@@ -15,11 +15,10 @@ void __fastcall hkDrawModelExecute(CModelRender* modelrender,
 #ifndef _WIN64
 	void*, // __fastcall does literally nothing in x64, so that's why we make it inactive
 #endif 
-const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld = NULL)
+const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld = NULL)
 {
 	if (pInfo.entity_index)
 	{
-		//std::cout << pInfo.pModel->name << std::endl;
 		C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(pInfo.entity_index);
 		if(!entity || !entity->IsAlive() || (!entity->IsPlayer() && !entity->IsRagdoll() && !entity->IsBaseCombatCharacter() && !entity->IsWeapon() && !entity->IsARagdoll() && (!strstr(pInfo.pModel->name, "models/weapons/") || !Settings::Misc::removeHands)))
 			return oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
@@ -87,6 +86,7 @@ const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCus
 			modelrender->ForcedMaterialOverride(DebugWhite); //entity->SetMaterialOverridePointer(DebugWhite); <- this works too but i prefer forcedmaterialoverride /shrug
 			oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
 		}
+		
 		DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false);
 		DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, false);
 

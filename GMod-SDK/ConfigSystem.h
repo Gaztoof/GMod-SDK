@@ -127,9 +127,17 @@ namespace ConfigSystem
 		j["Misc"]["freeCam"] = Settings::Misc::freeCam;
 		j["Misc"]["freeCamKey"] = Settings::Misc::freeCamKey;
 		j["Misc"]["freeCamKeyStyle"] = Settings::Misc::freeCamKeyStyle;
+		j["Misc"]["freeCamSpeed"] = Settings::Misc::freeCamSpeed;
 		j["Misc"]["hitmarkerSoundEnabled"] = Settings::Misc::hitmarkerSoundEnabled;
 		j["Misc"]["hitmarkerSound"] = Settings::Misc::hitmarkerSound;
 		j["Misc"]["hitmarker"] = Settings::Misc::hitmarker;
+		j["Misc"]["fakeLag"] = Settings::Misc::fakeLag;
+		j["Misc"]["fakeLagKey"] = Settings::Misc::fakeLagKey;
+		j["Misc"]["fakeLagKeyStyle"] = Settings::Misc::fakeLagKeyStyle;
+		j["Misc"]["zoom"] = Settings::Misc::zoom;
+		j["Misc"]["zoomKey"] = Settings::Misc::zoomKey;
+		j["Misc"]["zoomKeyStyle"] = Settings::Misc::zoomKeyStyle;
+		j["Misc"]["zoomFOV"] = Settings::Misc::zoomFOV;
 
 		j["Triggerbot"]["triggerBot"] = Settings::Triggerbot::triggerBot;
 		j["Triggerbot"]["triggerBotHead"] = Settings::Triggerbot::triggerBotHead;
@@ -237,9 +245,17 @@ namespace ConfigSystem
 			Settings::Misc::freeCam = j["Misc"]["freeCam"];
 			Settings::Misc::freeCamKey = j["Misc"]["freeCamKey"];
 			Settings::Misc::freeCamKeyStyle = j["Misc"]["freeCamKeyStyle"];
+			Settings::Misc::freeCamSpeed = j["Misc"]["freeCamSpeed"];
 			Settings::Misc::hitmarkerSoundEnabled = j["Misc"]["hitmarkerSoundEnabled"];
 			Settings::Misc::hitmarkerSound = j["Misc"]["hitmarkerSound"];
 			Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
+			Settings::Misc::fakeLag = j["Misc"]["fakeLag"];
+			Settings::Misc::fakeLagKey = j["Misc"]["fakeLagKey"];
+			Settings::Misc::fakeLagKeyStyle = j["Misc"]["fakeLagKeyStyle"];
+			Settings::Misc::zoom = j["Misc"]["zoom"];
+			Settings::Misc::zoomKey = j["Misc"]["zoomKey"];
+			Settings::Misc::zoomKeyStyle = j["Misc"]["zoomKeyStyle"];
+			Settings::Misc::zoomFOV = j["Misc"]["zoomFOV"];
 
 			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
 			Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
@@ -342,9 +358,17 @@ namespace ConfigSystem
 		Settings::Misc::freeCam = NULL;
 		Settings::Misc::freeCamKey = KEY_NONE;
 		Settings::Misc::freeCamKeyStyle = 1;
+		Settings::Misc::freeCamSpeed = 1.f;
 		Settings::Misc::hitmarkerSoundEnabled = NULL;
 		Settings::Misc::hitmarkerSound = NULL;
 		Settings::Misc::hitmarker = NULL;
+		Settings::Misc::fakeLag = NULL;
+		Settings::Misc::fakeLagKey = KEY_NONE;
+		Settings::Misc::fakeLagKeyStyle = 1;
+		Settings::Misc::zoom = NULL;
+		Settings::Misc::zoomKey = KEY_NONE;
+		Settings::Misc::zoomKeyStyle = 1;
+		Settings::Misc::zoomFOV = 90.f;
 
 		Settings::Triggerbot::triggerBot = NULL;
 		Settings::Triggerbot::triggerBotHead = NULL;

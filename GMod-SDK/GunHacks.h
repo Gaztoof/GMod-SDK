@@ -2,15 +2,65 @@
 
 #include "globals.h"
 #include "Utils.h"
+#include "checksum_md5.h"
 
-void GunHacks(C_BaseCombatWeapon* _this) {
-	if (!_this || !_this->UsesLua())
+/*
+* How does this works?
+* Basically, it calculates the spread angles the exact same way as the server does, so the prediction is simply perfect.
+* You set the seed the same way the server does, and do the calculation just like the server does.
+* Result? Not a single bullet will deviate.
+*/
+void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
+{
+	if (!(cmd->buttons & IN_ATTACK) || gun->PrimaryAmmoCount() < 1)
+		return;
+	double spread = FLT_MAX;
+	if (!gun->UsesLua())
+	{
+		Vector gunSpread = gun->GetBulletSpread();
+		spread = (gunSpread.x + gunSpread.y + gunSpread.z)/3;
+	}
+	else if (Lua) {
+		int topop = 3;
+		gun->PushEntity();
+		Lua->GetField(-1, "Primary");
+		if (!Lua->IsType(-1, LuaObjectType::TABLE))
+		{
+			--topop;
+			Lua->Pop(1);
+		}
+		Lua->GetField(-1, "Spread");
+		if (Lua->IsType(-1, LuaObjectType::NUMBER))
+		{
+			spread = Lua->GetNumber(-1);
+		}
+		Lua->Pop(topop);
+	}
+	else return;
+	if (spread == FLT_MAX)
+		return;
+	BYTE seed = MD5_PseudoRandom(cmd->command_number) & 0xFF;
+	UniformRandomStream->SetSeed(seed);
+
+	QAngle engineSpread(UniformRandomStream->RandomFloat(-0.5f, 0.5f) + UniformRandomStream->RandomFloat(-0.5f, 0.5f), UniformRandomStream->RandomFloat(-0.5f, 0.5f) + UniformRandomStream->RandomFloat(-0.5f, 0.5f), 0);
+
+	// X will not be accounted, Z is the equivalent of Y, and Y the equivalent of X
+	Vector ShootDirection = Vector(1.f,1.f,1.f);
+	ShootDirection.y =  (spread * engineSpread.y);
+	ShootDirection.z = -(spread * engineSpread.x);
+
+	cmd->viewangles += ShootDirection.toAngle();
+}
+
+void GunHacks(CUserCmd* cmd, C_BaseCombatWeapon* _this) {
+	if (!_this)
+		return;
+	CLuaInterface* Lua = LuaShared->GetLuaInterface(0);
+	NoSpread(cmd, _this, Lua);
+	if (!_this->UsesLua())
 		return;
 
-	CLuaInterface* Lua = LuaShared->GetLuaInterface(0);
-	
 	_this->PushEntity();
-
 	/* Basically what this does is:
 	* Get the gun's base name.
 	* If it is M9K, or CW, or FAS, modify it's exact fields.
@@ -24,11 +74,6 @@ void GunHacks(C_BaseCombatWeapon* _this) {
 		{
 			Lua->PushNumber(0);
 			Lua->SetField(-2, "IronAccuracy"); // SWEP.Primary.IronAccuracy = 0
-			if (Settings::Misc::noSpread)
-			{
-				Lua->PushNumber(0);
-				Lua->SetField(-2, "Spread"); // SWEP.Primary.Spread = 0
-			}
 			if (Settings::Misc::noRecoil)
 			{
 				Lua->PushNumber(0);
@@ -45,38 +90,18 @@ void GunHacks(C_BaseCombatWeapon* _this) {
 	}	
 	else if (!strcmp(GetLuaEntBase(_this), "cw_base")) // if the gun's base == cw2
 	{
-		if (Settings::Misc::noSpread)
-		{
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipSpread"); // SWEP.HipSpread = 0
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "AimSpread"); // SWEP.AimSpread = 0
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "SpreadPerShot"); // SWEP.SpreadPerShot = 0
-			Lua->PushBool(true);
-			Lua->SetField(-2, "NoFreeAim"); // <-- That is the secret :)
-		}
 		if (Settings::Misc::noRecoil)
 		{
 			Lua->PushNumber(0);
 			Lua->SetField(-2, "Recoil");
+			Lua->PushBool(true);
+			Lua->SetField(-2, "NoFreeAim"); // <-- That is the secret :)
 		}
 		Lua->Pop(1);
 		return;
 	}
 	else if (!strcmp(GetLuaEntBase(_this), "fas2_base")) // if the gun's base == fas2
 	{
-		if (Settings::Misc::noSpread)
-		{
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipCone"); // SWEP.HipCone = 0
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "AimCone"); // SWEP.AimCone = 0
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "SpreadPerShot"); // SWEP.SpreadPerShot = 0
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "MaxSpreadInc"); // SWEP.MaxSpreadInc = 0
-		}
 		if (Settings::Misc::noRecoil)
 		{
 			Lua->PushNumber(0);
@@ -94,25 +119,6 @@ void GunHacks(C_BaseCombatWeapon* _this) {
 		{
 			topop = 1;
 			Lua->Pop(1);
-		}
-		if (Settings::Misc::noSpread)
-		{
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "IronAccuracy");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "Cone");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipCone");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "AimCone");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "SpreadPerShot");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "MaxSpreadInc");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "HipCone");
-			Lua->PushNumber(0);
-			Lua->SetField(-2, "Spread");
 		}
 		if (Settings::Misc::noRecoil)
 		{

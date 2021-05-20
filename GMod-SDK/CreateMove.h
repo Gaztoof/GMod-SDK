@@ -21,15 +21,13 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 {
 	Settings::lastCmd = *cmd;
 	uintptr_t stackTop;
-	//_asm mov stackTop, ebp;
-	//bool& bSendpacket = *(***(bool****)(stackTop)-1);
-	bool bSendpacket = false;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 	LuaInterface = LuaShared->GetLuaInterface(0);
 
 	if (localPlayer && localPlayer->IsAlive() && LuaInterface && !Settings::currentlyInFreeCam)
 	{
+
 		Settings::lastRealCmd = *cmd;
 		DoMisc(cmd);
 		BackupCMD(cmd, false);
@@ -40,17 +38,15 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 		bool inCombat = (cmd->buttons & IN_ATTACK);
 
-		GunHacks(currWeapon);
 
 		//if ((cmd->buttons & IN_ATTACK) && (currWeapon && currWeapon->nextPrimaryAttack() <= GlobalVars->curtime) && (currWeapon->PrimaryAmmoCount() > 0))
 
 
-		//antiaim v
 		bool antiAimKeyDown;
 		getKeyState(Settings::AntiAim::antiAimKey, Settings::AntiAim::antiAimKeyStyle, &antiAimKeyDown, henlo1, henlo2, henlo3);
 		if (antiAimKeyDown && !inCombat && Settings::AntiAim::enableAntiAim) {
 			AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
-			AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw, bSendpacket);
+			AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
 			if (!Settings::Untrusted)
 				cmd->viewangles.FixAngles();
 		}
@@ -58,6 +54,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		DoLegitAimbot(cmd);
 
 		TriggerBot(cmd);
+		GunHacks(cmd, currWeapon);
 
 		if (currWeapon && currWeapon->SecondaryAmmoCount() > 0 && currWeapon->PrimaryAmmoCount() == 0)
 		{
@@ -65,7 +62,6 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 			cmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
 		}
 		BackupCMD(cmd, true);
-		EngineClient->GetViewAngles(lastRealAngles);
 	}
 	if (Settings::currentlyInFreeCam)
 	{
@@ -73,6 +69,27 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Settings::lastRealCmd.viewangles;
 	}
+
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
+	CNetChan* NetChan = EngineClient->GetNetChannelInfo();
+	bool fakeLagKeyDown = false;
+	getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
+
+	if (NetChan->m_nChokedPackets < 14 && fakeLagKeyDown)
+	{
+		*bSendpacket = false;
+		++NetChan->m_nChokedPackets;
+	}
+
+	if (NetChan && NetChan->m_nChokedPackets >= 14)
+	{
+		*bSendpacket = true;
+		NetChan->m_nChokedPackets = 0;
+	}
+
+	if (*bSendpacket)
+	{
+		Settings::lastNetworkedCmd = *cmd;
+	}
 	return false;
 }

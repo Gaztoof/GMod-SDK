@@ -15,15 +15,23 @@ bool __fastcall hkRenderView(CViewRender* ViewRender,
 #endif
 CViewSetup& view, int nClearFlags, int whatToDraw)
 {
-	view.fov = Settings::Visuals::fov;
+	bool zoomKeyDown = false;
+	getKeyState(Settings::Misc::zoomKey, Settings::Misc::zoomKeyStyle, &zoomKeyDown, henlo69, henlo70, henlo71);
+	if (zoomKeyDown && Settings::Misc::zoom)
+		view.fov = Settings::Misc::zoomFOV;
+	else view.fov = Settings::Visuals::fov;
+
+	view.angles = Settings::lastCmd.viewangles;
 	view.fovViewmodel = Settings::Visuals::viewModelFOV;
+
 	static Vector camPos = Vector(0,0,0);
 
 	bool thirdpKeyDown = false;
 	getKeyState(Settings::Misc::thirdpersonKey, Settings::Misc::thirdpersonKeyStyle, &thirdpKeyDown, henlo1, henlo2, henlo3);
 	if (localPlayer && Settings::Misc::thirdperson && thirdpKeyDown) {
 		ThirdPerson(view);
-	}
+		Input->m_fCameraInThirdPerson = true;		
+	} else Input->m_fCameraInThirdPerson = false;
 
 	bool freeCamKeyDown = false;
 	getKeyState(Settings::Misc::freeCamKey, Settings::Misc::freeCamKeyStyle, &freeCamKeyDown, henlo4, henlo5, henlo6);
@@ -37,6 +45,10 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 		camPos = Vector(0, 0, 0);
 		Settings::currentlyInFreeCam = false;
 	}
-
+	if ((!freeCamKeyDown || !Settings::Misc::freeCam) && (!thirdpKeyDown || !Settings::Misc::thirdperson))
+	{
+		view.angles = Settings::lastCmd.viewangles;
+	}
+	
 	return oRenderView(ViewRender, view, nClearFlags, whatToDraw);
 }

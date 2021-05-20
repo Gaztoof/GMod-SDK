@@ -16,7 +16,7 @@ ClientFrameStage_t stage)
 {
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
-	Input->m_fCameraInThirdPerson = Settings::Misc::thirdperson;
+
 	//Input->cameraoffset
 	//if (silentAim)EngineClient->SetViewAngles(lastRealAngles);
 
@@ -25,8 +25,6 @@ ClientFrameStage_t stage)
 		//https://i.imgur.com/Y5hSyqS.png
 		if (Settings::Visuals::noVisualRecoil)
 			localPlayer->GetViewPunch() = QAngle(0, 0, 0);
-		//if(Settings::Misc::noRecoil)
-			//localPlayer->GetAimPunch() = QAngle(0, 0, 0);
 	}
 
 	// i guess this enum's wrong as norecoil in renderstart didnt work at all
@@ -42,30 +40,12 @@ ClientFrameStage_t stage)
 			auto material = MaterialSystem->GetMaterial(i);
 			if (!material || material->IsErrorMaterial())
 				continue;
+			// that's quite a big FPS killer
 #pragma region WorldColor
 			if (!strcmp(material->GetTextureGroupName(), TEXTURE_GROUP_WORLD))
 			{
 				if (Settings::Visuals::changeWorldColor)
 				{
-					material->AlphaModulate(Settings::Visuals::worldColor.fCol[3]);
-					material->ColorModulate(Settings::Visuals::worldColor.fCol[0], Settings::Visuals::worldColor.fCol[1], Settings::Visuals::worldColor.fCol[2]);
-				}
-				else
-				{
-					material->AlphaModulate(1.f);
-					material->ColorModulate(1.f, 1.f, 1.f);
-				}
-			}
-#pragma endregion
-#pragma region PropColor
-			if (Settings::Visuals::changeWorldColor && (!strcmp(material->GetTextureGroupName(), TEXTURE_GROUP_MODEL) || strstr(material->GetName(), "models/prop") != 0))
-			{
-				if (Settings::Visuals::changeWorldColor)
-				{
-					/*static bool doneOnce = false;
-					if (!doneOnce)
-					EngineClient->ClientCmd("r_DrawSpecificStaticProp 0");
-					doneOnce = true;*/
 					material->AlphaModulate(Settings::Visuals::worldColor.fCol[3]);
 					material->ColorModulate(Settings::Visuals::worldColor.fCol[0], Settings::Visuals::worldColor.fCol[1], Settings::Visuals::worldColor.fCol[2]);
 				}
@@ -91,7 +71,12 @@ ClientFrameStage_t stage)
 			}
 		}
 	}
+	bool thirdpKeyDown = false;
+	getKeyState(Settings::Misc::thirdpersonKey, Settings::Misc::thirdpersonKeyStyle, &thirdpKeyDown, henlo1, henlo2, henlo3);
 
-	if(oFrameStageNotify)
-	return oFrameStageNotify(client, stage);
+	if(stage == ClientFrameStage_t::FRAME_RENDER_START && localPlayer && Settings::Misc::thirdperson && thirdpKeyDown)
+		localPlayer->SetLocalViewAngles(Settings::lastNetworkedCmd.viewangles);
+	oFrameStageNotify(client, stage);
+	if (stage == ClientFrameStage_t::FRAME_RENDER_START && localPlayer && Settings::Misc::thirdperson && thirdpKeyDown)
+		localPlayer->SetLocalViewAngles(Settings::lastRealCmd.viewangles);
 }

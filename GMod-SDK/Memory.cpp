@@ -8,16 +8,15 @@ void BytePatch(PVOID source, BYTE newValue)
     VirtualProtect(source, sizeof(PVOID), originalProtection, &originalProtection);
 }
 
-PVOID VMTHook(PVOID** src, PVOID dst, int index)
+void RestoreVMTHook(PVOID** src, PVOID dst, int index)
 {
-	// I could do tramp hooking instead of VMT hooking, but I came across a few problems while implementing my tramp, and VMT just makes it easier.
-	PVOID* VMT = *src;
-	PVOID ret = (VMT[index]);
-	DWORD originalProtection;
-	VirtualProtect(&VMT[index], sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
-	VMT[index] = dst;
-	VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
-	return ret;
+    // I could do tramp hooking instead of VMT hooking, but I came across a few problems while implementing my tramp, and VMT just makes it easier.
+    PVOID* VMT = *src;
+    PVOID ret = (VMT[index]);
+    DWORD originalProtection;
+    VirtualProtect(src, sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
+    VMT[index] = dst;
+    VirtualProtect(src, sizeof(PVOID), originalProtection, &originalProtection);
 }
 
  // credits to osiris for the following
@@ -72,15 +71,13 @@ const char* findPattern(const char* moduleName, std::string_view pattern) noexce
     MessageBoxA(NULL, "Failed to find a pattern, let the dev know asap!", "ERROR", MB_OK | MB_ICONWARNING);
     return 0;
 }
-
-char* GetRealFromRelative(char* address, int offset) // Address must be a CALL instruction, not a pointer! And offset the offset to the bytes you want to retrieve.
+char* GetRealFromRelative(char* address, int offset, int instructionSize) // Address must be a CALL instruction, not a pointer! And offset the offset to the bytes you want to retrieve.
 {
 #ifdef _WIN64
-    int instructionSize = 6;
     char* instruction = address + offset;
 
-    DWORD relativeAddress = *(DWORD*)(instruction);
-    char* realAddress = instruction + (instructionSize-offset) + relativeAddress;
+    int relativeAddress = *(int*)(instruction);
+    char* realAddress = address + instructionSize + relativeAddress;
     return realAddress;
 #else
     char* instruction = (address + offset);

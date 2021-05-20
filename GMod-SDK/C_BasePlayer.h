@@ -585,5 +585,11 @@ public:
 #endif
 	}
 
-
+	float GetSimulationTime() {
+#ifdef _WIN64
+		return *(float*)((uintptr_t)this + 0xA0); // m_flSimulationTime
+#else
+		return *(float*)((uintptr_t)this + 0x68); // m_flSimulationTime
+#endif
+	}
 };

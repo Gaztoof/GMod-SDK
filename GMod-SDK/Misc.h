@@ -65,7 +65,7 @@ void FreeCam(CViewSetup &view, Vector& camPos)
     if (camPos == Vector(0, 0, 0))
         camPos = view.origin;
 
-    float speed = 1.f;
+    float speed = Settings::Misc::freeCamSpeed;
 
     if (Settings::lastCmd.buttons & IN_SPEED)
         speed *= 5.f;

@@ -9,10 +9,24 @@
 #include <array>
 
 void BytePatch(PVOID source, BYTE newValue);
-PVOID VMTHook(PVOID** src, PVOID dst, int index);
+
+template<typename T>
+T VMTHook(PVOID** src, PVOID dst, int index)
+{
+    // I could do tramp hooking instead of VMT hooking, but I came across a few problems while implementing my tramp, and VMT just makes it easier.
+    PVOID* VMT = *src;
+    PVOID ret = (VMT[index]);
+    DWORD originalProtection;
+    VirtualProtect(&VMT[index], sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
+    VMT[index] = dst;
+    VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
+    return (T)ret;
+};
+void RestoreVMTHook(PVOID** src, PVOID dst, int index);
+
 const char* findPattern(const char* moduleName, std::string_view pattern) noexcept;
 
-char* GetRealFromRelative(char* address, int offset); // Address must be a CALL instruction, not a pointer! And offset the offset to the bytes you want to retrieve.
+char* GetRealFromRelative(char* address, int offset, int instructionSize = 6); // Address must be a CALL instruction, not a pointer! And offset the offset to the bytes you want to retrieve.
 
 template<typename T>
 T* GetVMT(uintptr_t address, int index, uintptr_t offset) // Address must be a VTable pointer, not a VTable !

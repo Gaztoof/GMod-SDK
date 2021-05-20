@@ -37,6 +37,10 @@ void Main()
 
     ConfigSystem::LoadConfig("Default");
 
+    bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern), 0x1, 5) + BSendPacketOffset);
+    DWORD originalProtection;
+    VirtualProtect(bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
+
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
     LuaInterface = (CLuaInterface*)LuaShared->GetLuaInterface(0);
 
@@ -65,20 +69,20 @@ void Main()
 
     ClientMode = GetVMT<ClientModeShared>((uintptr_t)CHLclient, 10, ClientModeOffset); // HudProcessInput points to g_pClientMode, and we retrieve it.  https://i.imgur.com/h0qYd5q.png I got the information from the .dylib -> https://i.imgur.com/kBaS7Vq.png
     GlobalVars = GetVMT<CGlobalVarsBase>((uintptr_t)CHLclient, 0, GlobalVarsOffset); // CHLClient::Init points to gpGlobals https://i.imgur.com/aIwpS45.png
-    Input = GetVMT<CInput>((uintptr_t)CHLclient, 10, InputOffset); // CHLClient::CreateMove points to input https://i.imgur.com/TnEcetn.png <- make CInput class tysm gaz
+    Input = GetVMT<CInput>((uintptr_t)CHLclient, 20, InputOffset); // CHLClient::CreateMove points to input https://i.imgur.com/TnEcetn.png
 
 
     UniformRandomStream = GetVMT<CUniformRandomStream>((uintptr_t)GetProcAddress(GetModuleHandleA("vstdlib.dll"), "RandomSeed"), RandomSeedOffset); // RandomSeed points to s_pUniformStream https://i.imgur.com/bddk0QK.png
     
     localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 
-    oCreateMove = (_CreateMove)VMTHook((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
-    oFrameStageNotify = (_FrameStageNotify)VMTHook((PVOID**)CHLclient, hkFrameStageNotify, 35);
-    oRenderView = (_RenderView)VMTHook((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
-    oFireEvent = (_FireEvent)VMTHook((PVOID**)GameEventManager, (PVOID)hkFireEvent, 7);
-    oPaintTraverse = (_PaintTraverse)VMTHook((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
+    oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
+    oFrameStageNotify = VMTHook< _FrameStageNotify>((PVOID**)CHLclient, hkFrameStageNotify, 35);
+    oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
+    oFireEvent = VMTHook< _FireEvent>((PVOID**)GameEventManager, (PVOID)hkFireEvent, 7);
+    oPaintTraverse = VMTHook< _PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 
-    oDrawModelExecute = (_DrawModelExecute)VMTHook((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
+    oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 

@@ -477,7 +477,7 @@ public:
 	/*384*/	virtual void* GetDrawActivity(void) = 0;
 	/*385*/	virtual void* GetDefaultAnimSpeed(void) = 0;
 	/*386*/	virtual int GetBulletType(void) = 0;
-	/*387*/	virtual Vector GetBulletSpread(void) = 0;
+	/*387*/	virtual const Vector& GetBulletSpread(void) = 0;
 	/*388*/	virtual Vector GetBulletSpread(WeaponProficiency_t) = 0;
 	/*389*/	virtual Vector GetSpreadBias(WeaponProficiency_t) = 0;
 	/*390*/	virtual void* GetFireRate(void) = 0;
@@ -600,10 +600,39 @@ public:
 	/*506*/	virtual void* WasDropped(void) = 0;
 	/*507*/	virtual void* MarkAsDropped(void) = 0;
 
-	int PrimaryAmmoCount() { if (!this) return 0; return *(int*)((uintptr_t)this + 0x1818); }
-	int SecondaryAmmoCount() { if (!this) return 0; return *(int*)((uintptr_t)this + 0x181C); }
-	float nextPrimaryAttack() { if (!this) return 0; return *(float*)((uintptr_t)this + 0x17D4); }
-	float nextSecondaryAttack() { if (!this) return 0; return *(float*)((uintptr_t)this + 0x17D8); }
+	int PrimaryAmmoCount() { 
+		if (!this) return 0; 
+#ifdef _WIN64
+		return *(int*)((uintptr_t)this + 0x1C38);
+#else
+		return *(int*)((uintptr_t)this + 0x1818); // m_iClip1
+#endif
+	}
+	int SecondaryAmmoCount() {
+		if (!this) return 0;
+#ifdef _WIN64
+		return *(int*)((uintptr_t)this + 0x1C3C);
+#else
+		return *(int*)((uintptr_t)this + 0x181C); // m_iClip2
+#endif
+	}
+	float NextPrimaryAttack() {
+		if (!this) return 0;
+#ifdef _WIN64
+		return *(float*)((uintptr_t)this + 0x1BEC);
+#else
+		return *(float*)((uintptr_t)this + 0x17D4); // m_flNextPrimaryAttack
+#endif
+	}
+	float NextSecondaryAttack() {
+		if (!this) return 0;
+#ifdef _WIN64
+		return *(float*)((uintptr_t)this + 0x1BF0);
+#else
+		return *(float*)((uintptr_t)this + 0x17D4); // m_flNextSecondaryAttack
+#endif
+	}
+
 
 };
 

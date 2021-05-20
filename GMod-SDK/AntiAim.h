@@ -30,13 +30,20 @@ QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
     return oldAng;
 }
 
+// fake doesn't works yet
 void StaticPitch(CUserCmd* cmd, bool down)
 {
-	cmd->viewangles.x = down ? -89.f : 89.f;
+    if (Settings::Untrusted)
+    {
+        cmd->viewangles.x = down ? 911.1 : -180.1f;
+    }
+    else {
+        cmd->viewangles.x = down ? -89.f : 89.f;
+    }
 }
 void JitterPitch(CUserCmd* cmd)
 {
-    cmd->viewangles.x = (cmd->command_number % 2) ? -89.f : 89.f;
+    cmd->viewangles.x = (rand() % 2) ? -89.f : 89.f;
 }
 void FastSpin(CUserCmd* cmd)
 {
@@ -59,7 +66,7 @@ void BackJitter(CUserCmd* cmd)
     static float yaw = cmd->viewangles.y;
 
         yaw += 50.f;
-    if (cmd->command_number % 50 == 0)
+    if (rand() % 50 == 0)
         yaw += 180.f;
     cmd->viewangles.y = yaw;
 }
@@ -67,10 +74,9 @@ void Inverse(CUserCmd* pCmd)
 {
         pCmd->viewangles.y -= 180.f;
 }
-void Sideways(CUserCmd* cmd, bool& sendpacket)
+void Sideways(CUserCmd* cmd)
 {
-    if (!sendpacket)
-        cmd->viewangles.y += 90.f;
+        cmd->viewangles.y -= 90.f;
 }
 
 void AntiAimPitch(CUserCmd* cmd, int kind)
@@ -91,16 +97,10 @@ void AntiAimPitch(CUserCmd* cmd, int kind)
     case 3:
         JitterPitch(cmd);
         break;
-    /*case 4:
-        FakeUp(cmd);
-        break;
-    case 5:
-        FakeDown(cmd);
-        break;
-        */
+
     }
 }
-void AntiAimYaw(CUserCmd* cmd, int kind, bool& sendpacket)
+void AntiAimYaw(CUserCmd* cmd, int kind)
 {
     if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER)
         return;
@@ -122,7 +122,7 @@ void AntiAimYaw(CUserCmd* cmd, int kind, bool& sendpacket)
         Inverse(cmd);
         break;
     case 5:
-        Sideways(cmd, sendpacket);
+        Sideways(cmd);
         break;
 
     }

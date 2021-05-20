@@ -169,6 +169,7 @@ public:
 	/*152*/	virtual bool IsActiveApp(void) = 0;
 	/*153*/	virtual void* DisconnectInternal(void) = 0;
 	/*154*/	virtual bool IsInCommentaryMode(void) = 0;
+	
 	QAngle getViewAngles()
 	{
 		QAngle out;

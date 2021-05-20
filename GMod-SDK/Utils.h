@@ -143,18 +143,13 @@ const char* GetSteamID(int entListIndex)
 	return info.guid;
 }
 
-typedef const char*(__thiscall* _GetClassName)(C_BasePlayer*);
 #include "Memory.h"
 
 const char* GetClassName(C_BasePlayer* _this)
 {
 	// I had to pattern this as the game simply decided not to put it in C_BasePlayer.
 	const char* out = "";
-#ifdef _WIN64
-	static _GetClassName getClassName = (_GetClassName)(GetRealFromRelative((char*)findPattern("client", "\xE8????\x4D\x8B\x47\x10"),1));
-#else
-	static _GetClassName getClassName = (_GetClassName)(GetRealFromRelative((char*)findPattern("client", "\xE8????\x50\x8B\x43\x08"), 1));
-#endif
+	static _GetClassName getClassName = (_GetClassName)(GetRealFromRelative((char*)findPattern("client", GetClassNamePattern),1));
 
 	return getClassName(_this);
 
