@@ -85,7 +85,7 @@ void doEsp()
 				}
 			}
 			
-			int selectedHitBox = 0;
+			int selectedHitBox = 0; // that crashes x86
 			Studio_BoneIndexByName(studioHdr, IntToBoneName(Settings::Aimbot::aimbotHitbox), &selectedHitBox);
 
 			Vector screenEyePos;

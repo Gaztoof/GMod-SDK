@@ -36,8 +36,8 @@ void Main()
 #endif
 
     ConfigSystem::LoadConfig("Default");
-
     bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern), 0x1, 5) + BSendPacketOffset);
+
     DWORD originalProtection;
     VirtualProtect(bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
 
@@ -79,26 +79,21 @@ void Main()
     oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
     oFrameStageNotify = VMTHook< _FrameStageNotify>((PVOID**)CHLclient, hkFrameStageNotify, 35);
     oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
-    oFireEvent = VMTHook< _FireEvent>((PVOID**)GameEventManager, (PVOID)hkFireEvent, 7);
+    //oFireEvent = VMTHook< _FireEvent>((PVOID**)GameEventManager, (PVOID)hkFireEvent, 7);
     oPaintTraverse = VMTHook< _PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 
-    present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern), 0x2);
+    present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern), 0x2, 6, false);
 
+    EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
+    
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related
-    
-// To-do: clean the following:
-#ifdef _WIN64
     oPresent = *(_Present*)(present);
     *(_Present**)(present) = (_Present*)hkPresent;
-#else
-    oPresent = **(_Present**)(present);
-    **(_Present***)(present) = (_Present*)hkPresent;
-#endif
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

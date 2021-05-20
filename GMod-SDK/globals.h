@@ -41,11 +41,11 @@
 #define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
 #define BSendPacketOffset 0x62
 #else
-#define ViewRenderOffset 0xA4
+#define ViewRenderOffset 0xA6
 #define GlobalVarsOffset 0x59
-#define ClientModeOffset 0x2
-#define InputOffset 0x2
-#define RandomSeedOffset 0x3
+#define ClientModeOffset 0x5
+#define InputOffset 0x5
+#define RandomSeedOffset 0x5
 #define PresentModule "gameoverlayrenderer"
 #define PresentPattern  "\xFF\x15????\x8B\xF8\x85\xDB"
 #define GetClassNamePattern "\xE8????\x50\x8B\x43\x08"

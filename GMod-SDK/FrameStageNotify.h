@@ -74,9 +74,11 @@ ClientFrameStage_t stage)
 	bool thirdpKeyDown = false;
 	getKeyState(Settings::Misc::thirdpersonKey, Settings::Misc::thirdpersonKeyStyle, &thirdpKeyDown, henlo1, henlo2, henlo3);
 
-	if(stage == ClientFrameStage_t::FRAME_RENDER_START && localPlayer && Settings::Misc::thirdperson && thirdpKeyDown)
+	if(localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && Settings::Misc::thirdperson && thirdpKeyDown)
 		localPlayer->SetLocalViewAngles(Settings::lastNetworkedCmd.viewangles);
+	if(oFrameStageNotify)
 	oFrameStageNotify(client, stage);
-	if (stage == ClientFrameStage_t::FRAME_RENDER_START && localPlayer && Settings::Misc::thirdperson && thirdpKeyDown)
+	if (localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && Settings::Misc::thirdperson && thirdpKeyDown)
 		localPlayer->SetLocalViewAngles(Settings::lastRealCmd.viewangles);
+	return;
 }

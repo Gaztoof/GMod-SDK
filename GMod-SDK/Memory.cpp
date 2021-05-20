@@ -71,16 +71,18 @@ const char* findPattern(const char* moduleName, std::string_view pattern) noexce
     MessageBoxA(NULL, "Failed to find a pattern, let the dev know asap!", "ERROR", MB_OK | MB_ICONWARNING);
     return 0;
 }
-char* GetRealFromRelative(char* address, int offset, int instructionSize) // Address must be a CALL instruction, not a pointer! And offset the offset to the bytes you want to retrieve.
+char* GetRealFromRelative(char* address, int offset, int instructionSize, bool isRelative) // Address must be an instruction, not a pointer! And offset = the offset to the bytes you want to retrieve.
 {
 #ifdef _WIN64
+    isRelative = true;
+#endif
     char* instruction = address + offset;
+    if (!isRelative)
+    {
+        return *(char**)(instruction);
+    }
 
     int relativeAddress = *(int*)(instruction);
     char* realAddress = address + instructionSize + relativeAddress;
     return realAddress;
-#else
-    char* instruction = (address + offset);
-    return *(char**)(instruction);
-#endif
 }

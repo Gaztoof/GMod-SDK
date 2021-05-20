@@ -149,7 +149,7 @@ const char* GetClassName(C_BasePlayer* _this)
 {
 	// I had to pattern this as the game simply decided not to put it in C_BasePlayer.
 	const char* out = "";
-	static _GetClassName getClassName = (_GetClassName)(GetRealFromRelative((char*)findPattern("client", GetClassNamePattern),1));
+	static _GetClassName getClassName = (_GetClassName)(GetRealFromRelative((char*)findPattern("client", GetClassNamePattern), 1, 5, true));
 
 	return getClassName(_this);
 

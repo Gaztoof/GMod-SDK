@@ -46,18 +46,18 @@ void DrawLineOutlined(Vector from, Vector to, ULONG color) {
 		D3DXVECTOR2(to.x, to.y)
 	};
 	D3DXVECTOR2 outline1[2] = {
-		D3DXVECTOR2(from.x-5, from.y-5),
-		D3DXVECTOR2(to.x-5, to.y-5)
+		D3DXVECTOR2(from.x- 1, from.y- 1),
+		D3DXVECTOR2(to.x- 1, to.y- 1)
 	};
 	D3DXVECTOR2 outline2[2] = {
-		D3DXVECTOR2(from.x+5, from.y+5),
-		D3DXVECTOR2(to.x+5, to.y+5)
+		D3DXVECTOR2(from.x+1, from.y+ 1),
+		D3DXVECTOR2(to.x+ 1, to.y+ 1)
 	};
 
 	pLine->Begin();
 	pLine->Draw(lines, 2, color);
-	pLine->Draw(outline1, 2, 0x000000FF);
-	pLine->Draw(outline2, 2, 0x000000FF);
+	pLine->Draw(outline1, 2, 0xFF000000);
+	pLine->Draw(outline2, 2, 0xFF000000);
 
 	pLine->End();
 }

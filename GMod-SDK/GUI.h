@@ -536,7 +536,7 @@ void DrawMisc() {
 				RestoreVMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
 				RestoreVMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
 				RestoreVMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
-				RestoreVMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
+				//RestoreVMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
 				RestoreVMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
 
 				RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
