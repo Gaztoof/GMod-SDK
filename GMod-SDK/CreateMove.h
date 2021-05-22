@@ -65,7 +65,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	}
 	if (Settings::currentlyInFreeCam)
 	{
-		cmd->buttons &= ~(IN_FORWARD | IN_BACK | IN_LEFT | IN_RIGHT | IN_JUMP | IN_DUCK);
+		cmd->buttons = NULL;
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Settings::lastRealCmd.viewangles;
 	}
