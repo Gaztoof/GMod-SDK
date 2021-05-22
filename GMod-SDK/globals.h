@@ -119,6 +119,7 @@ namespace Settings {
 	CUserCmd lastRealCmd;
 	CUserCmd lastNetworkedCmd;
 	bool choke; 
+	VPanel* lastPanelIdentifier;
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::map<const char*, bool> luaEntList;

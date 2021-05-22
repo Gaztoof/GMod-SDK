@@ -100,7 +100,7 @@ public:
 	/*30*/	virtual void* DeletePanel(unsigned int) = 0;
 	/*31*/	virtual void* SetKeyBoardInputEnabled(VPanel* panel, bool) = 0;
 	/*32*/	virtual void* SetMouseInputEnabled(VPanel* panel, bool) = 0;
-	/*33*/	virtual void* IsKeyBoardInputEnabled(unsigned int) = 0;
+	/*33*/	virtual bool IsKeyBoardInputEnabled(VPanel* panel) = 0;
 	/*34*/	virtual void* IsMouseInputEnabled(unsigned int) = 0;
 	/*35*/	virtual void* Solve(unsigned int) = 0;
 	/*36*/	virtual const char* GetName(VPanel* ) = 0;

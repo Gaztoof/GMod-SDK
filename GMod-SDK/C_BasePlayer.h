@@ -116,6 +116,13 @@ public:
 	virtual void					RecordToolMessage() = 0;
 	virtual bool					IgnoresZBuffer(void) const = 0;
 };
+#define OBS_MODE_NONE		0	//Not spectating
+#define OBS_MODE_DEATHCAM	1	//
+#define OBS_MODE_FREEZECAM	2	//TF2-like freezecam
+#define OBS_MODE_FIXED		3	//Same as OBS_MODE_CHASE, but you can't rotate the view
+#define OBS_MODE_IN_EYE		4	//First person cam
+#define OBS_MODE_CHASE		5	//Chase cam, 3rd person cam, free rotation around the spectated target
+#define OBS_MODE_ROAMING	6	//Free roam/noclip-alike. Does not work from GM:PlayerDeath
 
 class C_BasePlayer
 {
@@ -422,7 +429,7 @@ public:
 	/*354*/	virtual void* AvoidPhysicsProps(CUserCmd*) = 0;
 	/*355*/	virtual void* PlayerUse(void) = 0;
 	/*356*/	virtual bool IsUseableEntity(C_BaseEntity*,unsigned int) = 0;
-	/*357*/	virtual void* GetObserverMode(void)const = 0;
+	/*357*/	virtual int GetObserverMode(void)const = 0;
 	/*358*/	virtual C_BasePlayer* GetObserverTarget(void)const = 0;
 	/*359*/	virtual void* GetRepresentativeRagdoll(void)const = 0;
 	/*360*/	virtual void* TeamChange(int) = 0;

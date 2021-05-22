@@ -110,7 +110,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	ImGui::NewFrame();
 	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImColor(9, 8, 9,255);
 
-	ImGui::SetNextWindowPos(ImVec2(20.f, 20.f));
+	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 	ImGui::SetNextWindowSize(ImVec2(143.f, 34.f));
 	ImGui::BeginMenuBackground("Credits window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
 	{

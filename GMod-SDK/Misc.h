@@ -178,7 +178,9 @@ void BunnyHop(CUserCmd* cmd)
                 else  cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
             }
             else if (Settings::Misc::autoStrafeStyle == 2) { // Rage-strafe
-                // Unimplemented.
+                
+
+
             }
         }
 

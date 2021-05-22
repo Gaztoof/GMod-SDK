@@ -19,6 +19,7 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 	InputSystem->EnableInput(!Settings::openMenu);
 	if (!strcmp(PanelWrapper->GetName(panel), "FocusOverlayPanel"))
 	{
+		Settings::lastPanelIdentifier = panel;
 		PanelWrapper->SetKeyBoardInputEnabled(panel, Settings::openMenu);
 		PanelWrapper->SetMouseInputEnabled(panel, Settings::openMenu);
 	}

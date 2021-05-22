@@ -36,12 +36,19 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	bool freeCamKeyDown = false;
 	getKeyState(Settings::Misc::freeCamKey, Settings::Misc::freeCamKeyStyle, &freeCamKeyDown, henlo4, henlo5, henlo6);
 
+	static bool lastFreeCamState = false;
 	if (localPlayer && Settings::Misc::freeCam && freeCamKeyDown)
 	{
+		lastFreeCamState = true;
 		Settings::currentlyInFreeCam = true;
 		FreeCam(view, camPos);
 	}
 	else {
+		if (lastFreeCamState)
+		{
+			EngineClient->SetViewAngles(Settings::lastRealCmd.viewangles);
+		}
+		lastFreeCamState = false;
 		camPos = Vector(0, 0, 0);
 		Settings::currentlyInFreeCam = false;
 	}
