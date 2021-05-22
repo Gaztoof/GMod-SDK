@@ -1823,7 +1823,7 @@ public:
 	};
 	FORCEINLINE Vector SideVector() const
 	{
-		return Vector(std::cos(degreesToRadians(y+90.f)), std::sin(degreesToRadians(y + 90.f)), 0.f);
+		return Vector(std::cos(degreesToRadians(x)) * std::cos(degreesToRadians(y+90.f)), -(std::cos(degreesToRadians(x)) * std::sin(degreesToRadians(y + 90.f))), 0.f);
 	};
 	FORCEINLINE Vector UpVector() const
 	{
