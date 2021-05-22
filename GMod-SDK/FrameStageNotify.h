@@ -73,12 +73,16 @@ ClientFrameStage_t stage)
 	}
 	bool thirdpKeyDown = false;
 	getKeyState(Settings::Misc::thirdpersonKey, Settings::Misc::thirdpersonKeyStyle, &thirdpKeyDown, henlo1, henlo2, henlo3);
+	bool freecamKeyDown = false;
+	getKeyState(Settings::Misc::freeCamKey, Settings::Misc::freeCamKeyStyle, &freecamKeyDown, henlo4, henlo5, henlo6);
 
-	if(localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && Settings::Misc::thirdperson && thirdpKeyDown)
+	bool needsSetViewAngles = (Settings::Misc::thirdperson && thirdpKeyDown) || (Settings::Misc::freeCam && freecamKeyDown);
+
+	if(localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && needsSetViewAngles)
 		localPlayer->SetLocalViewAngles(Settings::lastNetworkedCmd.viewangles);
 	if(oFrameStageNotify)
 	oFrameStageNotify(client, stage);
-	if (localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && Settings::Misc::thirdperson && thirdpKeyDown)
+	if (localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && needsSetViewAngles)
 		localPlayer->SetLocalViewAngles(Settings::lastRealCmd.viewangles);
 	return;
 }

@@ -28,10 +28,18 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 
 	bool thirdpKeyDown = false;
 	getKeyState(Settings::Misc::thirdpersonKey, Settings::Misc::thirdpersonKeyStyle, &thirdpKeyDown, henlo1, henlo2, henlo3);
+	static bool lastThirdPersonState = false;
 	if (localPlayer && Settings::Misc::thirdperson && thirdpKeyDown) {
+		lastThirdPersonState = true;
 		ThirdPerson(view);
 		Input->m_fCameraInThirdPerson = true;		
-	} else Input->m_fCameraInThirdPerson = false;
+	}
+	else {
+		if (lastThirdPersonState)
+			Input->m_fCameraInThirdPerson = false;
+		lastThirdPersonState = false;
+		
+	}
 
 	bool freeCamKeyDown = false;
 	getKeyState(Settings::Misc::freeCamKey, Settings::Misc::freeCamKeyStyle, &freeCamKeyDown, henlo4, henlo5, henlo6);
@@ -42,11 +50,13 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 		lastFreeCamState = true;
 		Settings::currentlyInFreeCam = true;
 		FreeCam(view, camPos);
+		Input->m_fCameraInThirdPerson = true;
 	}
 	else {
 		if (lastFreeCamState)
 		{
 			EngineClient->SetViewAngles(Settings::lastRealCmd.viewangles);
+			Input->m_fCameraInThirdPerson = false;
 		}
 		lastFreeCamState = false;
 		camPos = Vector(0, 0, 0);
