@@ -38,8 +38,16 @@ public:
             return;
         int localPlayerID = EngineClient->GetLocalPlayer();
         int target = EngineClient->GetPlayerForUserID(event->GetInt("userid")); // UserID of the victim
+        int attacker = EngineClient->GetPlayerForUserID(event->GetInt("attacker")); // UserID of the attacker
 
-        if (target == localPlayerID || EngineClient->GetPlayerForUserID(event->GetInt("attacker")) != localPlayerID)
+        player_info_s targetInfo;
+        player_info_s attackerInfo;
+        EngineClient->GetPlayerInfo(target, &targetInfo);
+        EngineClient->GetPlayerInfo(attacker, &attackerInfo);
+
+        std::cout << attackerInfo.name << " damaged " << targetInfo.name << ". Target new health: " << event->GetInt("health") << std::endl;
+
+        if (target == localPlayerID || attacker != localPlayerID)
             return;
 
         if (Settings::Misc::hitmarkerSoundEnabled)
@@ -64,9 +72,11 @@ public:
             return;
         int localPlayerID = EngineClient->GetLocalPlayer();
         int target = event->GetInt("entindex_killed"); // Entity Index of the victim
+        int attacker = event->GetInt("entindex_attacker"); // Entity Index of the attacker
+
         // event->GetInt("damagebits"), do whatever you want with that i'm lazy rn
 
-        if (target == localPlayerID || event->GetInt("entindex_attacker") != localPlayerID)
+        if (target == localPlayerID || attacker != localPlayerID)
             return;
 
         if (Settings::Misc::killMessage)

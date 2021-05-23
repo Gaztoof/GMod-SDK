@@ -39,6 +39,8 @@ void Main()
     DWORD originalProtection;
     VirtualProtect(bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
 
+    EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
+
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
     LuaInterface = (CLuaInterface*)LuaShared->GetLuaInterface(0);
 
@@ -50,7 +52,6 @@ void Main()
     InputSystem = (CInputSystem*)GetInterface("inputsystem.dll", "InputSystemVersion001");
     CVar = (CCvar*)GetInterface("vstdlib.dll", "VEngineCvar007");
 
-    EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
     ModelRender = (CModelRender*)GetInterface("engine.dll", "VEngineModel016");
     RenderView = (CVRenderView*)GetInterface("engine.dll", "VEngineRenderView014");
     EngineTrace = (IEngineTrace*)GetInterface("engine.dll", "EngineTraceClient003");
@@ -98,6 +99,14 @@ void Main()
     //GlobalVars + 0x14 = 1 will let u do anything lua related
     oPresent = *(_Present*)(present);
     *(_Present**)(present) = (_Present*)hkPresent;
+
+    //EngineClient->ClientCmd_Unrestricted("play \"items/suitchargeok1.wav\"");
+        //Sleep(2200);
+    Sleep(1000);
+    EngineClient->ClientCmd_Unrestricted("play \"HL1/fvox/bell.wav\"");
+    Sleep(1100);
+    EngineClient->ClientCmd_Unrestricted("play \"HL1/fvox/activated.wav\"");
+    Settings::openMenu = true;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

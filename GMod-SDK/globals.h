@@ -111,7 +111,7 @@ struct chamsSetting {
 };
 
 namespace Settings {
-	bool openMenu = true;
+	bool openMenu = false;
 	ButtonCode_t menuKey = KEY_INSERT;
 	int menuKeyStyle = 1;
 	Color menuColor(0, 255, 0);
