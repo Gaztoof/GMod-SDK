@@ -23,7 +23,7 @@ public:
 	/*6*/	virtual void ServerCmd(char const*, bool) = 0;
 	/*7*/	virtual void ClientCmd(char const*) = 0;
 	/*8*/	virtual bool GetPlayerInfo(int, player_info_s*) = 0;
-	/*9*/	virtual void* GetPlayerForUserID(int) = 0;
+	/*9*/	virtual int GetPlayerForUserID(int) = 0;
 	/*10*/	virtual void* TextMessageGet(char const*) = 0;
 	/*11*/	virtual bool Con_IsVisible(void) = 0;
 	/*12*/	virtual int GetLocalPlayer(void) = 0;

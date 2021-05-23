@@ -28,6 +28,7 @@
 #include "CIVDebugOverlay.h"
 #include "CGameEventManager.h"
 #include "VPanelWrapper.h"
+#include "CPhysicsSurfaceProps.h"
 
 #ifdef _WIN64
 #define ViewRenderOffset 0xC4
@@ -85,6 +86,7 @@ CIVDebugOverlay* IVDebugOverlay;
 CGameEventManager* GameEventManager;
 void* MatSystemSurface;
 VPanelWrapper* PanelWrapper;
+CPhysicsSurfaceProps* PhysicsSurfaceProps;
 
 int screenWidth, screenHeight;
 
@@ -123,7 +125,7 @@ namespace Settings {
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::map<const char*, bool> luaEntList;
-
+	float lastHitmarkerTime = -1.f;
 	std::mutex friendListMutex;
 	std::mutex luaEntListMutex;
 	char ScriptInput[131070];
@@ -217,7 +219,7 @@ namespace Settings {
 		int autoStrafeStyle;
 
 		float crosshairSize;
-
+		
 		bool thirdperson;
 		ButtonCode_t thirdpersonKey = KEY_NONE;
 		int thirdpersonKeyStyle = 1;
@@ -239,6 +241,7 @@ namespace Settings {
 		bool hitmarkerSoundEnabled;
 		int hitmarkerSound;
 		bool hitmarker;
+		float hitmarkerSize = 10.f;
 
 		bool fakeLag;
 		ButtonCode_t fakeLagKey = KEY_NONE;

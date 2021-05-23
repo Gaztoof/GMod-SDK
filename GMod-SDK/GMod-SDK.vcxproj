@@ -204,6 +204,7 @@
     <ClInclude Include="ConCommand.h" />
     <ClInclude Include="ConfigSystem.h" />
     <ClInclude Include="ConVar.h" />
+    <ClInclude Include="CPhysicsSurfaceProps.h" />
     <ClInclude Include="CreateMove.h" />
     <ClInclude Include="CViewRender.h" />
     <ClInclude Include="CViewSetup.h" />
@@ -212,7 +213,6 @@
     <ClInclude Include="drawing.h" />
     <ClInclude Include="DrawModelExecute.h" />
     <ClInclude Include="Executor.h" />
-    <ClInclude Include="FireEvent.h" />
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="FrameStageNotify.h" />
     <ClInclude Include="gametrace.h" />

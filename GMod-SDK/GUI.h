@@ -447,8 +447,9 @@ void DrawMisc() {
 			style->WindowPadding = ImVec2(4, 4);
 			ImGui::CustomSpacing(9.f);
 
-			InsertCheckbox("Hitmarker (unimplemented)", Settings::Misc::hitmarker);
-			InsertCheckbox("Hitmarker sound (unimplemented)", Settings::Misc::hitmarkerSoundEnabled);
+			InsertCheckbox("Hitmarker", Settings::Misc::hitmarker);
+			InsertSlider("Hitmarker size", Settings::Misc::hitmarkerSize, 3.f, 20.f);
+			InsertCheckbox("Hitmarker sound", Settings::Misc::hitmarkerSoundEnabled);
 			InsertCombo("Hitmarker sound", Settings::Misc::hitmarkerSound, hitmarkerSound);
 
 			InsertCheckbox("Quick stop", Settings::Misc::quickStop);
@@ -457,8 +458,8 @@ void DrawMisc() {
 			InsertCheckbox("Autostrafe", Settings::Misc::autoStrafe);
 			InsertCombo("Autostrafe style", Settings::Misc::autoStrafeStyle, autostrafeStyle);
 
-			InsertCheckbox("Message on death (unimplemented)", Settings::Misc::killMessage);
-			InsertCheckbox("OOC? (unimplemented)", Settings::Misc::killMessageOOC);
+			InsertCheckbox("Message on death", Settings::Misc::killMessage);
+			InsertCheckbox("OOC?", Settings::Misc::killMessageOOC);
 
 			InsertCheckbox("Flashlight spam", Settings::Misc::flashlightSpam);
 			InsertCheckbox("Use spam", Settings::Misc::useSpam);
@@ -536,7 +537,6 @@ void DrawMisc() {
 				RestoreVMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
 				RestoreVMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
 				RestoreVMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
-				//RestoreVMTHook((PVOID**)GameEventManager, (PVOID)oFireEvent, 7);
 				RestoreVMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
 
 				RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);

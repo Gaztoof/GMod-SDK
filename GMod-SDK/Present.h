@@ -93,6 +93,15 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 			DrawLine(Vector(screenWidth / 2 - Settings::Misc::crosshairSize, screenHeight / 2, 0), Vector(screenWidth / 2 + Settings::Misc::crosshairSize, screenHeight / 2, 0), 0xFFFFFFFF);
 			DrawLine(Vector(screenWidth / 2, screenHeight / 2 - Settings::Misc::crosshairSize, 0), Vector(screenWidth / 2, screenHeight / 2 + Settings::Misc::crosshairSize, 0), 0xFFFFFFFF);
 		}
+		if ((Settings::lastHitmarkerTime + 0.08f) > EngineClient->Time() && Settings::Misc::hitmarker)
+		{
+			DrawLine(Vector(screenWidth / 2 - 2, screenHeight / 2 - 2, 0), Vector(screenWidth / 2 - Settings::Misc::hitmarkerSize, screenHeight / 2 - Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(screenWidth / 2 + 2, screenHeight / 2 - 2, 0), Vector(screenWidth / 2 + Settings::Misc::hitmarkerSize, screenHeight / 2 - Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+
+			DrawLine(Vector(screenWidth / 2 - 2, screenHeight / 2 + 2, 0), Vector(screenWidth / 2 - Settings::Misc::hitmarkerSize, screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(screenWidth / 2 + 2, screenHeight / 2 + 2, 0), Vector(screenWidth / 2 + Settings::Misc::hitmarkerSize, screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+
+		}
 	}
 	// https://www.unknowncheatsme/forum/3137288-post2.html Thanks to him :)
 	// If you don't do that, the color of the menu will match to VGUI's.

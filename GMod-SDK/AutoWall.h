@@ -3,6 +3,7 @@
 #include "trace.h"
 #include "gametrace.h"
 #include "globals.h"
+#include "Utils.h"
 
 float ScaleDamage(int hitGroup)
 {
@@ -32,10 +33,19 @@ float ScaleDamage(int hitGroup)
 	}
 } // https://www.gamersdecide.com/articles/csgo-weapons-damage-chart
 
+
 // This is WIP, i'm releasing to UC before I finish making it.
 bool CanHit(C_BasePlayer* target, Vector from, Vector to)
 {
-	float gunDamage = 50.f;
+	if (!localPlayer || !localPlayer->GetActiveWeapon())
+		return false; 
+	//C_BaseCombatWeapon* weapon = localPlayer->GetActiveWeapon();
+	//if (!weapon->UsesLua())
+		//return false;
+	// lua only for now.
+
+	//float gunDamage = GetLuaWeaponDamage(weapon);
+
 	trace_t Trace;
 	CTraceFilter filter;
 	filter.pSkip = localPlayer;
@@ -46,9 +56,10 @@ bool CanHit(C_BasePlayer* target, Vector from, Vector to)
 	//engineTrace->ClipRayToEntity(Ray, MASK_SHOT_HULL | CONTENTS_HITBOX, (IHandleEntity*)target, &Trace);
 	//m_PhysicsSurface->surface_data( Trace.surface.surfaceProps) = surfacedata_t*, get game.penetrationmodifier inside it
 
+	//float currentDamage = gunDamage;
 	if (Trace.m_pEnt == target || Trace.fraction >= 0.98f)
 	{
-		gunDamage *= ScaleDamage(Trace.hitgroup);
+		//gunDamage *= ScaleDamage(Trace.hitgroup);
 		return true;
 	}
 

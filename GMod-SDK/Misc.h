@@ -14,41 +14,72 @@ const char* killMessages[]{
     "get yourself more skills",
     "ez noob",
     "ezzzzz",
+    "you might want to check this out: https://www.unknowncheats.me/forum/3137947-post1.html",
+    "you got raped by: https://www.unknowncheats.me/forum/3137947-post1.html",
+    "i use this: https://www.unknowncheats.me/forum/3137947-post1.html",
+    "you got raped by GMOD-SDK",
 };
 const char* hitMarkers[]{
     "physics/metal/metal_solid_impact_bullet2",
     "buttons/arena_switch_press_02",
     "training/timer_bell",
 };
-void KillMessage(IGameEvent* event)
+
+
+// https://wiki.facepunch.com/gmod/Game_Events
+class DamageEvent : IGameEventListener2
 {
-    if (strcmp(event->GetName(), "entity_killed"))
-        return;
-    std::cout << "local: " << EngineClient->GetLocalPlayer() << std::endl;
-    std::cout << "attac: " << event->GetInt("attacker") << std::endl;
-    if (event->GetInt("attacker") != EngineClient->GetLocalPlayer() || event->GetInt("userid") == EngineClient->GetLocalPlayer())
-        return;
+public:
+    DamageEvent(void) {};
+    ~DamageEvent(void) {};
+    void FireGameEvent(IGameEvent* event) override
+    {
+        if (!event)
+            return;
+        int localPlayerID = EngineClient->GetLocalPlayer();
+        int target = EngineClient->GetPlayerForUserID(event->GetInt("userid")); // UserID of the victim
 
-    std::string command = "say \"";
-    if (Settings::Misc::killMessageOOC)
-        command += "/ooc ";
-    command += killMessages[rand() % (sizeof(killMessages) / sizeof(uintptr_t))];
-    command += "\"";
-    EngineClient->ClientCmd_Unrestricted(command.c_str());
-}
+        if (target == localPlayerID || EngineClient->GetPlayerForUserID(event->GetInt("attacker")) != localPlayerID)
+            return;
 
-void HitmarkerSound(IGameEvent* event)
+        if (Settings::Misc::hitmarkerSoundEnabled)
+        {
+            std::string command = "play \"";
+            command += hitMarkers[Settings::Misc::hitmarkerSound];
+            command += "\"";
+            EngineClient->ClientCmd_Unrestricted(command.c_str());
+        }
+        
+        Settings::lastHitmarkerTime = EngineClient->Time();
+    }
+};
+class DeathEvent : IGameEventListener2
 {
-    if (strcmp(event->GetName(), "player_hurt"))
-        return;
-    if (event->GetInt("attacker")-1 != EngineClient->GetLocalPlayer() || event->GetInt("userid") == EngineClient->GetLocalPlayer())
-        return;
+public:
+    DeathEvent(void) {};
+    ~DeathEvent(void) {};
+    void FireGameEvent(IGameEvent* event) override
+    {
+        if (!event)
+            return;
+        int localPlayerID = EngineClient->GetLocalPlayer();
+        int target = event->GetInt("entindex_killed"); // Entity Index of the victim
+        // event->GetInt("damagebits"), do whatever you want with that i'm lazy rn
 
-    std::string command = "play \"";
-    command += hitMarkers[Settings::Misc::hitmarkerSound];
-    command += "\"";
-    EngineClient->ClientCmd_Unrestricted(command.c_str());
-}
+        if (target == localPlayerID || event->GetInt("entindex_attacker") != localPlayerID)
+            return;
+
+        if (Settings::Misc::killMessage)
+        {
+            std::string command = "say \"";
+            if (Settings::Misc::killMessageOOC)
+                command += "/ooc ";
+            command += killMessages[rand() % (sizeof(killMessages) / sizeof(uintptr_t))];
+            command += "\"";
+            EngineClient->ClientCmd_Unrestricted(command.c_str());
+        }
+    }
+};
 void ThirdPerson(CViewSetup& view)
 {
     trace_t trace;

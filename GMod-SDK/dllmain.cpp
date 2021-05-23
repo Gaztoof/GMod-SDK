@@ -14,14 +14,12 @@
 #include "FrameStageNotify.h"
 #include "RenderView.h"
 #include "Present.h"
-#include "FireEvent.h"
 #include "PaintTraverse.h"
 
 #include "Memory.h"
 
 
 using namespace std;
-
 
 void Main()
 {
@@ -60,6 +58,7 @@ void Main()
     GameEventManager = (CGameEventManager*)GetInterface("engine.dll", "GAMEEVENTSMANAGER002");
     MatSystemSurface = (void*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
     PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
+    PhysicsSurfaceProps = (CPhysicsSurfaceProps*)GetInterface("vphysics.dll", "VPhysicsSurfaceProps001");
 
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
@@ -79,7 +78,6 @@ void Main()
     oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
     oFrameStageNotify = VMTHook< _FrameStageNotify>((PVOID**)CHLclient, hkFrameStageNotify, 35);
     oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
-    //oFireEvent = VMTHook< _FireEvent>((PVOID**)GameEventManager, (PVOID)hkFireEvent, 7);
     oPaintTraverse = VMTHook< _PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
@@ -90,6 +88,12 @@ void Main()
 
     EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
     
+    DamageEvent* damageEvent = new DamageEvent();
+    DeathEvent* deathEvent = new DeathEvent();
+
+    GameEventManager->AddListener((IGameEventListener2*)damageEvent, "player_hurt", false);
+    GameEventManager->AddListener((IGameEventListener2*)deathEvent, "entity_killed", false);
+
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related
     oPresent = *(_Present*)(present);

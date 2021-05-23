@@ -46,6 +46,9 @@
     <Filter Include="Header Files\vgui">
       <UniqueIdentifier>{b72d5e43-4c26-4658-a946-9ff378d4bcf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\vphysics">
+      <UniqueIdentifier>{746d7d7c-38be-4f58-b6d5-631dfd927d84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -296,9 +299,6 @@
     <ClInclude Include="CGameEventManager.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="FireEvent.h">
-      <Filter>Header Files\hooks</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigSystem.h">
       <Filter>Header Files\hacks</Filter>
     </ClInclude>
@@ -310,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="PaintTraverse.h">
       <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="CPhysicsSurfaceProps.h">
+      <Filter>Header Files\vphysics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

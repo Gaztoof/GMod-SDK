@@ -32,6 +32,30 @@ const char* GetLuaEntBase(C_BaseCombatWeapon* _this)
 	return out;
 }
 
+double GetLuaWeaponDamage(C_BaseCombatWeapon* _this)
+{
+	CLuaInterface* Lua = LuaShared->GetLuaInterface(0); // ent.Base
+	if (!_this->UsesLua())
+		return 0.f;
+	double damage = 1.f;
+	int topop = 3;
+	_this->PushEntity();
+	Lua->GetField(-1, "Primary");
+	if (!Lua->IsType(-1, LuaObjectType::TABLE))
+	{
+		--topop;
+		Lua->Pop(1);
+	}
+	Lua->GetField(-1, "Damage");
+	if (Lua->IsType(-1, LuaObjectType::NUMBER))
+	{
+		damage = Lua->GetNumber(-1);
+	}
+	Lua->Pop(topop);
+
+	return damage;
+}
+
 const char* GetLuaEntName(C_BaseCombatWeapon* _this)
 {
 	CLuaInterface* Lua = LuaShared->GetLuaInterface(0); // ent.PrintName

@@ -131,6 +131,7 @@ namespace ConfigSystem
 		j["Misc"]["hitmarkerSoundEnabled"] = Settings::Misc::hitmarkerSoundEnabled;
 		j["Misc"]["hitmarkerSound"] = Settings::Misc::hitmarkerSound;
 		j["Misc"]["hitmarker"] = Settings::Misc::hitmarker;
+		j["Misc"]["hitmarkerSize"] = Settings::Misc::hitmarkerSize;
 		j["Misc"]["fakeLag"] = Settings::Misc::fakeLag;
 		j["Misc"]["fakeLagKey"] = Settings::Misc::fakeLagKey;
 		j["Misc"]["fakeLagKeyStyle"] = Settings::Misc::fakeLagKeyStyle;
@@ -249,6 +250,7 @@ namespace ConfigSystem
 			Settings::Misc::hitmarkerSoundEnabled = j["Misc"]["hitmarkerSoundEnabled"];
 			Settings::Misc::hitmarkerSound = j["Misc"]["hitmarkerSound"];
 			Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
+			Settings::Misc::hitmarkerSize = j["Misc"]["hitmarkerSize"];
 			Settings::Misc::fakeLag = j["Misc"]["fakeLag"];
 			Settings::Misc::fakeLagKey = j["Misc"]["fakeLagKey"];
 			Settings::Misc::fakeLagKeyStyle = j["Misc"]["fakeLagKeyStyle"];
@@ -362,6 +364,7 @@ namespace ConfigSystem
 		Settings::Misc::hitmarkerSoundEnabled = NULL;
 		Settings::Misc::hitmarkerSound = NULL;
 		Settings::Misc::hitmarker = NULL;
+		Settings::Misc::hitmarkerSize = 10.f;
 		Settings::Misc::fakeLag = NULL;
 		Settings::Misc::fakeLagKey = KEY_NONE;
 		Settings::Misc::fakeLagKeyStyle = 1;
