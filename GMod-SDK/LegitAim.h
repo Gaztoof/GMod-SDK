@@ -28,7 +28,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 		for (int i = 0; i < ClientEntityList->GetHighestEntityIndex(); i++)
 		{
 			C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(i);
-			if (!entity || !entity->IsAlive() || !entity->IsPlayer() || entity == localPlayer)
+			if (!entity || !entity->IsAlive() || !entity->IsPlayer() || entity == localPlayer || entity->IsDormant())
 				continue;
 
 			if (!Settings::Aimbot::aimAtTeammates && entity->getTeamNum() == localPlayer->getTeamNum())
