@@ -36,7 +36,7 @@ static auto generateBadCharTable(std::string_view pattern) noexcept
 
     return table;
 }
-const char* findPattern(const char* moduleName, std::string_view pattern) noexcept
+const char* findPattern(const char* moduleName, std::string_view pattern, std::string patternName) noexcept
 {
     PVOID moduleBase = 0;
     std::size_t moduleSize = 0;
@@ -68,7 +68,8 @@ const char* findPattern(const char* moduleName, std::string_view pattern) noexce
             start += badCharTable[static_cast<std::uint8_t>(start[lastIdx])];
         }
     }
-    MessageBoxA(NULL, "Failed to find a pattern, let the dev know asap!", "ERROR", MB_OK | MB_ICONWARNING);
+    std::string toPrint = "Failed to find pattern\"" + patternName + "\", let the dev know ASAP!";
+    MessageBoxA(NULL, toPrint.c_str(), "ERROR", MB_OK | MB_ICONWARNING);
     return 0;
 }
 char* GetRealFromRelative(char* address, int offset, int instructionSize, bool isRelative) // Address must be an instruction, not a pointer! And offset = the offset to the bytes you want to retrieve.

@@ -40,14 +40,14 @@
     <Filter Include="Header Files\ImGui">
       <UniqueIdentifier>{93e599b6-7884-4ab8-a20e-7dd42e55044a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\hooks\menu">
-      <UniqueIdentifier>{a3a85829-1bf6-43cf-bf0c-2dc309a45bc1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\vgui">
       <UniqueIdentifier>{b72d5e43-4c26-4658-a946-9ff378d4bcf5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\vphysics">
       <UniqueIdentifier>{746d7d7c-38be-4f58-b6d5-631dfd927d84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hacks\menu">
+      <UniqueIdentifier>{a3a85829-1bf6-43cf-bf0c-2dc309a45bc1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -258,16 +258,16 @@
       <Filter>Header Files\tier1</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
-      <Filter>Header Files\hooks\menu</Filter>
+      <Filter>Header Files\hacks\menu</Filter>
     </ClInclude>
     <ClInclude Include="drawing.h">
-      <Filter>Header Files\hooks\menu</Filter>
+      <Filter>Header Files\hacks\menu</Filter>
     </ClInclude>
     <ClInclude Include="MenuControls.h">
-      <Filter>Header Files\hooks\menu</Filter>
+      <Filter>Header Files\hacks\menu</Filter>
     </ClInclude>
     <ClInclude Include="MenuBackground.h">
-      <Filter>Header Files\hooks\menu</Filter>
+      <Filter>Header Files\hacks\menu</Filter>
     </ClInclude>
     <ClInclude Include="GunHacks.h">
       <Filter>Header Files\hacks</Filter>
@@ -288,7 +288,7 @@
       <Filter>Header Files\client</Filter>
     </ClInclude>
     <ClInclude Include="Fonts.h">
-      <Filter>Header Files\hooks\menu</Filter>
+      <Filter>Header Files\hacks\menu</Filter>
     </ClInclude>
     <ClInclude Include="Misc.h">
       <Filter>Header Files\hooks</Filter>

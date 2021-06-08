@@ -24,7 +24,7 @@ T VMTHook(PVOID** src, PVOID dst, int index)
 };
 void RestoreVMTHook(PVOID** src, PVOID dst, int index);
 
-const char* findPattern(const char* moduleName, std::string_view pattern) noexcept;
+const char* findPattern(const char* moduleName, std::string_view pattern, std::string patternName) noexcept;
 
 char* GetRealFromRelative(char* address, int offset, int instructionSize = 6, bool isRelative = true); // Address must be a CALL instruction, not a pointer! And offset the offset to the bytes you want to retrieve.
 

@@ -34,7 +34,7 @@ void Main()
 #endif
 
     ConfigSystem::LoadConfig("Default");
-    bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern), 0x1, 5) + BSendPacketOffset);
+    bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
 
     DWORD originalProtection;
     VirtualProtect(bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
@@ -85,7 +85,7 @@ void Main()
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 
-    present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern), 0x2, 6, false);
+    present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern, "Present"), 0x2, 6, false);
 
     EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
     
