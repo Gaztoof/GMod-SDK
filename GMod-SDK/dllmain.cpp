@@ -4,26 +4,27 @@
 #include <fstream>
 #include <thread>
 
-#include "Vector.h"
+#include "tier0/Vector.h"
 
 #include "Interface.h"
 #include "globals.h"
 
-#include "DrawModelExecute.h"
-#include "CreateMove.h"
-#include "FrameStageNotify.h"
-#include "RenderView.h"
-#include "Present.h"
-#include "PaintTraverse.h"
+#include "hooks/DrawModelExecute.h"
+#include "hooks/CreateMove.h"
+#include "hooks/FrameStageNotify.h"
+#include "hooks/RenderView.h"
+#include "hooks/Present.h"
+#include "hooks/PaintTraverse.h"
 
 #include "Memory.h"
 
 
 using namespace std;
 
+
 void Main()
 {
-    ZeroMemory(Settings::ScriptInput, sizeof(Settings::ScriptInput));
+    //ZeroMemory(Settings::ScriptInput, sizeof(Settings::ScriptInput));
     srand(time(nullptr));
 #ifdef _DEBUG
     AllocConsole();
@@ -89,11 +90,20 @@ void Main()
 
     EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
     
-    DamageEvent* damageEvent = new DamageEvent();
-    DeathEvent* deathEvent = new DeathEvent();
+     damageEvent = (void*)new DamageEvent();
+     deathEvent = (void*)new DeathEvent();
 
     GameEventManager->AddListener((IGameEventListener2*)damageEvent, "player_hurt", false);
     GameEventManager->AddListener((IGameEventListener2*)deathEvent, "entity_killed", false);
+    
+    
+    ConVar* cvar = CVar->FindVar("mat_fullbright");
+    cvar->RemoveFlags(FCVAR_CHEAT);
+
+    //This'll let you change your name ingame freely
+    cvar = CVar->FindVar("name");
+    cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
+    cvar->DisableCallback();
 
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related

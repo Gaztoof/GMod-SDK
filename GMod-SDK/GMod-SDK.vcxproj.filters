@@ -54,23 +54,11 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C_BasePlayer.h">
-      <Filter>Header Files\client</Filter>
-    </ClCompile>
-    <ClCompile Include="iclientrenderable.h">
-      <Filter>Header Files\engine</Filter>
-    </ClCompile>
-    <ClCompile Include="vmatrix.h">
-      <Filter>Header Files\engine</Filter>
-    </ClCompile>
     <ClCompile Include="Memory.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory.cpp">
       <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyValues.cpp">
-      <Filter>Header Files\tier1</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui.cpp">
       <Filter>Header Files\ImGui</Filter>
@@ -90,136 +78,22 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>Header Files\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="CUniformRandomStream.h">
-      <Filter>Header Files\client</Filter>
-    </ClCompile>
-    <ClCompile Include="CCollisionProperty.h">
-      <Filter>Header Files\client</Filter>
-    </ClCompile>
-    <ClCompile Include="VPanelWrapper.h">
+    <ClCompile Include="vgui/VPanelWrapper.h">
       <Filter>Header Files\vgui</Filter>
+    </ClCompile>
+    <ClCompile Include="engine/vmatrix.h">
+      <Filter>Header Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="tier1/KeyValues.cpp">
+      <Filter>Header Files\tier1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basetypes.h">
-      <Filter>Header Files\tier0</Filter>
-    </ClInclude>
-    <ClInclude Include="math_pfns.h">
-      <Filter>Header Files\mathlib</Filter>
-    </ClInclude>
     <ClInclude Include="Interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CLuaShared.h">
-      <Filter>Header Files\lua_shared</Filter>
-    </ClInclude>
-    <ClInclude Include="CLuaInterface.h">
-      <Filter>Header Files\lua_shared</Filter>
-    </ClInclude>
-    <ClInclude Include="CLuaConVars.h">
-      <Filter>Header Files\lua_shared</Filter>
-    </ClInclude>
-    <ClInclude Include="soundinfo.h">
-      <Filter>Header Files\tier0</Filter>
-    </ClInclude>
-    <ClInclude Include="shareddefs.h">
-      <Filter>Header Files\tier0</Filter>
-    </ClInclude>
-    <ClInclude Include="IEngineTrace.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="gametrace.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="trace.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="takedamageinfo.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="imaterial.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="c_basecombatweapon.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="usercmd.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="CClientEntityList.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="C_BaseCombatCharacter.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="CHLClient.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientModeShared.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateMove.h">
-      <Filter>Header Files\hooks</Filter>
-    </ClInclude>
     <ClInclude Include="globals.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameStageNotify.h">
-      <Filter>Header Files\hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="CViewSetup.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderView.h">
-      <Filter>Header Files\hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="CInputSystem.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyValues.h">
-      <Filter>Header Files\tier1</Filter>
-    </ClInclude>
-    <ClInclude Include="CModelRender.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="IStudioRender.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawModelExecute.h">
-      <Filter>Header Files\hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="CMaterialSystem.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="CVRenderView.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="CViewRender.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="ConVar.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files\tier0</Filter>
-    </ClInclude>
-    <ClInclude Include="CEngineClient.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Header Files\tier0</Filter>
-    </ClInclude>
-    <ClInclude Include="ConCommand.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="CNetChan.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Present.h">
-      <Filter>Header Files\hooks</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imconfig.h">
       <Filter>Header Files\ImGui</Filter>
@@ -245,79 +119,200 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="AntiAim.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="LegitAim.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="AutoWall.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="checksum_md5.h">
-      <Filter>Header Files\tier1</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>Header Files\hacks\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="drawing.h">
-      <Filter>Header Files\hacks\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuControls.h">
-      <Filter>Header Files\hacks\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuBackground.h">
-      <Filter>Header Files\hacks\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="GunHacks.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="CModelInfo.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="CInput.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="Triggerbot.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientClass.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="CBaseAnimating.h">
-      <Filter>Header Files\client</Filter>
-    </ClInclude>
-    <ClInclude Include="Fonts.h">
-      <Filter>Header Files\hacks\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Misc.h">
-      <Filter>Header Files\hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="CIVDebugOverlay.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="CGameEventManager.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigSystem.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="Executor.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
     <ClInclude Include="json.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PaintTraverse.h">
-      <Filter>Header Files\hooks</Filter>
     </ClInclude>
     <ClInclude Include="CPhysicsSurfaceProps.h">
       <Filter>Header Files\vphysics</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ESP.h">
+    <ClInclude Include="hacks\AntiAim.h">
       <Filter>Header Files\hacks</Filter>
-    </None>
+    </ClInclude>
+    <ClInclude Include="hacks\AutoWall.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\ConfigSystem.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\ESP.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\Executor.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\GunHacks.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\LegitAim.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\Misc.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\Triggerbot.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\Utils.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\menu\drawing.h">
+      <Filter>Header Files\hacks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\menu\Fonts.h">
+      <Filter>Header Files\hacks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\menu\GUI.h">
+      <Filter>Header Files\hacks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\menu\MenuBackground.h">
+      <Filter>Header Files\hacks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\menu\MenuControls.h">
+      <Filter>Header Files\hacks\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\CreateMove.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\DrawModelExecute.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\FrameStageNotify.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\PaintTraverse.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\Present.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\RenderView.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="client\c_basecombatweapon.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\C_BasePlayer.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CBaseAnimating.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CClientEntityList.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CCollisionProperty.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CHLClient.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CInput.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CInputSystem.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\ClientClass.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\ClientModeShared.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\ConCommand.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\ConVar.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CUniformRandomStream.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CViewRender.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\CViewSetup.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\usercmd.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CEngineClient.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CGameEventManager.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CIVDebugOverlay.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CMaterialSystem.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CModelInfo.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CModelRender.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CNetChan.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CVRenderView.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\gametrace.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\iclientrenderable.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\IEngineTrace.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\imaterial.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\IStudioRender.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\takedamageinfo.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\trace.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="lua_shared\CLuaConVars.h">
+      <Filter>Header Files\lua_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="lua_shared\CLuaInterface.h">
+      <Filter>Header Files\lua_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="lua_shared\CLuaShared.h">
+      <Filter>Header Files\lua_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="mathlib\math_pfns.h">
+      <Filter>Header Files\mathlib</Filter>
+    </ClInclude>
+    <ClInclude Include="tier0\basetypes.h">
+      <Filter>Header Files\tier0</Filter>
+    </ClInclude>
+    <ClInclude Include="tier0\shareddefs.h">
+      <Filter>Header Files\tier0</Filter>
+    </ClInclude>
+    <ClInclude Include="tier0\soundinfo.h">
+      <Filter>Header Files\tier0</Filter>
+    </ClInclude>
+    <ClInclude Include="tier0\Vector.h">
+      <Filter>Header Files\tier0</Filter>
+    </ClInclude>
+    <ClInclude Include="tier1\checksum_md5.h">
+      <Filter>Header Files\tier1</Filter>
+    </ClInclude>
+    <ClInclude Include="tier1\KeyValues.h">
+      <Filter>Header Files\tier1</Filter>
+    </ClInclude>
+    <ClInclude Include="tier0/Color.h">
+      <Filter>Header Files\tier0</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

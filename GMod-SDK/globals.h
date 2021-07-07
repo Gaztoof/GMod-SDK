@@ -5,30 +5,30 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 
-#include "CLuaInterface.h"
-#include "CLuaShared.h"
-#include "CClientEntityList.h"
-#include "CHLClient.h"
-#include "ClientModeShared.h"
-#include "C_BasePlayer.h"
-#include "CEngineClient.h"
-#include "CVRenderView.h"
-#include "CInputSystem.h"
-#include "CModelRender.h"
-#include "KeyValues.h"
-#include "CMaterialSystem.h"
-#include "CViewRender.h"
-#include "Color.h"
-#include "Vector.h"
-#include "ConVar.h"
-#include "CUniformRandomStream.h"
-#include "CModelInfo.h"
-#include "CInput.h"
-#include "CModelInfo.h"
-#include "CIVDebugOverlay.h"
-#include "CGameEventManager.h"
-#include "VPanelWrapper.h"
-#include "CPhysicsSurfaceProps.h"
+#include "lua_shared/CLuaInterface.h"
+#include "lua_shared/CLuaShared.h"
+#include "client/CClientEntityList.h"
+#include "client/CHLClient.h"
+#include "client/ClientModeShared.h"
+#include "client/C_BasePlayer.h"
+#include "engine/CEngineClient.h"
+#include "engine/CVRenderView.h"
+#include "client/CInputSystem.h"
+#include "engine/CModelRender.h"
+#include "tier1/KeyValues.h"
+#include "engine/CMaterialSystem.h"
+#include "client/CViewRender.h"
+#include "tier0/Color.h"
+#include "tier0/Vector.h"
+#include "client/ConVar.h"
+#include "client/CUniformRandomStream.h"
+#include "engine/CModelInfo.h"
+#include "client/CInput.h"
+#include "engine/CModelInfo.h"
+#include "engine/CIVDebugOverlay.h"
+#include "engine/CGameEventManager.h"
+#include "vgui/VPanelWrapper.h"
+#include "vphysics/CPhysicsSurfaceProps.h"
 
 #ifdef _WIN64
 #define ViewRenderOffset 0xC4
@@ -48,7 +48,7 @@
 #define InputOffset 0x5
 #define RandomSeedOffset 0x5
 #define PresentModule "gameoverlayrenderer"
-#define PresentPattern  "\xFF\x15????\x8B\xF8\x85\xDB"
+#define PresentPattern  "\xFF\x15????\x8B\xF0\x85\xFF"
 #define GetClassNamePattern "\xE8????\x50\x8B\x43\x08"
 #define CL_MovePattern "\xE8????\x83\xC4\x08\xFF\x15????\xDC\x25????"
 #define BSendPacketOffset 0x2F
@@ -89,6 +89,10 @@ VPanelWrapper* PanelWrapper;
 CPhysicsSurfaceProps* PhysicsSurfaceProps;
 
 int screenWidth, screenHeight;
+
+
+void* damageEvent;
+void* deathEvent ;
 
 struct chamsSetting {
 	Color hiddenColor = Color(255, 255, 255, 255);
@@ -171,6 +175,7 @@ namespace Settings {
 		Color worldColor(17.f, 33.f, 71.f, 255.f);
 		bool changeWorldColor;
 
+		bool fullBright;
 		bool disableSkyBox;
 
 	}
