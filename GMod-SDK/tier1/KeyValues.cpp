@@ -1,4 +1,4 @@
-#include "KeyValues.h"
+/*#include "KeyValues.h"
 #include <windows.h>		// for widechartomultibyte and multibytetowidechar
 
 #include "../tier0/Color.h"
@@ -8,7 +8,7 @@
 #include "../tier0/Vector.h"
 #include "../tier0/shareddefs.h"
 #include <vector>
-
+*/
 /*const char* StringAfterPrefix(const char* str, const char* prefix)
 {
 	do

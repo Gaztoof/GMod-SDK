@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include "../globals.h"
+#include "../globals.hpp"
 #include "AutoWall.h"
 #include "Utils.h"
 	

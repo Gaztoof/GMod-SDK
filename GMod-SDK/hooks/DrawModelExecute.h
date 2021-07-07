@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include "../client/usercmd.h"
 #include "../client/ClientModeShared.h"
 #include "../tier0/Vector.h"

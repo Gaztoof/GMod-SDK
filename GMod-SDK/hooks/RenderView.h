@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include "../client/usercmd.h"
 #include "../hacks/Misc.h"
 #include "../hacks/Utils.h"

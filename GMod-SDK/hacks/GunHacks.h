@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include "Utils.h"
 #include "../tier1/checksum_md5.h"
 
@@ -56,6 +56,7 @@ void GunHacks(CUserCmd* cmd, C_BaseCombatWeapon* _this) {
 	if (!_this)
 		return;
 	CLuaInterface* Lua = LuaShared->GetLuaInterface(0);
+	if(Settings::Misc::noSpread)
 	NoSpread(cmd, _this, Lua);
 	if (!_this->UsesLua())
 		return;

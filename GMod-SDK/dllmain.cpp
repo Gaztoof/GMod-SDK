@@ -7,7 +7,7 @@
 #include "tier0/Vector.h"
 
 #include "Interface.h"
-#include "globals.h"
+#include "globals.hpp"
 
 #include "hooks/DrawModelExecute.h"
 #include "hooks/CreateMove.h"
@@ -18,13 +18,14 @@
 
 #include "Memory.h"
 
+#include "hacks/ConVarSpoofing.h"
 
 using namespace std;
 
 
 void Main()
 {
-    //ZeroMemory(Settings::ScriptInput, sizeof(Settings::ScriptInput));
+    ZeroMemory(Settings::ScriptInput, sizeof(Settings::ScriptInput));
     srand(time(nullptr));
 #ifdef _DEBUG
     AllocConsole();
@@ -99,12 +100,22 @@ void Main()
     
     ConVar* cvar = CVar->FindVar("mat_fullbright");
     cvar->RemoveFlags(FCVAR_CHEAT);
-
+    
     //This'll let you change your name ingame freely
     cvar = CVar->FindVar("name");
     cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
     cvar->DisableCallback();
+    
+    // god that's ugly... to clean
 
+    cvar = CVar->FindVar("sv_cheats");
+    spoofedCheats = new SpoofedConVar(cvar);
+    spoofedCheats->m_pOriginalCVar->DisableCallback();
+    
+    cvar = CVar->FindVar("sv_allowcslua");
+    spoofedAllowCsLua = (new SpoofedConVar(cvar));
+    spoofedAllowCsLua->m_pOriginalCVar->DisableCallback();
+    
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related
     oPresent = *(_Present*)(present);

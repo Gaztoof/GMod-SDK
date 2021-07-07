@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include <commdlg.h>
 #include <mutex>
 std::mutex executorMutex;

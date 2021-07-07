@@ -2,7 +2,7 @@
 
 #include "../engine/trace.h"
 #include "../engine/gametrace.h"
-#include "../globals.h"
+#include "../globals.hpp"
 #include "Utils.h"
 
 float ScaleDamage(int hitGroup)

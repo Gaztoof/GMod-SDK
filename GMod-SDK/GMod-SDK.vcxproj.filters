@@ -92,7 +92,7 @@
     <ClInclude Include="Interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="globals.h">
+    <ClInclude Include="globals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imconfig.h">
@@ -313,6 +313,9 @@
     </ClInclude>
     <ClInclude Include="tier0/Color.h">
       <Filter>Header Files\tier0</Filter>
+    </ClInclude>
+    <ClInclude Include="ConVarSpoofing.h">
+      <Filter>Header Files\hacks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -22,5 +22,12 @@ struct Color
         r = R; g = G; b = B; a = 255;
         fCol[0] = (float)R / 255.f; fCol[1] = (float)G / 255.f; fCol[2] = (float)B / 255.f; fCol[3] = 1.f;
     }
-
+    bool operator == (const Color& other)
+    {
+        return fCol[0] == other.fCol[0] && fCol[1] == other.fCol[1] && fCol[2] == other.fCol[2] && fCol[3] == other.fCol[3];
+    }
+    bool operator != (const Color& other)
+    {
+        return !(*this == other);
+    }
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include <fstream>
 #include "../json.h"
 #include <iomanip>
@@ -80,6 +80,7 @@ namespace ConfigSystem
 		j["Visuals"]["worldColor"] = to_jsonfcol(Settings::Visuals::worldColor.fCol);
 		j["Visuals"]["changeWorldColor"] = Settings::Visuals::changeWorldColor;
 		j["Visuals"]["disableSkyBox"] = Settings::Visuals::disableSkyBox;
+		j["Visuals"]["fullBright"] = Settings::Visuals::fullBright;
 
 		j["AntiAim"]["currentAntiAimPitch"] = Settings::AntiAim::currentAntiAimPitch;
 		j["AntiAim"]["currentAntiAimYaw"] = Settings::AntiAim::currentAntiAimYaw;
@@ -139,6 +140,8 @@ namespace ConfigSystem
 		j["Misc"]["zoomKey"] = Settings::Misc::zoomKey;
 		j["Misc"]["zoomKeyStyle"] = Settings::Misc::zoomKeyStyle;
 		j["Misc"]["zoomFOV"] = Settings::Misc::zoomFOV;
+		j["Misc"]["svAllowCsLua"] = Settings::Misc::svAllowCsLua;
+		j["Misc"]["svCheats"] = Settings::Misc::svCheats;
 
 		j["Triggerbot"]["triggerBot"] = Settings::Triggerbot::triggerBot;
 		j["Triggerbot"]["triggerBotHead"] = Settings::Triggerbot::triggerBotHead;
@@ -199,6 +202,7 @@ namespace ConfigSystem
 			from_jsonfcol(j["Visuals"]["worldColor"], Settings::Visuals::worldColor.fCol);
 			Settings::Visuals::changeWorldColor = j["Visuals"]["changeWorldColor"];
 			Settings::Visuals::disableSkyBox = j["Visuals"]["disableSkyBox"];
+			Settings::Visuals::fullBright = j["Visuals"]["fullBright"];
 
 			Settings::AntiAim::currentAntiAimPitch = j["AntiAim"]["currentAntiAimPitch"];
 			Settings::AntiAim::currentAntiAimYaw = j["AntiAim"]["currentAntiAimYaw"];
@@ -258,6 +262,8 @@ namespace ConfigSystem
 			Settings::Misc::zoomKey = j["Misc"]["zoomKey"];
 			Settings::Misc::zoomKeyStyle = j["Misc"]["zoomKeyStyle"];
 			Settings::Misc::zoomFOV = j["Misc"]["zoomFOV"];
+			Settings::Misc::svAllowCsLua = j["Misc"]["svAllowCsLua"];
+			Settings::Misc::svCheats = j["Misc"]["svCheats"];
 
 			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
 			Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
@@ -313,6 +319,7 @@ namespace ConfigSystem
 		Settings::Visuals::worldColor = Color(0, 255, 0);
 		Settings::Visuals::changeWorldColor = NULL;
 		Settings::Visuals::disableSkyBox = NULL;
+		Settings::Visuals::fullBright = false;
 
 		Settings::AntiAim::currentAntiAimPitch = NULL;
 		Settings::AntiAim::currentAntiAimYaw = NULL;
@@ -372,6 +379,8 @@ namespace ConfigSystem
 		Settings::Misc::zoomKey = KEY_NONE;
 		Settings::Misc::zoomKeyStyle = 1;
 		Settings::Misc::zoomFOV = 90.f;
+		Settings::Misc::svCheats = false;
+		Settings::Misc::svAllowCsLua = false;
 
 		Settings::Triggerbot::triggerBot = NULL;
 		Settings::Triggerbot::triggerBotHead = NULL;

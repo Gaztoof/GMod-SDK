@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 
 void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 #ifndef _WIN64

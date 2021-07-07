@@ -4,7 +4,7 @@
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_dx9.h"
 #include "../ImGui/imgui_impl_win32.h"
-#include "../globals.h"
+#include "../globals.hpp"
 #include "../hacks/menu/GUI.h"
 #include "../hacks/menu/drawing.h"
 #include "../hacks/ESP.h"

@@ -6,7 +6,7 @@
 #include "../../ImGui/imgui.h"
 #include "../../ImGui/imgui_impl_dx9.h"
 #include "../../ImGui/imgui_impl_win32.h"
-#include "../../globals.h"
+#include "../../globals.hpp"
 #include "MenuControls.h"
 #include "../../hacks/ConfigSystem.h"
 #include "../../hacks/Executor.h"
@@ -194,6 +194,8 @@ void DrawVisuals()
 			InsertCheckbox("Third person", Settings::Misc::thirdperson);
 			ImGui::Keybind("thirdpersonkey", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
 			InsertSlider("Third person distance", Settings::Misc::thirdpersonDistance, 20, 1000);
+
+			InsertCheckbox("Full Bright", Settings::Visuals::fullBright);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
@@ -470,6 +472,10 @@ void DrawMisc() {
 			ImGui::Keybind("freecamkey", (int*)&Settings::Misc::freeCamKey, &Settings::Misc::freeCamKeyStyle);
 			InsertSlider("Free-cam speed", Settings::Misc::freeCamSpeed, 1.f, 5.f);
 
+
+			InsertCheckbox("sv_cheats ", Settings::Misc::svCheats);
+			InsertCheckbox("sv_allowcslua ", Settings::Misc::svAllowCsLua);
+
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
 
@@ -552,6 +558,9 @@ void DrawMisc() {
 				** (char***)(present) = (char*)oPresent;
 #endif
 				InputSystem->EnableInput(true);
+				PanelWrapper->SetKeyBoardInputEnabled(Settings::lastPanelIdentifier, false);
+				PanelWrapper->SetMouseInputEnabled(Settings::lastPanelIdentifier, false);
+
 				Settings::openMenu = false;
 
 			}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../tier0/Vector.h"
-#include "../globals.h"
+#include "../globals.hpp"
 #include "../ImGui/imgui.h"
 
 const char* killMessages[]{

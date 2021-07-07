@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include "../globals.h"
+#include "../globals.hpp"
 
 QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
     static float oldForward;

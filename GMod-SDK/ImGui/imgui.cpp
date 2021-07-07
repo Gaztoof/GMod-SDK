@@ -5596,7 +5596,7 @@ void ImGui::UpdateWindowParentAndRootLinks(ImGuiWindow * window, ImGuiWindowFlag
 // - Return false when window is collapsed, so you can early out in your code. You always need to call ImGui::End() even if false is returned.
 // - Passing 'bool* p_open' displays a Close button on the upper-right corner of the window, the pointed value will be set to false when the button is pressed.
 
-//#include "Globals.h"
+//#include "globals.hpp"
 
 bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 {

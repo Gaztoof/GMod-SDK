@@ -30,6 +30,8 @@
 #include "vgui/VPanelWrapper.h"
 #include "vphysics/CPhysicsSurfaceProps.h"
 
+#include "hacks/ConVarSpoofing.h"
+
 #ifdef _WIN64
 #define ViewRenderOffset 0xC4
 #define GlobalVarsOffset 0x94
@@ -92,7 +94,11 @@ int screenWidth, screenHeight;
 
 
 void* damageEvent;
-void* deathEvent ;
+void* deathEvent;
+
+
+SpoofedConVar* spoofedAllowCsLua;
+SpoofedConVar* spoofedCheats;
 
 struct chamsSetting {
 	Color hiddenColor = Color(255, 255, 255, 255);
@@ -174,7 +180,6 @@ namespace Settings {
 		bool noVisualRecoil;
 		Color worldColor(17.f, 33.f, 71.f, 255.f);
 		bool changeWorldColor;
-
 		bool fullBright;
 		bool disableSkyBox;
 
@@ -256,6 +261,10 @@ namespace Settings {
 		ButtonCode_t zoomKey = KEY_NONE;
 		int zoomKeyStyle = 1;
 		float zoomFOV = 90.f;
+
+		bool svCheats;
+		bool svAllowCsLua;
+
 
 	}
 	namespace Triggerbot {

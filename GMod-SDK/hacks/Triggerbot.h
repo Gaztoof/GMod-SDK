@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include "Utils.h"
 #include "AutoWall.h"
 

@@ -193,6 +193,7 @@
     <ClInclude Include="client\c_basecombatweapon.h" />
     <ClInclude Include="client\C_BasePlayer.h" />
     <ClInclude Include="client\usercmd.h" />
+    <ClInclude Include="ConVarSpoofing.h" />
     <ClInclude Include="engine\CEngineClient.h" />
     <ClInclude Include="engine\CGameEventManager.h" />
     <ClInclude Include="engine\CIVDebugOverlay.h" />
@@ -235,7 +236,7 @@
     <ClInclude Include="mathlib\math_pfns.h" />
     <ClInclude Include="tier0/Color.h" />
     <ClInclude Include="CPhysicsSurfaceProps.h" />
-    <ClInclude Include="globals.h" />
+    <ClInclude Include="globals.hpp" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx9.h" />

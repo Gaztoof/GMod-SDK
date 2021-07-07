@@ -10,13 +10,12 @@ void BytePatch(PVOID source, BYTE newValue)
 
 void RestoreVMTHook(PVOID** src, PVOID dst, int index)
 {
-    // I could do tramp hooking instead of VMT hooking, but I came across a few problems while implementing my tramp, and VMT just makes it easier.
     PVOID* VMT = *src;
     PVOID ret = (VMT[index]);
     DWORD originalProtection;
-    VirtualProtect(src, sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
+    VirtualProtect(&VMT[index], sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
     VMT[index] = dst;
-    VirtualProtect(src, sizeof(PVOID), originalProtection, &originalProtection);
+    VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
 }
 
  // credits to osiris for the following

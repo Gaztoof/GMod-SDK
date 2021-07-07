@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include "../globals.h"
+#include "../globals.hpp"
 #include "menu/drawing.h"
 #include "Utils.h"
 

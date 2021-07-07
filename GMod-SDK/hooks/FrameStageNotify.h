@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../globals.h"
+#include "../globals.hpp"
 #include "../client/usercmd.h"
 #include <Windows.h>
 
@@ -16,6 +16,11 @@ ClientFrameStage_t stage)
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 
+	static ConVar* fullbrightCvar = CVar->FindVar("mat_fullbright");
+	if (fullbrightCvar && fullbrightCvar->intValue != Settings::Visuals::fullBright) fullbrightCvar->SetValue(Settings::Visuals::fullBright);
+	
+	if (spoofedAllowCsLua && spoofedAllowCsLua->m_pOriginalCVar->intValue != Settings::Misc::svAllowCsLua) spoofedAllowCsLua->m_pOriginalCVar->SetValue(Settings::Misc::svAllowCsLua);
+	if (spoofedCheats && spoofedCheats->m_pOriginalCVar->intValue != Settings::Misc::svCheats) spoofedCheats->m_pOriginalCVar->SetValue(Settings::Misc::svCheats);
 	//Input->cameraoffset
 
 	if (localPlayer && localPlayer->IsAlive())
@@ -34,8 +39,10 @@ ClientFrameStage_t stage)
 	static bool appliedNightMode = false;
 	static bool waitingForLoadingEnd = false;
 	static bool lastNightModeState = false;
-	if (lastNightModeState != Settings::Visuals::changeWorldColor)
+	static Color lastNightModeColor = Color(255, 255, 255);
+	if (lastNightModeState != Settings::Visuals::changeWorldColor || lastNightModeColor != Settings::Visuals::worldColor)
 	{
+		lastNightModeColor = Settings::Visuals::worldColor;
 		lastNightModeState = Settings::Visuals::changeWorldColor;
 		appliedNightMode = false;
 	}
@@ -65,7 +72,7 @@ ClientFrameStage_t stage)
 					material->AlphaModulate(Settings::Visuals::worldColor.fCol[3]);
 					material->ColorModulate(Settings::Visuals::worldColor.fCol[0], Settings::Visuals::worldColor.fCol[1], Settings::Visuals::worldColor.fCol[2]);
 				}
-				else if(!Settings::Visuals::changeWorldColor)
+				else if(!Settings::Visuals::changeWorldColor && !appliedNightMode)
 				{
 					material->AlphaModulate(1.f);
 					material->ColorModulate(1.f, 1.f, 1.f);

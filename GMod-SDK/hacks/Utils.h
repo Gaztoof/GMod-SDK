@@ -1,7 +1,7 @@
 #pragma once
 #include "../mathlib/math_pfns.h"
 #include "../tier0/Color.h"
-#include "../globals.h"
+#include "../globals.hpp"
 #include "../engine/vmatrix.h"
 #include "../tier0/Vector.h"
 #include "../client/C_BaseCombatWeapon.h"
