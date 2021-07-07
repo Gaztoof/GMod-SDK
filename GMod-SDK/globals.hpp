@@ -213,6 +213,8 @@ namespace Settings {
 		bool aimAtFriends;
 		bool onlyAimAtFriends;
 
+		bool pistolFastShoot;
+
 	}
 	namespace Misc {
 

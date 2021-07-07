@@ -134,7 +134,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 			{
 				static bool toggle = false;
 				toggle = !toggle;
-				if (toggle)
+				if (toggle || Settings::Aimbot::pistolFastShoot)
 					cmd->buttons |= IN_ATTACK;
 				else cmd->buttons &= ~IN_ATTACK;
 			}

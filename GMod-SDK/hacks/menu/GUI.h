@@ -230,6 +230,7 @@ void DrawAimbot() {
 			InsertCheckbox("Target teammates", Settings::Aimbot::aimAtTeammates);
 			InsertCheckbox("Target friends", Settings::Aimbot::aimAtFriends);
 			InsertCheckbox("Only target friends", Settings::Aimbot::onlyAimAtFriends);
+			InsertCheckbox("Fast shoot", Settings::Aimbot::pistolFastShoot);
 
 			InsertSlider("Minimum damage", Settings::Aimbot::aimbotMinDmg, 1, 100);
 

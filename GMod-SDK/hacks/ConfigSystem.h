@@ -106,6 +106,7 @@ namespace ConfigSystem
 		j["Aimbot"]["aimAtTeammates"] = Settings::Aimbot::aimAtTeammates;
 		j["Aimbot"]["aimAtFriends"] = Settings::Aimbot::aimAtFriends;
 		j["Aimbot"]["onlyAimAtFriends"] = Settings::Aimbot::onlyAimAtFriends;
+		j["Aimbot"]["pistolFastShoot"] = Settings::Aimbot::pistolFastShoot;
 
 		j["Misc"]["drawSpectators"] = Settings::Misc::drawSpectators;
 		j["Misc"]["drawCrosshair"] = Settings::Misc::drawCrosshair;
@@ -228,6 +229,7 @@ namespace ConfigSystem
 			Settings::Aimbot::aimAtTeammates = j["Aimbot"]["aimAtTeammates"];
 			Settings::Aimbot::aimAtFriends = j["Aimbot"]["aimAtFriends"];
 			Settings::Aimbot::onlyAimAtFriends = j["Aimbot"]["onlyAimAtFriends"];
+			Settings::Aimbot::pistolFastShoot = j["Aimbot"]["pistolFastShoot"];
 
 			Settings::Misc::drawSpectators = j["Misc"]["drawSpectators"];
 			Settings::Misc::drawCrosshair = j["Misc"]["drawCrosshair"];
@@ -345,6 +347,7 @@ namespace ConfigSystem
 		Settings::Aimbot::aimAtTeammates = NULL;
 		Settings::Aimbot::aimAtFriends = NULL;
 		Settings::Aimbot::onlyAimAtFriends = NULL;
+		Settings::Aimbot::pistolFastShoot = NULL;
 
 		Settings::Misc::drawSpectators = NULL;
 		Settings::Misc::drawCrosshair = NULL;
