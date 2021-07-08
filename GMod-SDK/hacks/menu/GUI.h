@@ -544,6 +544,9 @@ void DrawMisc() {
 				GameEventManager->RemoveListener((IGameEventListener2*)damageEvent);
 				GameEventManager->RemoveListener((IGameEventListener2*)deathEvent);
 
+				spoofedAllowCsLua->~SpoofedConVar();
+				spoofedCheats->~SpoofedConVar();
+
 				RestoreVMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
 				RestoreVMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
 				RestoreVMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);

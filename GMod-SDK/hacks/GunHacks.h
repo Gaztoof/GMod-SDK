@@ -23,16 +23,29 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 	else if (Lua) {
 		int topop = 3;
 		gun->PushEntity();
-		Lua->GetField(-1, "Primary");
-		if (!Lua->IsType(-1, LuaObjectType::TABLE))
+
+		if (!strcmp(GetLuaEntBase(gun), "tfa_gun_base"))
 		{
 			--topop;
-			Lua->Pop(1);
-		}
-		Lua->GetField(-1, "Spread");
-		if (Lua->IsType(-1, LuaObjectType::NUMBER))
-		{
+			Lua->GetField(-1, "CalculateConeRecoil");
+			Lua->Push(-2);
+			Lua->Call(1, 1);
+
 			spread = Lua->GetNumber(-1);
+		}
+		else {
+
+			Lua->GetField(-1, "Primary");
+			if (!Lua->IsType(-1, LuaObjectType::TABLE))
+			{
+				--topop;
+				Lua->Pop(1);
+			}
+			Lua->GetField(-1, "Spread");
+			if (Lua->IsType(-1, LuaObjectType::NUMBER))
+			{
+				spread = Lua->GetNumber(-1);
+			}
 		}
 		Lua->Pop(topop);
 	}
@@ -113,9 +126,23 @@ void GunHacks(CUserCmd* cmd, C_BaseCombatWeapon* _this) {
 		Lua->Pop(1);
 		return;
 	}
+	else if (!strcmp(GetLuaEntBase(_this), "tfa_gun_base"))
+	{
+		if (Settings::Misc::noRecoil)
+		{
+			/*Lua->PushNumber(0);
+			Lua->SetField(-2, "Recoil"); // SWEP.Recoil = 0
+			Lua->PushNumber(0);
+			Lua->SetField(-2, "ViewKick"); // SWEP.ViewKick = 0*/
+		}
+		Lua->Pop(1);
+		return;
+	}
 	else {
 		int topop = 2;
 		Lua->GetField(-1, "Primary");
+		std::cout << GetLuaEntBase(_this) << std::endl;
+
 		if (!Lua->IsType(-1, LuaObjectType::TABLE))
 		{
 			topop = 1;

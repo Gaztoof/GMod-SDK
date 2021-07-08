@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <limits>
 #include <array>
+#include <string>
 
 void BytePatch(PVOID source, BYTE newValue);
 
@@ -60,3 +61,5 @@ T* GetVMT(uintptr_t address, uintptr_t offset) // This doesn't reads from the VM
     return *(T**)(*(uintptr_t*)(instruction));
 #endif
 }
+
+std::string RandomString(int length);

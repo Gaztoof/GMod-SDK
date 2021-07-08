@@ -86,3 +86,12 @@ char* GetRealFromRelative(char* address, int offset, int instructionSize, bool i
     char* realAddress = address + instructionSize + relativeAddress;
     return realAddress;
 }
+
+std::string RandomString(int length)
+{
+    std::string output;
+    std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (int i = 0; i < length; i++)
+        output += alphabet[rand() % (alphabet.length() - 1)];
+    return output;
+}

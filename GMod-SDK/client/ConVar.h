@@ -27,6 +27,7 @@
 
 void dummyCallback(void* convar, const char* pOldValString) { return; }
 
+
 // Auto reconstructed from vtable block @ 0x00082C0C
 // from "lua_shared.dylib", by ida_vtables.idc
 // Modified VTable dumper script obviously by t.me/Gaztoof.
@@ -38,31 +39,32 @@ public:
 	ConVar* pNextConvar; //0x0008
 	uint32_t bRegistered; //0x0010
 	char pad_0014[4]; //0x0014
-	char* pszName; //0x0018
-	char* pszHelpString; //0x0020
+	char *pszName; //0x0018
+	char *pszHelpString; //0x0020
 	uint32_t nflags; //0x0028
-	char pad_002C[12]; //0x002C
-	ConVar* pParent; //0x0038
-	char* pszDefaultValue; //0x0040
-	char* pszValueStr; //0x0048
+	char pad_002C[4]; //0x002C
+	void *s_pConCommandBases; //0x0030
+	void *pParent; //0x0038
+	char *pszDefaultValue; //0x0040
+	char *pszValueStr; //0x0048
 	uint32_t strLength; //0x0050
-	float strVal; //0x0054
+	float fVal; //0x0054
 	int32_t intValue; //0x0058
 	uint32_t bHasMin; //0x005C
 	float fMinVal; //0x0060
 	uint32_t bHasMax; //0x0064
-	char pad_0068[8]; //0x0068
+	float fMaxVal; //0x0068
+	char pad_006C[4]; //0x006C
 	PVOID CALLBACKPTR; //0x0070
 
 
-	//Don't forget the constructor.
 	/*0*/	virtual void* Destr() = 0;
 	/*2*/	virtual bool IsCommand(void)const = 0;
 	/*3*/	virtual bool IsFlagSet(int)const = 0;
 	/*4*/	virtual void AddFlags(int) = 0;
-	/*4*/	virtual void RemoveFlags(int) = 0;
+	/*4*/	virtual void RemoveFlagsDoNotUse(int) = 0;
 
-	/*4*/	virtual uint64_t GetFlags() = 0;
+	/*4*/	virtual uint64_t GetFlagsDoNotUse() = 0;
 
 	/*7*/	virtual const char* GetName(void)const = 0;
 	/*8*/	virtual const char* GetHelpText(void)const = 0;
@@ -82,13 +84,21 @@ public:
 	/*18*/	virtual void SetValue(int) = 0;
 	/*19*/	virtual void* ClampValue(float&) = 0;
 	/*20*/	virtual void* ChangeStringValue(char const*, float) = 0;
-	/*21*/	virtual void* Create(char const*, char const*, int, char const*, bool, float, bool, float, void (*)(void*, char const*, float)) = 0;
+	/*21*/	virtual void* Create(char const* name, char const*defaultValue, int flags, char const*helperString, bool hasMin, float fMin, bool hasMax, float fMax, void *fnCallback) = 0;
 
+public:
+	void SetFlags(int flag) {
+		nflags = flag;
+	}
+	void RemoveFlags(int flag) {
+		nflags &= ~flag;
+	}
 	void DisableCallback() {
 		if(this->CALLBACKPTR)
 		*(PVOID*)(this->CALLBACKPTR) = dummyCallback;
 	}
 };
+
 class CCvar
 {
 public:

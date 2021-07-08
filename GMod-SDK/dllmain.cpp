@@ -115,7 +115,7 @@ void Main()
     cvar = CVar->FindVar("sv_allowcslua");
     spoofedAllowCsLua = (new SpoofedConVar(cvar));
     spoofedAllowCsLua->m_pOriginalCVar->DisableCallback();
-    
+
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related
     oPresent = *(_Present*)(present);
