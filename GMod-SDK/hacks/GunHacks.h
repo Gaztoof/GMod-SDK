@@ -141,7 +141,6 @@ void GunHacks(CUserCmd* cmd, C_BaseCombatWeapon* _this) {
 	else {
 		int topop = 2;
 		Lua->GetField(-1, "Primary");
-		std::cout << GetLuaEntBase(_this) << std::endl;
 
 		if (!Lua->IsType(-1, LuaObjectType::TABLE))
 		{

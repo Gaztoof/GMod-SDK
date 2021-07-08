@@ -15,6 +15,7 @@
 #include "hooks/RenderView.h"
 #include "hooks/Present.h"
 #include "hooks/PaintTraverse.h"
+#include "hooks/RunStringEx.h"
 
 #include "Memory.h"
 
@@ -44,7 +45,6 @@ void Main()
     EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
 
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
-    LuaInterface = (CLuaInterface*)LuaShared->GetLuaInterface(0);
 
     ClientEntityList = (CClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
     CHLclient = (CHLClient*)GetInterface("client.dll", "VClient017");
@@ -84,6 +84,8 @@ void Main()
     oPaintTraverse = VMTHook< _PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
+
+    //RunStringEx is getting hooked at the end of this function
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 
@@ -106,15 +108,6 @@ void Main()
     cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
     cvar->DisableCallback();
     
-    // god that's ugly... to clean
-
-    cvar = CVar->FindVar("sv_cheats");
-    spoofedCheats = new SpoofedConVar(cvar);
-    spoofedCheats->m_pOriginalCVar->DisableCallback();
-    
-    cvar = CVar->FindVar("sv_allowcslua");
-    spoofedAllowCsLua = (new SpoofedConVar(cvar));
-    spoofedAllowCsLua->m_pOriginalCVar->DisableCallback();
 
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related
@@ -128,6 +121,17 @@ void Main()
     Sleep(1100);
     EngineClient->ClientCmd_Unrestricted("play \"HL1/fvox/activated.wav\"");
     Settings::openMenu = true;
+
+    while (TRUE)
+    {
+        LuaInterface = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
+        if (LuaInterface)
+        {
+            oRunStringEx = VMTHook< _RunStringEx>((PVOID**)LuaInterface, (PVOID)hkRunStringEx, 111);
+            break;
+        }
+        Sleep(1);
+    }
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

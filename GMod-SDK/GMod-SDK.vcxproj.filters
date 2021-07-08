@@ -317,5 +317,8 @@
     <ClInclude Include="ConVarSpoofing.h">
       <Filter>Header Files\hacks</Filter>
     </ClInclude>
+    <ClInclude Include="hooks\RunStringEx.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

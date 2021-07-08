@@ -18,9 +18,17 @@ ClientFrameStage_t stage)
 
 	static ConVar* fullbrightCvar = CVar->FindVar("mat_fullbright");
 	if (fullbrightCvar && fullbrightCvar->intValue != Settings::Visuals::fullBright) fullbrightCvar->SetValue(Settings::Visuals::fullBright);
-	
+	if (Settings::Misc::svAllowCsLua && !spoofedAllowCsLua) {
+		spoofedAllowCsLua = new SpoofedConVar(CVar->FindVar("sv_allowcslua"));
+		spoofedAllowCsLua->m_pOriginalCVar->DisableCallback();
+	}if (Settings::Misc::svCheats && !spoofedCheats) {
+		spoofedCheats = new SpoofedConVar(CVar->FindVar("sv_cheats"));
+		spoofedCheats->m_pOriginalCVar->DisableCallback();
+	}
+
 	if (spoofedAllowCsLua && spoofedAllowCsLua->m_pOriginalCVar->intValue != Settings::Misc::svAllowCsLua) spoofedAllowCsLua->m_pOriginalCVar->SetValue(Settings::Misc::svAllowCsLua);
 	if (spoofedCheats && spoofedCheats->m_pOriginalCVar->intValue != Settings::Misc::svCheats) spoofedCheats->m_pOriginalCVar->SetValue(Settings::Misc::svCheats);
+
 	//Input->cameraoffset
 
 	if (localPlayer && localPlayer->IsAlive())

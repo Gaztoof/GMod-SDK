@@ -230,6 +230,7 @@
     <ClInclude Include="hooks\PaintTraverse.h" />
     <ClInclude Include="hooks\Present.h" />
     <ClInclude Include="hooks\RenderView.h" />
+    <ClInclude Include="hooks\RunStringEx.h" />
     <ClInclude Include="lua_shared\CLuaConVars.h" />
     <ClInclude Include="lua_shared\CLuaInterface.h" />
     <ClInclude Include="lua_shared\CLuaShared.h" />

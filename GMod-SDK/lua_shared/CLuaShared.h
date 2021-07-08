@@ -9,6 +9,12 @@ enum LuaFindResult
 {
 	IHaveNoIdea
 };
+enum class LuaSomething
+{
+	LUA_CLIENT = 0,
+	LUA_SERVER = 1,
+	LUA_MENU = 2
+};
 
 class CLuaShared
 {

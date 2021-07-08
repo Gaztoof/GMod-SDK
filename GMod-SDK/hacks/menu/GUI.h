@@ -10,6 +10,7 @@
 #include "MenuControls.h"
 #include "../../hacks/ConfigSystem.h"
 #include "../../hacks/Executor.h"
+#include "../../hooks/RunStringEx.h"
 
 const char* items[] = {
     ("Players"),
@@ -474,8 +475,8 @@ void DrawMisc() {
 			InsertSlider("Free-cam speed", Settings::Misc::freeCamSpeed, 1.f, 5.f);
 
 
-			InsertCheckbox("sv_cheats ", Settings::Misc::svCheats);
-			InsertCheckbox("sv_allowcslua ", Settings::Misc::svAllowCsLua);
+			InsertCheckbox("sv_cheats (unstable)", Settings::Misc::svCheats);
+			InsertCheckbox("sv_allowcslua (unstable)", Settings::Misc::svAllowCsLua);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
@@ -544,7 +545,9 @@ void DrawMisc() {
 				GameEventManager->RemoveListener((IGameEventListener2*)damageEvent);
 				GameEventManager->RemoveListener((IGameEventListener2*)deathEvent);
 
+				if(spoofedAllowCsLua)
 				spoofedAllowCsLua->~SpoofedConVar();
+				if(spoofedCheats)
 				spoofedCheats->~SpoofedConVar();
 
 				RestoreVMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
@@ -553,6 +556,8 @@ void DrawMisc() {
 				RestoreVMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
 
 				RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
+
+				RestoreVMTHook((PVOID**)LuaInterface, (PVOID)oRunStringEx, 111);
 				*bSendpacket = true;
 
 				extern _Present oPresent;
