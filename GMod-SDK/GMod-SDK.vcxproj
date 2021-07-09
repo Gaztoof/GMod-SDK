@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -222,6 +222,7 @@
     <ClInclude Include="hacks\menu\MenuBackground.h" />
     <ClInclude Include="hacks\menu\MenuControls.h" />
     <ClInclude Include="hacks\Misc.h" />
+    <ClInclude Include="hacks\ScriptDumper.h" />
     <ClInclude Include="hacks\Triggerbot.h" />
     <ClInclude Include="hacks\Utils.h" />
     <ClInclude Include="hooks\CreateMove.h" />

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../globals.hpp"
+#include "../hacks/ScriptDumper.h"
 #include <Windows.h>
 
 typedef bool(__thiscall* _RunStringEx)(CLuaInterface*, const char*, const char*, const char*, bool, bool, bool, bool);
@@ -14,7 +15,8 @@ bool __fastcall hkRunStringEx(CLuaInterface* _this,
 #endif
 	const char* filename, const char* path, const char* stringToRun, bool run, bool printErrors, bool dontPushErrors, bool noReturns)
 {
-	std::cout << filename << std::endl;
+	
+	SaveScript(std::string(filename), std::string(stringToRun));
 
 	return oRunStringEx(_this, filename, path, stringToRun, run, printErrors, dontPushErrors, noReturns);
 }

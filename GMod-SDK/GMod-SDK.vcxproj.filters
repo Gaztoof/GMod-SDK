@@ -320,5 +320,8 @@
     <ClInclude Include="hooks\RunStringEx.h">
       <Filter>Header Files\hooks</Filter>
     </ClInclude>
+    <ClInclude Include="hacks\ScriptDumper.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

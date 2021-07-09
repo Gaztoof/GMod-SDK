@@ -68,7 +68,7 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 void GunHacks(CUserCmd* cmd, C_BaseCombatWeapon* _this) {
 	if (!_this)
 		return;
-	CLuaInterface* Lua = LuaShared->GetLuaInterface(0);
+	CLuaInterface* Lua = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
 	if(Settings::Misc::noSpread)
 	NoSpread(cmd, _this, Lua);
 	if (!_this->UsesLua())
