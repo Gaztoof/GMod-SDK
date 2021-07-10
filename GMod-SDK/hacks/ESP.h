@@ -38,18 +38,28 @@ void doEsp()
 		Vector hisOrigPos = entity->GetAbsOrigin();
 		Vector hisPos;
 		Vector hisEyePos;
+
+		 rainbowColor(Settings::ESP::espNameColor, Settings::Misc::rainbowSpeed);
+		 rainbowColor(Settings::ESP::espBoundingBoxColor, Settings::Misc::rainbowSpeed);
+		 rainbowColor(Settings::ESP::skeletonEspColor, Settings::Misc::rainbowSpeed);
+		 rainbowColor(Settings::ESP::espWeaponColor, Settings::Misc::rainbowSpeed);
+		 rainbowColor(Settings::ESP::espHealthColor, Settings::Misc::rainbowSpeed);
+		 rainbowColor(Settings::ESP::espAmmoColor, Settings::Misc::rainbowSpeed);
+		 rainbowColor(Settings::ESP::espDistanceColor, Settings::Misc::rainbowSpeed);
+
 		entity->GetCollideable()->WorldSpaceTriggerBounds(&hisPos, &hisEyePos);
 		if (WorldToScreen(hisPos, screenPos) &&
 			WorldToScreen(hisEyePos, screenTopPos))
 		{
 			if (isEntity)
 			{
-				DrawTextW(Vector(screenTopPos.x, screenPos.y, 0), StringToWString(std::string(entName)), 0xFFFFFFFF, true);
+
+				DrawTextW(Vector(screenTopPos.x, screenTopPos.y, 0), StringToWString(std::string(entName)), ColorToInt(Settings::ESP::espNameColor), true);
 
 				if (Settings::ESP::espShapeInt == 0)
-					DrawEsp2D(screenPos, screenTopPos, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[3] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[0] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[1] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[2] * 255)));
+					DrawEsp2D(screenPos, screenTopPos, ColorToInt(Settings::ESP::espBoundingBoxColor));
 				else if (Settings::ESP::espShapeInt == 1)
-					DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[3] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[0] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[1] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[2] * 255)));
+					DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, ColorToInt(Settings::ESP::espBoundingBoxColor));
 				continue;
 			}
 
@@ -80,7 +90,7 @@ void doEsp()
 					Vector parentBonePos;
 					if (!WorldToScreen(normalBonePos, bonePosFrom) || !WorldToScreen(normalParentBonePos, parentBonePos))
 						continue;
-					DrawLine(bonePosFrom, parentBonePos, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::skeletonEspColor.fCol[3] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[0] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[1] * 255), (uint8_t)(Settings::ESP::skeletonEspColor.fCol[2] * 255)));
+					DrawLine(bonePosFrom, parentBonePos, ColorToInt(Settings::ESP::skeletonEspColor));
 					//DrawTextW(bonePosFrom, std::to_wstring(z), 0xFFFFFFFF, true); // write bone ids
 				}
 			}
@@ -92,6 +102,8 @@ void doEsp()
 			screenEyePos.z = 0;
 			if (Settings::Aimbot::drawAimbotHeadlines && WorldToScreen(Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]), screenEyePos) && Vector(screenWidth / 2, screenHeight / 2, 0).DistTo(screenEyePos) < Settings::Aimbot::aimbotFOV)
 			{
+				// white if random person, blue'ish if target
+
 				int color = entity == Settings::Aimbot::finalTarget ? 0xFF3333FF : 0xFFFFFFFF;
 				DrawLine(Vector(screenWidth / 2, screenHeight / 2, 0), screenEyePos, color);
 			}
@@ -107,53 +119,63 @@ void doEsp()
 				if (Settings::ESP::espName)
 					playerInfo = StringToWString(info.name) + L"\n";
 
+
+				Vector textPos;
+				switch (Settings::ESP::infosEmplacement)
+				{
+				case 0: // Above
+					textPos = Vector(hisHeadPos.x, hisHeadPos.y, 0);
+					break;
+				case 1: // Below
+					textPos = Vector(hisHeadPos.x, hisBottom.y, 0);
+					break;
+				case 2: // Right
+					textPos = Vector(hisHeadPos.x - (hisHeadPos.y - hisBottom.y) / 4, hisHeadPos.y, 0);
+					break;
+				case 3: // Left
+					textPos= Vector(hisHeadPos.x - (hisHeadPos.y - hisBottom.y) / 4, hisHeadPos.y, 0);
+					break;
+				}
+				DrawTextW(textPos, playerInfo, ColorToInt(Settings::ESP::espNameColor), true);
+
 				if (Settings::ESP::weaponText)
 				{
 					const char* weaponName = "";
 					if (entity->GetActiveWeapon())
 					{
-						playerInfo += L"Weapon: " + StringToWString(entity->GetActiveWeapon()->GetName()) + L"\n";
+						playerInfo = L"Weapon: " + StringToWString(entity->GetActiveWeapon()->GetName());
+						textPos.y += DrawingFontSize;
+						DrawTextW(textPos, playerInfo, ColorToInt(Settings::ESP::espWeaponColor), true);
 					}
 				}
 				if (Settings::ESP::espHealthBar)
 				{
-					playerInfo += L"Health: " + std::to_wstring(entity->GetHealth()) + L"/" + std::to_wstring(entity->GetMaxHealth()) + L"\n";
-				}
-				if (Settings::ESP::weaponAmmo)
-				{
-					playerInfo += L"Ammos: " + std::to_wstring(entity->GetActiveWeapon()->PrimaryAmmoCount()) + L"\n";
-				}
-				if (Settings::ESP::espDistance)
-				{
-					playerInfo += L"Distance: " + std::to_wstring((int)entity->GetAbsOrigin().DistTo(localPlayer->GetAbsOrigin())) + L"\n";
+					playerInfo = L"Health: " + std::to_wstring(entity->GetHealth()) + L"/" + std::to_wstring(entity->GetMaxHealth()) ;
+					textPos.y += DrawingFontSize;
+					DrawTextW(textPos, playerInfo, ColorToInt(Settings::ESP::espHealthColor), true);
 				}
 
-				if (playerInfo.length() > 1)
+				if (Settings::ESP::weaponAmmo)
 				{
-					Vector pos;
-					switch (Settings::ESP::infosEmplacement)
-					{
-					case 0: // Above
-						pos = Vector(hisHeadPos.x , hisHeadPos.y, 0);
-						break;
-					case 1: // Below
-						pos = Vector(hisHeadPos.x, hisBottom.y, 0);
-						break;
-					case 2: // Right
-						pos = Vector(hisHeadPos.x - (hisHeadPos.y - hisBottom.y) / 4, hisHeadPos.y, 0);
-						break;
-					case 3: // Left
-						pos = Vector(hisHeadPos.x - (hisHeadPos.y - hisBottom.y) / 4, hisHeadPos.y, 0);
-						break;
-					}
-					DrawTextW(pos, playerInfo, 0xFFFFFFFF, true);
+					playerInfo = L"Ammos: " + std::to_wstring(entity->GetActiveWeapon()->PrimaryAmmoCount()) ;
+					textPos.y += DrawingFontSize;
+					DrawTextW(textPos, playerInfo, ColorToInt(Settings::ESP::espAmmoColor), true);
 				}
+
+				if (Settings::ESP::espDistance)
+				{
+					playerInfo = L"Distance: " + std::to_wstring((int)entity->GetAbsOrigin().DistTo(localPlayer->GetAbsOrigin())) ;
+					textPos.y += DrawingFontSize;
+					DrawTextW(textPos, playerInfo, ColorToInt(Settings::ESP::espDistanceColor), true);
+				}
+
+
 				if (Settings::ESP::espBoundingBox)
 				{
 					if (Settings::ESP::espShapeInt == 0)
-						DrawEsp2D(hisBottom, hisHeadPos, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[3] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[0] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[1] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[2] * 255)));
+						DrawEsp2D(hisBottom, hisHeadPos, ColorToInt(Settings::ESP::espBoundingBoxColor));
 					else if (Settings::ESP::espShapeInt == 1)
-						DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, D3DCOLOR_ARGB((uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[3] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[0] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[1] * 255), (uint8_t)(Settings::ESP::espBoundingBoxColor.fCol[2] * 255)));
+						DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, ColorToInt(Settings::ESP::espBoundingBoxColor));
 				}
 			}
 		}

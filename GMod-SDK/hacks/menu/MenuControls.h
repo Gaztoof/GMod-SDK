@@ -1,5 +1,15 @@
 #pragma once
-#include "../ImGui/imgui.h"
+#include "../../ImGui/imgui.h"
+
+void ColorPicker(const char* name, Color *color, bool alpha) {
+
+	ImGuiStyle* style = &ImGui::GetStyle();
+
+	auto alphaSliderFlag = alpha ? ImGuiColorEditFlags_AlphaBar : ImGuiColorEditFlags_NoAlpha;
+
+	ImGui::SameLine(219.f);
+	ImGui::ColorEdit4(std::string{ "##" }.append(name).append("Picker").c_str(), color->fCol, alphaSliderFlag | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip, &color->rainbow);
+}
 
 #define InsertSpacer(x1) ImGui::BeginChild(x1, ImVec2(210.f, 18.f), false);  ImGui::EndChild(); 
 #define InsertGroupboxSpacer(x1) ImGui::BeginChild(x1, ImVec2(210.f, 9.f), false);  ImGui::EndChild();
@@ -24,7 +34,7 @@
 #define InsertCombo(x1,x2,x3) ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::PushItemWidth(158.f); ImGui::Combo(x1, &x2, x3, IM_ARRAYSIZE(x3)); ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
 #define InsertComboMiddle(x1,x2,x3) ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(50.f); ImGui::PushItemWidth(158.f); ImGui::Combo(x1, &x2, x3, IM_ARRAYSIZE(x3)); ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
 
-#define InsertComboColor(x1,x2,x3, x4, x5) ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::PushItemWidth(158.f); ImGui::Combo(x1, &x2, x3, IM_ARRAYSIZE(x3)); ImGui::PopItemWidth(); ImGui::SameLine(1.f); ColorPicker(x1, x4, x5);
+#define InsertComboColor(x1,x2,x3, x4, x5) ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::PushItemWidth(158.f); ImGui::Combo(x1, &x2, x3, IM_ARRAYSIZE(x3)); ImGui::PopItemWidth(); ImGui::SameLine(1.f); ColorPicker(x1, &x4, x5);
 #define InsertComboWithoutText(x1,x2,x3) ImGui::Spacing(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::PushItemWidth(158.f); ImGui::Combo(x1, &x2, x3, IM_ARRAYSIZE(x3)); ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
 #define InsertMultiCombo(x1,x2,x3,x4) ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::PushItemWidth(158.f); ImGui::MultiCombo(x1, x2, x3, x4); ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
 #define InsertMultiComboWithoutText(x1,x2,x3,x4) ImGui::Spacing(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::PushItemWidth(158.f); ImGui::MultiCombo(x1, x2, x3, x4); ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
@@ -40,15 +50,5 @@
 #define InsertText(x1) ImGui::Spacing(); ImGui::NewLine(); ImGui::SameLine(42.f); ImGui::Text(x1);
 #define InsertMultiTextInput(x1, x2, x3, x4) ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(19.f); ImGui::PushItemWidth(158.f); ImGui::InputTextMultiline(x1, x2, IM_ARRAYSIZE(x2), ImVec2(x3, x4), ImGuiInputTextFlags_AllowTabInput);ImGui::PopItemWidth();
 
-void ColorPicker(const char* name, float* color, bool alpha) {
-
-	ImGuiStyle* style = &ImGui::GetStyle();
-
-	auto alphaSliderFlag = alpha ? ImGuiColorEditFlags_AlphaBar : ImGuiColorEditFlags_NoAlpha;
-
-	ImGui::SameLine(219.f);
-	ImGui::ColorEdit4(std::string{ "##" }.append(name).append("Picker").c_str(), color, alphaSliderFlag | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip);
-}
-
-#define InsertColorPicker(x1,x2,x3) ImGui::SameLine(219.f); ColorPicker(x1, x2, x3);
-#define InsertComboColorPicker(x1,x2,x3) ImGui::SameLine(1.f); ColorPicker(x1, x2, x3);
+#define InsertColorPicker(x1,x2,x3) ImGui::SameLine(219.f); ColorPicker(x1, &x2, x3);
+#define InsertComboColorPicker(x1,x2,x3) ImGui::SameLine(1.f); ColorPicker(x1, &x2, x3);

@@ -1,17 +1,17 @@
 #pragma once
 
 #include "../globals.hpp"
+#include "../hooks/RunStringEx.h"
 #include <commdlg.h>
 #include <mutex>
 std::mutex executorMutex;
+
 void ExecuteScript(const char* input)
 {
-    executorMutex.lock();
 	CLuaInterface* LuaInterface = LuaShared->GetLuaInterface(0);
 	if (!LuaInterface) return;
-
-	LuaInterface->RunString("gazfootmoment", "", input, true, true);
-    executorMutex.unlock();
+    std::unique_lock lock(executorMutex);
+    waitingToBeExecuted.store(std::make_pair(true, input));
 }
 void LoadScriptFromFile()
 {

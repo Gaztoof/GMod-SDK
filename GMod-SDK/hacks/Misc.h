@@ -96,7 +96,7 @@ void ThirdPerson(CViewSetup& view)
     Ray_t ray;
     CTraceFilter filter;
     filter.pSkip = localPlayer;
-    ray.Init(view.origin, view.origin + ((view.angles.toVector() * -1) * Settings::Misc::thirdpersonDistance));
+    ray.Init(view.origin, view.origin + ((Settings::lastCmd.viewangles.toVector() * -1) * Settings::Misc::thirdpersonDistance));
     EngineTrace->TraceRay(ray, MASK_SOLID, &filter, &trace);
 
     view.origin = trace.endpos;

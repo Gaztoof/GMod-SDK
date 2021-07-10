@@ -193,7 +193,6 @@
     <ClInclude Include="client\c_basecombatweapon.h" />
     <ClInclude Include="client\C_BasePlayer.h" />
     <ClInclude Include="client\usercmd.h" />
-    <ClInclude Include="ConVarSpoofing.h" />
     <ClInclude Include="engine\CEngineClient.h" />
     <ClInclude Include="engine\CGameEventManager.h" />
     <ClInclude Include="engine\CIVDebugOverlay.h" />
@@ -212,6 +211,7 @@
     <ClInclude Include="hacks\AntiAim.h" />
     <ClInclude Include="hacks\AutoWall.h" />
     <ClInclude Include="hacks\ConfigSystem.h" />
+    <ClInclude Include="hacks\ConVarSpoofing.h" />
     <ClInclude Include="hacks\ESP.h" />
     <ClInclude Include="hacks\Executor.h" />
     <ClInclude Include="hacks\GunHacks.h" />
@@ -236,6 +236,7 @@
     <ClInclude Include="lua_shared\CLuaInterface.h" />
     <ClInclude Include="lua_shared\CLuaShared.h" />
     <ClInclude Include="mathlib\math_pfns.h" />
+    <ClInclude Include="NetVars.h" />
     <ClInclude Include="tier0/Color.h" />
     <ClInclude Include="CPhysicsSurfaceProps.h" />
     <ClInclude Include="globals.hpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="tier0\shareddefs.h" />
     <ClInclude Include="tier0\soundinfo.h" />
     <ClInclude Include="tier0\Vector.h" />
+    <ClInclude Include="tier1\checksum_crc.h" />
     <ClInclude Include="tier1\checksum_md5.h" />
     <ClInclude Include="tier1\KeyValues.h" />
   </ItemGroup>

@@ -5,6 +5,8 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 
+#include "tier1/checksum_crc.h"
+#include "engine/vmatrix.h"
 #include "lua_shared/CLuaInterface.h"
 #include "lua_shared/CLuaShared.h"
 #include "client/CClientEntityList.h"
@@ -31,6 +33,9 @@
 #include "vphysics/CPhysicsSurfaceProps.h"
 
 #include "hacks/ConVarSpoofing.h"
+
+#include <math.h>
+
 
 #ifdef _WIN64
 #define ViewRenderOffset 0xC4
@@ -96,6 +101,7 @@ int screenWidth, screenHeight;
 void* damageEvent;
 void* deathEvent;
 
+std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
 
 SpoofedConVar* spoofedAllowCsLua;
 SpoofedConVar* spoofedCheats;
@@ -119,6 +125,7 @@ struct chamsSetting {
 		visibleMaterial = visiblematerial;
 	}
 };
+#define ColorToInt(x) D3DCOLOR_ARGB((uint8_t)(x.fCol[3] * 255), (uint8_t)(x.fCol[0] * 255), (uint8_t)(x.fCol[1] * 255), (uint8_t)(x.fCol[2] * 255))
 
 namespace Settings {
 	bool openMenu = false;
@@ -162,11 +169,16 @@ namespace Settings {
 		bool espBoundingBox;
 		Color espBoundingBoxColor(255, 255, 255);
 		bool espHealthBar;
+		Color espHealthColor(255, 255, 255);
 		bool espName;
+		Color espNameColor(255, 255, 255);
 		bool weaponText;
+		Color espWeaponColor(255, 255, 255);
 		bool weaponAmmo;
+		Color espAmmoColor(255, 255, 255);
 		bool espDistance;
-		bool skeletonEsp;
+		Color espDistanceColor(255, 255, 255);
+		bool skeletonEsp;		
 		bool skeletonDetails;
 		Color skeletonEspColor(255, 255, 255);
 		int espShapeInt = 0;
@@ -214,6 +226,9 @@ namespace Settings {
 		bool onlyAimAtFriends;
 
 		bool pistolFastShoot;
+
+		bool smoothing;
+		float smoothSteps;
 
 	}
 	namespace Misc {
@@ -267,6 +282,7 @@ namespace Settings {
 		bool svCheats;
 		bool svAllowCsLua;
 
+		float rainbowSpeed = 1.f;
 
 	}
 	namespace Triggerbot {
@@ -276,5 +292,12 @@ namespace Settings {
 		bool triggerBotStomach;
 		bool triggerbotFastShoot;
 	}
+}
+void rainbowColor(Color& col, float speed) noexcept
+{
+	if (!col.rainbow)return;
+	col.fCol[0] = std::sin(speed * GlobalVars->realtime) * 0.5f + 0.5f;
+	col.fCol[1] = std::sin(speed * GlobalVars->realtime + 2 * PI / 3) * 0.5f + 0.5f;
+	col.fCol[2] = std::sin(speed * GlobalVars->realtime + 4 * PI / 3) * 0.5f + 0.5f;
 }
 // Make sure to add everything to ConfigSystem.h too! both ResetConfig, LoadConfig, and SaveConfig!!

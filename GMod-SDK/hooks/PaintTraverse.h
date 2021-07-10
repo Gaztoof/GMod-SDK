@@ -23,6 +23,13 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 		PanelWrapper->SetKeyBoardInputEnabled(panel, Settings::openMenu);
 		PanelWrapper->SetMouseInputEnabled(panel, Settings::openMenu);
 	}
+	auto l = waitingToBeExecuted.load();
+	if(l.first && l.second)
+	{
+		oRunStringEx(LuaInterface, "gazfootmoment", "", l.second, true, true, true, true);
+		waitingToBeExecuted.store(std::make_pair(false, nullptr));
+	}
+
 	oPaintTraverse(_this, panel, force_repaint, allow_force);
 
 }

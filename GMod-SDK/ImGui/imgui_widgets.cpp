@@ -5060,7 +5060,7 @@ bool ImGui::ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flag
 // See enum ImGuiColorEditFlags_ for available options. e.g. Only access 3 floats if ImGuiColorEditFlags_NoAlpha flag is set.
 // With typical options: Left-click on colored square to open color picker. Right-click to open option menu. CTRL-Click over input fields to edit them and TAB to go to next item.
 
-bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags) {
+bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags, bool* isRainbow) {
 
     ImGuiWindow* window = GetCurrentWindow();
 
@@ -5240,6 +5240,9 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
             PushItemWidth(square_sz * 12.0f); // Use 256 + bar sizes?
             value_changed |= ColorPicker4("##picker", col, picker_flags, &g.ColorPickerRef.x);
             PopItemWidth();
+
+            if(isRainbow)
+            Checkbox("Rainbow", isRainbow);
 
             EndPopup();
         }

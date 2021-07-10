@@ -142,6 +142,12 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	if (Settings::openMenu)
 	{
+		rainbowColor(Settings::menuColor, Settings::Misc::rainbowSpeed);
+
+		ImGui::GetStyle().Colors[ImGuiCol_MenuTheme].x = Settings::menuColor.fCol[0];
+		ImGui::GetStyle().Colors[ImGuiCol_MenuTheme].y = Settings::menuColor.fCol[1];
+		ImGui::GetStyle().Colors[ImGuiCol_MenuTheme].z = Settings::menuColor.fCol[2];
+
 		static int tab = 0;
 		style->ScrollbarSize = 5.f;
 
@@ -153,7 +159,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 				ImGui::Image(menuBg, ImVec2(648.f, 550.f));
 
-			} ImGui::EndChild();
+			} ImGui::EndChild();	
 
 			ImGui::SameLine(6.f);
 

@@ -13,10 +13,13 @@
 ID3DXLine* pLine = nullptr;
 ID3DXFont* pFont = nullptr;
 IDirect3DDevice9* pDevice = nullptr;
+
+int DrawingFontSize = 11;
+
 void InitRenderer(IDirect3DDevice9* pdevice)
 {
 	D3DXCreateLine(pdevice, &pLine);
-	D3DXCreateFont(pdevice, 12, NULL, FW_HEAVY, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, (L"Tahoma"), &pFont);
+	D3DXCreateFont(pdevice, DrawingFontSize, NULL, FW_HEAVY, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, (L"Tahoma"), &pFont);
 	pDevice = pdevice;
 }
 

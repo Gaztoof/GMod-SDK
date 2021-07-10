@@ -26,24 +26,38 @@ const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBon
 
 		if (entity == localPlayer)
 		{
+			rainbowColor(Settings::Chams::localPlayerChamsSettings.hiddenColor, Settings::Misc::rainbowSpeed);
+			rainbowColor(Settings::Chams::localPlayerChamsSettings.visibleColor, Settings::Misc::rainbowSpeed);
+
 			setting = Settings::Chams::localPlayerChamsSettings;
 		}
 		else if (entity->IsPlayer())
 		{
+			rainbowColor(Settings::Chams::playerChamsSettings.hiddenColor, Settings::Misc::rainbowSpeed);
+			rainbowColor(Settings::Chams::playerChamsSettings.visibleColor, Settings::Misc::rainbowSpeed);
+			 rainbowColor(Settings::Chams::teamMateSettings.hiddenColor, Settings::Misc::rainbowSpeed);
+			rainbowColor(Settings::Chams::teamMateSettings.visibleColor, Settings::Misc::rainbowSpeed);
+
 			if(entity->getTeamNum() == localPlayer->getTeamNum())
 			setting = Settings::Chams::teamMateSettings;
 			else setting = Settings::Chams::playerChamsSettings;
 		}
 		else if (entity->IsBaseCombatCharacter() && !entity->IsPlayer()) // IF ITS A NPC
 		{
+			rainbowColor(Settings::Chams::npcChamsSettings.hiddenColor, Settings::Misc::rainbowSpeed);
+			rainbowColor(Settings::Chams::npcChamsSettings.visibleColor, Settings::Misc::rainbowSpeed);
 			setting = Settings::Chams::npcChamsSettings;
 		}
 		else if (entity->IsRagdoll() || entity->IsARagdoll()) // Isragdoll = ragdoll entity, isaragdoll = ragdolled player cuz dead
 		{
+			rainbowColor(Settings::Chams::ragdollChamsSettings.hiddenColor, Settings::Misc::rainbowSpeed);
+			rainbowColor(Settings::Chams::ragdollChamsSettings.visibleColor, Settings::Misc::rainbowSpeed);
 			setting = Settings::Chams::ragdollChamsSettings;
 		}
 		else if (entity->IsWeapon())
 		{
+			rainbowColor(Settings::Chams::weaponChamsSettings.hiddenColor, Settings::Misc::rainbowSpeed);
+			rainbowColor(Settings::Chams::weaponChamsSettings.visibleColor, Settings::Misc::rainbowSpeed);
 			setting = Settings::Chams::weaponChamsSettings;
 		}
 		else if (!entity->IsWeapon() && strstr(pInfo.pModel->name, "models/weapons/") && Settings::Misc::removeHands)

@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include "../globals.hpp"
 
+constexpr float lisp = 11796120.f; // max value of short * 360
+
 QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
     static float oldForward;
     static float oldSide;
@@ -34,7 +36,7 @@ void StaticPitch(CUserCmd* cmd, bool down)
 {
     if (Settings::Untrusted)
     {
-        cmd->viewangles.x = down ? 911.1 : -180.1f;
+        cmd->viewangles.x = down ? -90.f : 90.f;
     }
     else {
         cmd->viewangles.x = down ? -89.f : 89.f;
@@ -80,7 +82,7 @@ void Sideways(CUserCmd* cmd)
 
 void AntiAimPitch(CUserCmd* cmd, int kind)
 {
-    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER)
+    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER ||cmd->buttons & (IN_USE | IN_ATTACK))
         return;
 
     switch (kind)
@@ -101,7 +103,7 @@ void AntiAimPitch(CUserCmd* cmd, int kind)
 }
 void AntiAimYaw(CUserCmd* cmd, int kind)
 {
-    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER)
+    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER || cmd->buttons & (IN_USE | IN_ATTACK))
         return;
 
     switch (kind)

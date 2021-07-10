@@ -101,24 +101,29 @@ void DrawVisuals()
 			// to do : activation hotkey
 
 			InsertCheckbox("Bounding box", Settings::ESP::espBoundingBox);
-			InsertColorPicker("##Bounding box color", Settings::ESP::espBoundingBoxColor.fCol, false);
+			InsertColorPicker("##Bounding box color", Settings::ESP::espBoundingBoxColor, false);
 
 			InsertCombo("Bouding Box Shape", Settings::ESP::espShapeInt, espShape);
 			InsertCheckbox("Dormant", Settings::ESP::espDormant);
 			InsertCheckbox("Health", Settings::ESP::espHealthBar);
+			InsertColorPicker("##Health color", Settings::ESP::espHealthColor, false);
 
 			InsertCheckbox("Name", Settings::ESP::espName);
+			InsertColorPicker("##Name color", Settings::ESP::espNameColor, false);
 
 			InsertCheckbox("Weapon name", Settings::ESP::weaponText);
+			InsertColorPicker("##Weaponname color", Settings::ESP::espWeaponColor, false);
 
 			InsertCheckbox("Ammo", Settings::ESP::weaponAmmo);
+			InsertColorPicker("##Ammo color", Settings::ESP::espAmmoColor, false);
 
 			InsertCheckbox("Distance", Settings::ESP::espDistance);
+			InsertColorPicker("##Distance color", Settings::ESP::espDistanceColor, false);
 
 			InsertCombo("Infos emplacement", Settings::ESP::infosEmplacement, plyInfoEmplacement);
 
 			InsertCheckbox("Skeleton (can crash at roundstart)", Settings::ESP::skeletonEsp);
-			InsertColorPicker("##Skeleton color", Settings::ESP::skeletonEspColor.fCol, false);
+			InsertColorPicker("##Skeleton color", Settings::ESP::skeletonEspColor, false);
 			InsertCheckbox("Detail skeleton", Settings::ESP::skeletonDetails);
 
 			InsertCheckbox("Entity ESP", Settings::ESP::entEsp);
@@ -135,16 +140,16 @@ void DrawVisuals()
 			style->ItemSpacing = ImVec2(4, 2);
 			style->WindowPadding = ImVec2(4, 4);
 
-			InsertComboColor("Visible Enemy Material", Settings::Chams::playerChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::playerChamsSettings.visibleColor.fCol, false);
-			InsertComboColor("Hidden Enemy Material", Settings::Chams::playerChamsSettings.hiddenMaterial, chamsMaterials, Settings::Chams::playerChamsSettings.hiddenColor.fCol, false);
-			InsertComboColor("Visible Teammate Material", Settings::Chams::teamMateSettings.visibleMaterial, chamsMaterials, Settings::Chams::teamMateSettings.visibleColor.fCol, false);
-			InsertComboColor("Hidden Teammate Material", Settings::Chams::teamMateSettings.hiddenMaterial, chamsMaterials, Settings::Chams::teamMateSettings.hiddenColor.fCol, false);
+			InsertComboColor("Visible Enemy Material", Settings::Chams::playerChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::playerChamsSettings.visibleColor, false);
+			InsertComboColor("Hidden Enemy Material", Settings::Chams::playerChamsSettings.hiddenMaterial, chamsMaterials, Settings::Chams::playerChamsSettings.hiddenColor, false);
+			InsertComboColor("Visible Teammate Material", Settings::Chams::teamMateSettings.visibleMaterial, chamsMaterials, Settings::Chams::teamMateSettings.visibleColor, false);
+			InsertComboColor("Hidden Teammate Material", Settings::Chams::teamMateSettings.hiddenMaterial, chamsMaterials, Settings::Chams::teamMateSettings.hiddenColor, false);
 
-			InsertComboColor("Local player Material", Settings::Chams::localPlayerChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::localPlayerChamsSettings.visibleColor.fCol, false);
+			InsertComboColor("Local player Material", Settings::Chams::localPlayerChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::localPlayerChamsSettings.visibleColor, false);
 
-			InsertComboColor("Ragdoll Material", Settings::Chams::ragdollChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::ragdollChamsSettings.visibleColor.fCol, false);
-			InsertComboColor("NPC Material", Settings::Chams::npcChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::npcChamsSettings.visibleColor.fCol, false);
-			InsertComboColor("Weapon Material", Settings::Chams::weaponChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::weaponChamsSettings.visibleColor.fCol, false);
+			InsertComboColor("Ragdoll Material", Settings::Chams::ragdollChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::ragdollChamsSettings.visibleColor, false);
+			InsertComboColor("NPC Material", Settings::Chams::npcChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::npcChamsSettings.visibleColor, false);
+			InsertComboColor("Weapon Material", Settings::Chams::weaponChamsSettings.visibleMaterial, chamsMaterials, Settings::Chams::weaponChamsSettings.visibleColor, false);
 			
 
 			style->ItemSpacing = ImVec2(0, 0);
@@ -187,7 +192,7 @@ void DrawVisuals()
 			InsertCheckbox("Remove skybox", Settings::Visuals::disableSkyBox);
 
 			InsertCheckbox("Change world color", Settings::Visuals::changeWorldColor);
-			InsertColorPicker("##World Color", Settings::Visuals::worldColor.fCol, true);
+			InsertColorPicker("##World Color", Settings::Visuals::worldColor, true);
 
 			InsertCheckbox("Remove visual recoil", Settings::Visuals::noVisualRecoil);
 			InsertCheckbox("Remove hands", Settings::Misc::removeHands);
@@ -227,6 +232,9 @@ void DrawAimbot() {
 			InsertCheckbox("Auto fire", Settings::Aimbot::aimbotAutoFire);
 			InsertCheckbox("Auto wall", Settings::Aimbot::aimbotAutoWall);
 			InsertCheckbox("Silent aim", Settings::Aimbot::silentAim);
+			InsertCheckbox("Smoothing", Settings::Aimbot::smoothing);
+			InsertSlider("Smoothing Steps", Settings::Aimbot::smoothSteps, 1, 20, "%f");
+
 			InsertCheckbox("Aim lock", Settings::Aimbot::lockOnTarget);
 			InsertCheckbox("Target teammates", Settings::Aimbot::aimAtTeammates);
 			InsertCheckbox("Target friends", Settings::Aimbot::aimAtFriends);
@@ -493,11 +501,9 @@ void DrawMisc() {
 			InsertText("Menu key");
 			ImGui::Keybind("menukey", (int*)&Settings::menuKey, &Settings::menuKeyStyle);
 			InsertText("Menu color");
-			InsertColorPicker("Menu color", Settings::menuColor.fCol, false);
-			ImGui::GetStyle().Colors[ImGuiCol_MenuTheme].x = Settings::menuColor.fCol[0];
-			ImGui::GetStyle().Colors[ImGuiCol_MenuTheme].y = Settings::menuColor.fCol[1];
-			ImGui::GetStyle().Colors[ImGuiCol_MenuTheme].z = Settings::menuColor.fCol[2];
+			InsertColorPicker("Menu color", Settings::menuColor, false);
 			InsertCheckbox("Untrusted", Settings::Untrusted);
+			InsertSlider("Rainbow speed", Settings::Misc::rainbowSpeed, 1.f, 5.f);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);

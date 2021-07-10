@@ -314,14 +314,20 @@
     <ClInclude Include="tier0/Color.h">
       <Filter>Header Files\tier0</Filter>
     </ClInclude>
-    <ClInclude Include="ConVarSpoofing.h">
-      <Filter>Header Files\hacks</Filter>
-    </ClInclude>
     <ClInclude Include="hooks\RunStringEx.h">
       <Filter>Header Files\hooks</Filter>
     </ClInclude>
     <ClInclude Include="hacks\ScriptDumper.h">
       <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\ConVarSpoofing.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="NetVars.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tier1\checksum_crc.h">
+      <Filter>Header Files\tier1</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

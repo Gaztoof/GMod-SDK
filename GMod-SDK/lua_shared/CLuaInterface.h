@@ -78,7 +78,7 @@ public:
 	/*7*/	virtual void* SetTable(int) = 0;
 	/*8*/	virtual void* SetMetaTable(int) = 0;
 	/*9*/	virtual void* GetMetaTable(int) = 0;
-	/*10*/	virtual void* Call(int iStackPos, int) = 0;
+	/*10*/	virtual void* Call(int iArgs, int iRets) = 0;
 	/*11*/	virtual void* PCall(int, int, int) = 0;
 	/*12*/	virtual void* Equal(int, int) = 0;
 	/*13*/	virtual void* RawEqual(int, int) = 0;

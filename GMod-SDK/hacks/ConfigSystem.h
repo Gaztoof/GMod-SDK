@@ -8,33 +8,35 @@
 using nlohmann::json;
 namespace ConfigSystem
 {
-	json to_jsonfcol(const float* color) {
+	json to_jsonfcol(const Color color) {
 		json j;
-		j["r"] = color[0];
-		j["g"] = color[1];
-		j["b"] = color[2];
-		j["a"] = color[3];
+		j["r"] = color.fCol[0];
+		j["g"] = color.fCol[1];
+		j["b"] = color.fCol[2];
+		j["a"] = color.fCol[3];
+		j["c"] = color.rainbow;
 		return j;
 	}
-	void from_jsonfcol(const json j, float* color) {
-		color[0] = j["r"];
-		color[1] = j["g"];
-		color[2] = j["b"];
-		color[3] = j["a"];
+	void from_jsonfcol(const json j, Color color) {
+		color.fCol[0] = j["r"];
+		color.fCol[1] = j["g"];
+		color.fCol[2] = j["b"];
+		color.fCol[3] = j["a"];
+		color.rainbow = j["c"];
 	}
 
 	json to_jsonchams(const chamsSetting& setting) {
 		json j;
-		j["hiddenColor"] = to_jsonfcol(setting.hiddenColor.fCol);
-		j["visibleColor"] = to_jsonfcol(setting.visibleColor.fCol);
+		j["hiddenColor"] = to_jsonfcol(setting.hiddenColor);
+		j["visibleColor"] = to_jsonfcol(setting.visibleColor);
 		j["hiddenMaterial"] = setting.hiddenMaterial;
 		j["visibleMaterial"] = setting.visibleMaterial;
 		return j;
 	}
 	chamsSetting from_jsonchams(const json& j) {
 		chamsSetting setting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		from_jsonfcol(j["hiddenColor"], setting.hiddenColor.fCol);
-		from_jsonfcol(j["visibleColor"], setting.visibleColor.fCol);
+		from_jsonfcol(j["hiddenColor"], setting.hiddenColor);
+		from_jsonfcol(j["visibleColor"], setting.visibleColor);
 		setting.hiddenMaterial = j["hiddenMaterial"];
 		setting.visibleMaterial = j["visibleMaterial"];
 		return setting;
@@ -48,7 +50,7 @@ namespace ConfigSystem
 
 		j["Globals"]["menuKey"] = Settings::menuKey;
 		j["Globals"]["menuKeyStyle"] = Settings::menuKeyStyle;
-		j["Globals"]["menuColor"] = to_jsonfcol(Settings::menuColor.fCol);
+		j["Globals"]["menuColor"] = to_jsonfcol(Settings::menuColor);
 		j["Globals"]["untrusted"] = Settings::Untrusted;
 
 		j["Chams"]["playerChams"] = to_jsonchams(Settings::Chams::playerChamsSettings);
@@ -62,7 +64,7 @@ namespace ConfigSystem
 		j["ESP"]["infosEmplacement"] = Settings::ESP::infosEmplacement;
 		j["ESP"]["espDormant"] = Settings::ESP::espDormant;
 		j["ESP"]["espBoundingBox"] = Settings::ESP::espBoundingBox;
-		j["ESP"]["espBoundingBoxColor"] = to_jsonfcol(Settings::ESP::espBoundingBoxColor.fCol);
+		j["ESP"]["espBoundingBoxColor"] = to_jsonfcol(Settings::ESP::espBoundingBoxColor);
 		j["ESP"]["espHealthBar"] = Settings::ESP::espHealthBar;
 		j["ESP"]["espName"] = Settings::ESP::espName;
 		j["ESP"]["weaponText"] = Settings::ESP::weaponText;
@@ -70,14 +72,19 @@ namespace ConfigSystem
 		j["ESP"]["espDistance"] = Settings::ESP::espDistance;
 		j["ESP"]["skeletonEsp"] = Settings::ESP::skeletonEsp;
 		j["ESP"]["skeletonDetails"] = Settings::ESP::skeletonDetails;
-		j["ESP"]["skeletonEspColor"] = to_jsonfcol(Settings::ESP::skeletonEspColor.fCol);
+		j["ESP"]["skeletonEspColor"] = to_jsonfcol(Settings::ESP::skeletonEspColor);
 		j["ESP"]["espShapeInt"] = Settings::ESP::espShapeInt;
 		j["ESP"]["entEsp"] = Settings::ESP::entEsp;
+		j["ESP"]["espDistanceColor"] = to_jsonfcol(Settings::ESP::espDistanceColor);
+		j["ESP"]["espAmmoColor"] = to_jsonfcol(Settings::ESP::espAmmoColor);
+		j["ESP"]["espWeaponColor"] = to_jsonfcol(Settings::ESP::espWeaponColor);
+		j["ESP"]["espNameColor"] = to_jsonfcol(Settings::ESP::espNameColor);
+		j["ESP"]["espHealthColor"] = to_jsonfcol(Settings::ESP::espHealthColor);
 
 		j["Visuals"]["fov"] = Settings::Visuals::fov;
 		j["Visuals"]["viewModelFOV"] = Settings::Visuals::viewModelFOV;
 		j["Visuals"]["noVisualRecoil"] = Settings::Visuals::noVisualRecoil;
-		j["Visuals"]["worldColor"] = to_jsonfcol(Settings::Visuals::worldColor.fCol);
+		j["Visuals"]["worldColor"] = to_jsonfcol(Settings::Visuals::worldColor);
 		j["Visuals"]["changeWorldColor"] = Settings::Visuals::changeWorldColor;
 		j["Visuals"]["disableSkyBox"] = Settings::Visuals::disableSkyBox;
 		j["Visuals"]["fullBright"] = Settings::Visuals::fullBright;
@@ -107,6 +114,8 @@ namespace ConfigSystem
 		j["Aimbot"]["aimAtFriends"] = Settings::Aimbot::aimAtFriends;
 		j["Aimbot"]["onlyAimAtFriends"] = Settings::Aimbot::onlyAimAtFriends;
 		j["Aimbot"]["pistolFastShoot"] = Settings::Aimbot::pistolFastShoot;
+		j["Aimbot"]["smoothing"] = Settings::Aimbot::smoothing;
+		j["Aimbot"]["smoothSteps"] = Settings::Aimbot::smoothSteps;
 
 		j["Misc"]["drawSpectators"] = Settings::Misc::drawSpectators;
 		j["Misc"]["drawCrosshair"] = Settings::Misc::drawCrosshair;
@@ -143,6 +152,7 @@ namespace ConfigSystem
 		j["Misc"]["zoomFOV"] = Settings::Misc::zoomFOV;
 		j["Misc"]["svAllowCsLua"] = Settings::Misc::svAllowCsLua;
 		j["Misc"]["svCheats"] = Settings::Misc::svCheats;
+		j["Misc"]["rainbowSpeed"] = Settings::Misc::rainbowSpeed;
 
 		j["Triggerbot"]["triggerBot"] = Settings::Triggerbot::triggerBot;
 		j["Triggerbot"]["triggerBotHead"] = Settings::Triggerbot::triggerBotHead;
@@ -170,7 +180,7 @@ namespace ConfigSystem
 		try {
 			Settings::menuKey = j["Globals"]["menuKey"];
 			Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
-			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor.fCol);
+			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor);
 			Settings::Untrusted = j["Globals"]["untrusted"];
 
 			Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
@@ -184,7 +194,7 @@ namespace ConfigSystem
 			Settings::ESP::infosEmplacement = j["ESP"]["infosEmplacement"];
 			Settings::ESP::espDormant = j["ESP"]["espDormant"];
 			Settings::ESP::espBoundingBox = j["ESP"]["espBoundingBox"];
-			from_jsonfcol(j["ESP"]["espBoundingBoxColor"], Settings::ESP::espBoundingBoxColor.fCol);
+			from_jsonfcol(j["ESP"]["espBoundingBoxColor"], Settings::ESP::espBoundingBoxColor);
 			Settings::ESP::espHealthBar = j["ESP"]["espHealthBar"];
 			Settings::ESP::espName = j["ESP"]["espName"];
 			Settings::ESP::weaponText = j["ESP"]["weaponText"];
@@ -192,7 +202,12 @@ namespace ConfigSystem
 			Settings::ESP::espDistance = j["ESP"]["espDistance"];
 			Settings::ESP::skeletonEsp = j["ESP"]["skeletonEsp"];
 			Settings::ESP::skeletonDetails = j["ESP"]["skeletonDetails"];
-			from_jsonfcol(j["ESP"]["skeletonEspColor"], Settings::ESP::skeletonEspColor.fCol);
+			from_jsonfcol(j["ESP"]["skeletonEspColor"], Settings::ESP::skeletonEspColor);
+			from_jsonfcol(j["ESP"]["espDistanceColor"], Settings::ESP::espDistanceColor);
+			from_jsonfcol(j["ESP"]["espAmmoColor"], Settings::ESP::espAmmoColor);
+			from_jsonfcol(j["ESP"]["espWeaponColor"], Settings::ESP::espWeaponColor);
+			from_jsonfcol(j["ESP"]["espNameColor"], Settings::ESP::espNameColor);
+			from_jsonfcol(j["ESP"]["espHealthColor"], Settings::ESP::espHealthColor);
 
 			Settings::ESP::espShapeInt = j["ESP"]["espShapeInt"];
 			Settings::ESP::entEsp = j["ESP"]["entEsp"];
@@ -200,7 +215,7 @@ namespace ConfigSystem
 			Settings::Visuals::fov = j["Visuals"]["fov"];
 			Settings::Visuals::viewModelFOV = j["Visuals"]["viewModelFOV"];
 			Settings::Visuals::noVisualRecoil = j["Visuals"]["noVisualRecoil"];
-			from_jsonfcol(j["Visuals"]["worldColor"], Settings::Visuals::worldColor.fCol);
+			from_jsonfcol(j["Visuals"]["worldColor"], Settings::Visuals::worldColor);
 			Settings::Visuals::changeWorldColor = j["Visuals"]["changeWorldColor"];
 			Settings::Visuals::disableSkyBox = j["Visuals"]["disableSkyBox"];
 			Settings::Visuals::fullBright = j["Visuals"]["fullBright"];
@@ -230,6 +245,8 @@ namespace ConfigSystem
 			Settings::Aimbot::aimAtFriends = j["Aimbot"]["aimAtFriends"];
 			Settings::Aimbot::onlyAimAtFriends = j["Aimbot"]["onlyAimAtFriends"];
 			Settings::Aimbot::pistolFastShoot = j["Aimbot"]["pistolFastShoot"];
+			Settings::Aimbot::smoothing = j["Aimbot"]["smoothing"];
+			Settings::Aimbot::smoothSteps = j["Aimbot"]["smoothSteps"];
 
 			Settings::Misc::drawSpectators = j["Misc"]["drawSpectators"];
 			Settings::Misc::drawCrosshair = j["Misc"]["drawCrosshair"];
@@ -266,6 +283,7 @@ namespace ConfigSystem
 			Settings::Misc::zoomFOV = j["Misc"]["zoomFOV"];
 			Settings::Misc::svAllowCsLua = j["Misc"]["svAllowCsLua"];
 			Settings::Misc::svCheats = j["Misc"]["svCheats"];
+			Settings::Misc::rainbowSpeed = j["Misc"]["rainbowSpeed"];
 
 			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
 			Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
@@ -302,7 +320,7 @@ namespace ConfigSystem
 		Settings::ESP::infosEmplacement = NULL;
 		Settings::ESP::espDormant = NULL;
 		Settings::ESP::espBoundingBox = NULL;
-		Settings::ESP::espBoundingBoxColor = Color(0, 255, 0);
+		Settings::ESP::espBoundingBoxColor = Color(255, 255, 255);
 		Settings::ESP::espHealthBar = NULL;
 		Settings::ESP::espName = NULL;
 		Settings::ESP::weaponText = NULL;
@@ -310,7 +328,12 @@ namespace ConfigSystem
 		Settings::ESP::espDistance = NULL;
 		Settings::ESP::skeletonEsp = NULL;
 		Settings::ESP::skeletonDetails = NULL;
-		Settings::ESP::skeletonEspColor = Color(0, 255, 0);
+		Settings::ESP::skeletonEspColor = Color(255, 255, 255);
+		Settings::ESP::espDistanceColor = Color(255, 255, 255);
+		Settings::ESP::espAmmoColor = Color(255, 255, 255);
+		Settings::ESP::espWeaponColor = Color(255, 255, 255);
+		Settings::ESP::espNameColor = Color(255, 255, 255);
+		Settings::ESP::espHealthColor = Color(255, 255, 255);
 
 		Settings::ESP::espShapeInt = NULL;
 		Settings::ESP::entEsp = NULL;
@@ -318,7 +341,7 @@ namespace ConfigSystem
 		Settings::Visuals::fov = 90.f;
 		Settings::Visuals::viewModelFOV = 90.f;
 		Settings::Visuals::noVisualRecoil = NULL;
-		Settings::Visuals::worldColor = Color(0, 255, 0);
+		Settings::Visuals::worldColor = Color(255, 255, 255);
 		Settings::Visuals::changeWorldColor = NULL;
 		Settings::Visuals::disableSkyBox = NULL;
 		Settings::Visuals::fullBright = false;
@@ -348,6 +371,8 @@ namespace ConfigSystem
 		Settings::Aimbot::aimAtFriends = NULL;
 		Settings::Aimbot::onlyAimAtFriends = NULL;
 		Settings::Aimbot::pistolFastShoot = NULL;
+		Settings::Aimbot::smoothing = NULL;
+		Settings::Aimbot::smoothSteps = 1;
 
 		Settings::Misc::drawSpectators = NULL;
 		Settings::Misc::drawCrosshair = NULL;
@@ -384,6 +409,7 @@ namespace ConfigSystem
 		Settings::Misc::zoomFOV = 90.f;
 		Settings::Misc::svCheats = false;
 		Settings::Misc::svAllowCsLua = false;
+		Settings::Misc::rainbowSpeed = 1.f;
 
 		Settings::Triggerbot::triggerBot = NULL;
 		Settings::Triggerbot::triggerBotHead = NULL;

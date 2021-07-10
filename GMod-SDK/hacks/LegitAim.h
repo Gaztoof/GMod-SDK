@@ -8,14 +8,15 @@
 void DoLegitAimbot(CUserCmd* cmd)
 {
 	static bool tempState = false;
+	static int smoothSteps = 0;
 
 	bool keyDown;
 	getKeyState(Settings::Aimbot::aimbotKey, Settings::Aimbot::aimbotKeyStyle, &keyDown, henlo1, henlo2, henlo3);
 
-	if (!keyDown || !Settings::Aimbot::enableAimbot) { Settings::Aimbot::finalTarget = nullptr; return; }
+	if (!keyDown || !Settings::Aimbot::enableAimbot) { Settings::Aimbot::finalTarget = nullptr; smoothSteps = 0; return; }
 
 	if (Settings::Aimbot::lockOnTarget && (Settings::Aimbot::finalTarget && !Settings::Aimbot::finalTarget->IsAlive()))Settings::Aimbot::finalTarget = localPlayer;
-	if (Settings::Aimbot::finalTarget == localPlayer) return;
+	if (Settings::Aimbot::finalTarget == localPlayer) { smoothSteps = 0; return; }
 
 	int selectedHitBox = 0;
 
@@ -128,22 +129,45 @@ void DoLegitAimbot(CUserCmd* cmd)
 		QAngle calc = targetPos.AngleTo(eyePos);
 		canHit = CanHit(Settings::Aimbot::finalTarget, eyePos, targetPos);
 
-		if (Settings::Aimbot::aimbotAutoFire)
+		bool shouldFire = true;
+		if (Settings::Aimbot::smoothing && !Settings::Aimbot::silentAim)
+		{
+			smoothSteps++;
+
+			if (smoothSteps >= Settings::Aimbot::smoothSteps)
+				shouldFire = true;
+			else {
+				shouldFire = false;
+
+				auto delta = calc - cmd->viewangles;
+				auto smoothed = cmd->viewangles + (delta * (1.f / Settings::Aimbot::smoothSteps));
+
+				calc = smoothed;
+			}
+		}
+
+		// it is better to use smoothing without silent aim.
+		if (!Settings::Aimbot::silentAim)
+		{
+				EngineClient->SetViewAngles(calc);
+		}
+
+		if (Settings::Aimbot::aimbotAutoFire && shouldFire)
 		{
 			if (canHit)
 			{
 				static bool toggle = false;
 				toggle = !toggle;
-				if (toggle || Settings::Aimbot::pistolFastShoot)
+				if (toggle)
 					cmd->buttons |= IN_ATTACK;
-				else cmd->buttons &= ~IN_ATTACK;
+				else if (Settings::Aimbot::pistolFastShoot)cmd->buttons &= ~IN_ATTACK;
 			}
 		}
 
-		if(cmd->buttons & IN_ATTACK)
-		cmd->viewangles = calc;
+		if (cmd->buttons & IN_ATTACK)
+		{
+			cmd->viewangles = calc;
+		}
 
-		if (!Settings::Aimbot::silentAim)
-			EngineClient->SetViewAngles(calc);
-	}
+	} else smoothSteps = 0;
 }

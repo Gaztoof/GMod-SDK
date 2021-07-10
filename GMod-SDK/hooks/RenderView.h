@@ -33,6 +33,8 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	if (localPlayer && Settings::Misc::thirdperson && thirdpKeyDown) {
 		lastThirdPersonState = true;
 		ThirdPerson(view);
+		view.angles = Settings::lastCmd.viewangles;
+
 		Input->m_fCameraInThirdPerson = true;		
 	}
 	else {

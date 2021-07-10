@@ -33,6 +33,93 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 
 			spread = Lua->GetNumber(-1);
 		}
+		else if (!strcmp(GetLuaEntBase(gun), "fas2_base"))
+		{
+			/*Lua->GetField(-1, "CurCone");
+			double curCone = Lua->GetNumber(-1);
+
+			Lua->Pop(2);
+
+			Lua->PushSpecial(0); // SPECIAL_GLOB
+			Lua->GetField(-1, "CurTime");
+			Lua->Call(0, 1);
+			double curTime = Lua->GetNumber(-1);
+			Lua->Pop(1);
+
+			Lua->GetField(-1, "math");
+			Lua->GetField(-1, "randomseed");
+			Lua->PushNumber(cmd->command_number);
+			Lua->Call(1, 0);
+			
+			QAngle spreadAng;
+
+			Lua->GetField(-1, "Rand");
+			Lua->PushNumber(-curCone);
+			Lua->PushNumber(curCone);
+			Lua->Call(2, 1);
+			spreadAng.x = (float)Lua->GetNumber(-1);
+			Lua->Pop(1);
+
+			Lua->GetField(-1, "Rand");
+			Lua->PushNumber(-curCone);
+			Lua->PushNumber(curCone);
+			Lua->Call(2, 1);
+			spreadAng.y = (float)Lua->GetNumber(-1);
+
+			Lua->Pop(3);
+			spreadAng.z = 0;
+			cmd->viewangles -= (spreadAng * 25.f);
+			cmd->viewangles -= localPlayer->GetViewPunch();
+
+			// 		Dir = (self.Owner:EyeAngles() + self.Owner:GetViewPunchAngles() + Angle(math.Rand(-cone, cone), math.Rand(-cone, cone), 0) * 25):Forward()
+
+			return;*/
+			/* This is wip.
+			* This is almost identical to FAS2's spread.
+			*
+			* Source spread isn't being used at all, because before it calls FireBullets, it sets bul.Spread to 0
+			*/
+		}
+		else if (!strcmp(GetLuaEntBase(gun), "cw_base"))
+		{
+			Lua->GetField(-1, "CurCone");
+			double curCone = Lua->GetNumber(-1);
+			if (cmd->buttons & IN_DUCK)
+				curCone *= 0.85f;
+
+			Lua->Pop(2);
+
+			Lua->PushSpecial(0); // SPECIAL_GLOB
+			Lua->GetField(-1, "CurTime");
+			Lua->Call(0, 1);
+			double curTime = Lua->GetNumber(-1);
+			Lua->Pop(1);
+
+			Lua->GetField(-1, "math");
+			Lua->GetField(-1, "randomseed");
+			Lua->PushNumber(curTime);
+			Lua->Call(1, 0);
+
+			QAngle spreadAng;
+
+			Lua->GetField(-1, "Rand");
+			Lua->PushNumber(-curCone);
+			Lua->PushNumber(curCone);
+			Lua->Call(2, 1);
+			spreadAng.x = (float)Lua->GetNumber(-1);
+			Lua->Pop(1);
+
+			Lua->GetField(-1, "Rand");
+			Lua->PushNumber(-curCone);
+			Lua->PushNumber(curCone);
+			Lua->Call(2, 1);
+			spreadAng.y = (float)Lua->GetNumber(-1);
+
+			Lua->Pop(3);
+			spreadAng.z = 0;
+			cmd->viewangles -= (spreadAng * 25.f);
+			cmd->viewangles -= localPlayer->GetViewPunch();
+		}
 		else {
 
 			Lua->GetField(-1, "Primary");
