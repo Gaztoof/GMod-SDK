@@ -74,7 +74,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	bool fakeLagKeyDown = false;
 	getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
 
-	if (NetChan->m_nChokedPackets < 14 && fakeLagKeyDown)
+	if (NetChan->m_nChokedPackets < 14 && fakeLagKeyDown && Settings::Misc::fakeLag)
 	{
 		*bSendpacket = false;
 		++NetChan->m_nChokedPackets;
