@@ -68,7 +68,7 @@ const char* plyInfoEmplacement[] = {
 const char* configsNames[]{
 	"Default",
 	"HvH",
-	"Legit"
+	"Legit",
 	"Config1",
 	"Config2",
 	"Config3",
