@@ -5,6 +5,8 @@
 #include <Windows.h>
 #include <string>
 #include <iostream>
+#include <optional>
+
 namespace fs = std::filesystem;
 fs::path SanitizePath(fs::path in)
 {
@@ -44,7 +46,7 @@ void CreateRecurringDir(fs::path in)
 	}
 }
 
-std::string SaveScript(std::string fileName, std::string fileContent)
+std::optional<std::string> SaveScript(std::string fileName, std::string fileContent)
 {
 	try
 	{
@@ -52,7 +54,7 @@ std::string SaveScript(std::string fileName, std::string fileContent)
 		fs::path scripthookPath = "C:\\GaztoofScriptHook\\Original\\";
 		fs::path detourPath = "C:\\GaztoofScriptHook\\Detour\\";
 		CLuaInterface* Lua = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
-		if (!Lua)return fileContent;
+		if (!Lua)return {};
 
 		if (EngineClient->GetNetChannelInfo() && EngineClient->GetNetChannelInfo()->GetAddress())
 		{
@@ -109,10 +111,19 @@ std::string SaveScript(std::string fileName, std::string fileContent)
 				(std::istreambuf_iterator<char>()));
 			fileContent = content;
 
-			std::cout << "Hooked file: "+detourDir.string() << std::endl;
+			return fileContent;
+		}
+		else {
+			std::ofstream outDetourFile;
+			outDetourFile.open(detourDir.string());
+			if (outDetourFile.good())
+			{
+				outDetourFile << fileContent;
+				outDetourFile.close();
+			}
 		}
 	}
 	catch (...) {}
 
-	return fileContent;
+	return {};
 }

@@ -5,6 +5,7 @@
 #include "../globals.hpp"
 #include "../hacks/ScriptDumper.h"
 #include <Windows.h>
+#include <optional>
 
 typedef bool(__thiscall* _RunStringEx)(CLuaInterface*, const char*, const char*, const char*, bool, bool, bool, bool);
 _RunStringEx oRunStringEx;
@@ -15,8 +16,7 @@ bool __fastcall hkRunStringEx(CLuaInterface* _this,
 #endif
 	const char* filename, const char* path, const char* stringToRun, bool run, bool printErrors, bool dontPushErrors, bool noReturns)
 {
-	const std::string script = SaveScript(std::string(filename), std::string(stringToRun));
-	const char* content = script.c_str();
+	const std::optional<std::string> script = SaveScript(std::string(filename), std::string(stringToRun));
 
-	return oRunStringEx(_this, filename, path, content, run, printErrors, dontPushErrors, noReturns);
+	return oRunStringEx(_this, filename, path, script.has_value() ? script.value().c_str() : stringToRun, run, printErrors, dontPushErrors, noReturns);
 }
