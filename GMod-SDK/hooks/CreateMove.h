@@ -85,7 +85,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		*bSendpacket = true;
 		NetChan->m_nChokedPackets = 0;
 	}
-
+	
 	if (*bSendpacket)
 	{
 		Settings::lastNetworkedCmd = *cmd;

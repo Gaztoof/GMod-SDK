@@ -17,7 +17,7 @@ namespace ConfigSystem
 		j["c"] = color.rainbow;
 		return j;
 	}
-	void from_jsonfcol(const json j, Color color) {
+	void from_jsonfcol(const json j, Color& color) {
 		color.fCol[0] = j["r"];
 		color.fCol[1] = j["g"];
 		color.fCol[2] = j["b"];

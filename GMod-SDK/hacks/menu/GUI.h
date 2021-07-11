@@ -503,7 +503,7 @@ void DrawMisc() {
 			InsertText("Menu color");
 			InsertColorPicker("Menu color", Settings::menuColor, false);
 			InsertCheckbox("Untrusted", Settings::Untrusted);
-			InsertSlider("Rainbow speed", Settings::Misc::rainbowSpeed, 1.f, 5.f);
+			InsertSlider("Rainbow speed", Settings::Misc::rainbowSpeed, 1.f, 15.f);
 
 			style->ItemSpacing = ImVec2(0, 0);
 			style->WindowPadding = ImVec2(6, 6);
