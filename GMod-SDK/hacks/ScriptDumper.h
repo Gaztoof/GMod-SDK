@@ -109,8 +109,9 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 
 			std::string content((std::istreambuf_iterator<char>(inFile)),
 				(std::istreambuf_iterator<char>()));
-			fileContent = content;
+			if (!strcmp(content.c_str(), fileContent.c_str()))return {};
 
+			fileContent = content;
 			return fileContent;
 		}
 		else {
