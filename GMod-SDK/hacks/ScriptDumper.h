@@ -44,14 +44,15 @@ void CreateRecurringDir(fs::path in)
 	}
 }
 
-void SaveScript(std::string fileName, std::string fileContent)
+std::string SaveScript(std::string fileName, std::string fileContent)
 {
 	try
 	{
 		if (fileName == "RunString(Ex)")fileName = "runString.lua";
-		fs::path scripthookPath = "C:\\GaztoofScriptHook\\";
+		fs::path scripthookPath = "C:\\GaztoofScriptHook\\Original\\";
+		fs::path detourPath = "C:\\GaztoofScriptHook\\Detour\\";
 		CLuaInterface* Lua = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
-		if (!Lua)return;
+		if (!Lua)return fileContent;
 
 		if (EngineClient->GetNetChannelInfo() && EngineClient->GetNetChannelInfo()->GetAddress())
 		{
@@ -64,19 +65,33 @@ void SaveScript(std::string fileName, std::string fileContent)
 			auto hostName = Lua->GetString(-1, NULL);
 			Lua->Pop(2);
 
-			if (hostName)
+			if (hostName) {
 				scripthookPath += hostName;
+				detourPath += hostName;
+			}
 			scripthookPath += " - ";
+			detourPath += " - ";
 			scripthookPath += EngineClient->GetNetChannelInfo()->GetAddress();
+			detourPath += EngineClient->GetNetChannelInfo()->GetAddress();
 		}
-		else scripthookPath += "No Server";
+		else {
+			scripthookPath += "No Server";
+			detourPath += "No Server";
+		}
 
 		scripthookPath += "\\";
+		detourPath += "\\";
 
 		scripthookPath += fs::path(fileName);
+		detourPath += fs::path(fileName);
 
 		fs::path targetDir = SanitizePath(scripthookPath);
+		fs::path detourDir = SanitizePath(detourPath);
+
 		CreateRecurringDir(targetDir.parent_path());
+		CreateRecurringDir(detourDir.parent_path());
+
+		
 
 		std::ofstream outFile;
 		outFile.open(targetDir.string());
@@ -85,6 +100,19 @@ void SaveScript(std::string fileName, std::string fileContent)
 			outFile << fileContent;
 			outFile.close();
 		}
+
+		std::ifstream inFile;
+		inFile.open(detourDir.string());
+		if (inFile.good()) {
+
+			std::string content((std::istreambuf_iterator<char>(inFile)),
+				(std::istreambuf_iterator<char>()));
+			fileContent = content;
+
+			std::cout << "Hooked file: "+detourDir.string() << std::endl;
+		}
 	}
 	catch (...) {}
+
+	return fileContent;
 }
