@@ -33,6 +33,7 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 
 			spread = Lua->GetNumber(-1);
 		}
+		// god that's annoying, i got it to work a few minutes ago, did some code cleaning, and suddenly it stopped working...
 		else if (!strcmp(GetLuaEntBase(gun), "fas2_base"))
 		{
 			Lua->GetField(-1, "MaxSpreadInc");
