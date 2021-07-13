@@ -35,90 +35,89 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 		}
 		else if (!strcmp(GetLuaEntBase(gun), "fas2_base"))
 		{
-			/*Lua->GetField(-1, "CurCone");
-			double curCone = Lua->GetNumber(-1);
-
+			Lua->GetField(-1, "MaxSpreadInc");
+			double curCone = 0.09f + Lua->GetNumber(-1);
 			Lua->Pop(2);
+			// 	self.CurCone = math.Clamp(cone + self.AddSpread * (self.dt.Bipod and 0.5 or 1) + (vel / 10000 * self.VelocitySensitivity) * (self.dt.Status == FAS_STAT_ADS and 0.25 or 1) + self.Owner.ViewAff, 0, 0.09 + self.MaxSpreadInc)
 
-			Lua->PushSpecial(0); // SPECIAL_GLOB
-			Lua->GetField(-1, "CurTime");
-			Lua->Call(0, 1);
-			double curTime = Lua->GetNumber(-1);
-			Lua->Pop(1);
-
-			Lua->GetField(-1, "math");
-			Lua->GetField(-1, "randomseed");
-			Lua->PushNumber(cmd->command_number);
-			Lua->Call(1, 0);
-			
 			QAngle spreadAng;
 
-			Lua->GetField(-1, "Rand");
-			Lua->PushNumber(-curCone);
-			Lua->PushNumber(curCone);
-			Lua->Call(2, 1);
-			spreadAng.x = (float)Lua->GetNumber(-1);
-			Lua->Pop(1);
-
-			Lua->GetField(-1, "Rand");
-			Lua->PushNumber(-curCone);
-			Lua->PushNumber(curCone);
-			Lua->Call(2, 1);
-			spreadAng.y = (float)Lua->GetNumber(-1);
-
-			Lua->Pop(3);
+			LuaMathSetSeed(LuaCurTime());
+			spreadAng.x = LuaMathRand(-curCone, curCone);
+			spreadAng.y = LuaMathRand(-curCone, curCone);
 			spreadAng.z = 0;
+
 			cmd->viewangles -= (spreadAng * 25.f);
 			cmd->viewangles -= localPlayer->GetViewPunch();
 
+			// Basically, reversing the previous usercmd's angles will simply max out the Recoil
+			if (cmd->command_number)
+			{
+				CUserCmd* prevCmd = Input->GetUserCmd(cmd->command_number - 1);
+				prevCmd->viewangles.x = -cmd->viewangles.x;
+				prevCmd->viewangles.y = cmd->viewangles.y - 180.f;
+				prevCmd->viewangles = prevCmd->viewangles.FixAngles();
+
+				Input->m_pVerifiedCommands[prevCmd->command_number % 90].m_cmd = *prevCmd;
+				Input->m_pVerifiedCommands[prevCmd->command_number % 90].m_crc = prevCmd->GetChecksum();
+			}
 			// 		Dir = (self.Owner:EyeAngles() + self.Owner:GetViewPunchAngles() + Angle(math.Rand(-cone, cone), math.Rand(-cone, cone), 0) * 25):Forward()
 
-			return;*/
+			return;
+			/* This is wip.
+			* This is almost identical to CW2's spread.
+			*
+			* Source spread isn't being used at all, because before it calls FireBullets, it sets bul.Spread to 0
+			*/
+
+		}
+		else if (!strcmp(GetLuaEntBase(gun), "cw_base"))
+		{
+			Lua->GetField(-1, "MaxSpreadInc");
+			double curCone = 0.09f + Lua->GetNumber(-1);
+			Lua->Pop(2);
+			// 	self.CurCone = math.Clamp(cone + self.AddSpread * (self.dt.Bipod and 0.5 or 1) + (vel / 10000 * self.VelocitySensitivity) * (self.dt.Status == FAS_STAT_ADS and 0.25 or 1) + self.Owner.ViewAff, 0, 0.09 + self.MaxSpreadInc)
+
+			//if self.Owner:Crouching() then cone = cone * 0.85 end
+			if (cmd->buttons & IN_DUCK)
+				curCone *= 0.85f;
+
+			// 	math.randomseed(commandNumber)
+			QAngle spreadAng;
+			LuaMathSetSeed((double)cmd->command_number);
+			spreadAng.x = LuaMathRand(-curCone, curCone);
+			spreadAng.y = LuaMathRand(-curCone, curCone);
+			spreadAng.z = 0;
+
+			cmd->viewangles -= (spreadAng * 25.f);
+			cmd->viewangles -= localPlayer->GetViewPunch();
+
+			// Basically, reversing the previous usercmd's angles will simply max out the Recoil
+			if (cmd->command_number)
+			{
+				CUserCmd* prevcmd = cmd;
+				for (int i = 0; i < 3; i++)
+				{
+					CUserCmd* cmd = Input->GetUserCmd(prevcmd->command_number - 1);
+					cmd->viewangles.y = prevcmd->viewangles.y - 180.f;
+					cmd->viewangles.x = -prevcmd->viewangles.x;
+					cmd->viewangles.FixAngles();
+
+					Input->m_pVerifiedCommands[cmd->command_number % 90].m_cmd = *cmd;
+					Input->m_pVerifiedCommands[cmd->command_number % 90].m_crc = cmd->GetChecksum();
+
+					prevcmd = cmd;
+				}
+			}
+			// 		Dir = (self.Owner:EyeAngles() + self.Owner:GetViewPunchAngles() + Angle(math.Rand(-cone, cone), math.Rand(-cone, cone), 0) * 25):Forward()
+
+			return;
 			/* This is wip.
 			* This is almost identical to FAS2's spread.
 			*
 			* Source spread isn't being used at all, because before it calls FireBullets, it sets bul.Spread to 0
 			*/
-		}
-		else if (!strcmp(GetLuaEntBase(gun), "cw_base"))
-		{
-			Lua->GetField(-1, "CurCone");
-			double curCone = Lua->GetNumber(-1);
-			if (cmd->buttons & IN_DUCK)
-				curCone *= 0.85f;
 
-			Lua->Pop(2);
-
-			Lua->PushSpecial(0); // SPECIAL_GLOB
-			Lua->GetField(-1, "CurTime");
-			Lua->Call(0, 1);
-			double curTime = Lua->GetNumber(-1);
-			Lua->Pop(1);
-
-			Lua->GetField(-1, "math");
-			Lua->GetField(-1, "randomseed");
-			Lua->PushNumber(curTime);
-			Lua->Call(1, 0);
-
-			QAngle spreadAng;
-
-			Lua->GetField(-1, "Rand");
-			Lua->PushNumber(-curCone);
-			Lua->PushNumber(curCone);
-			Lua->Call(2, 1);
-			spreadAng.x = (float)Lua->GetNumber(-1);
-			Lua->Pop(1);
-
-			Lua->GetField(-1, "Rand");
-			Lua->PushNumber(-curCone);
-			Lua->PushNumber(curCone);
-			Lua->Call(2, 1);
-			spreadAng.y = (float)Lua->GetNumber(-1);
-
-			Lua->Pop(3);
-			spreadAng.z = 0;
-			cmd->viewangles -= (spreadAng * 25.f);
-			cmd->viewangles -= localPlayer->GetViewPunch();
 		}
 		else {
 

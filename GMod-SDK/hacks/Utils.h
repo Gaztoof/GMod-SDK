@@ -171,3 +171,38 @@ const char* GetClassName(C_BasePlayer* _this)
 	return getClassName(_this);
 
 }
+
+double LuaMathRand(double min, double max){
+	auto Lua = LuaShared->GetLuaInterface(0);
+	if (!Lua) return 0.;
+	Lua->PushSpecial(0); // SPECIAL_GLOB
+	Lua->GetField(-1, "math");
+	Lua->GetField(-1, "Rand");
+	Lua->PushNumber(min);
+	Lua->PushNumber(max);
+	Lua->Call(2, 1);
+	double retVal = (double)Lua->GetNumber(-1);
+	Lua->Pop(3);
+	return retVal;
+}
+void LuaMathSetSeed(double seed){
+	auto Lua = LuaShared->GetLuaInterface(0);
+	if (!Lua) return;
+	Lua->PushSpecial(0); // SPECIAL_GLOB
+	Lua->GetField(-1, "math");
+	Lua->GetField(-1, "randomseed");
+	Lua->PushNumber(seed);
+	Lua->Call(1, 0);
+	Lua->Pop(2);
+}
+double LuaCurTime()
+{
+	auto Lua = LuaShared->GetLuaInterface(0);
+	if (!Lua) return 0.;
+	Lua->PushSpecial(0); // SPECIAL_GLOB
+	Lua->GetField(-1, "CurTime");
+	Lua->Call(0, 1);
+	double curTime = Lua->GetNumber(-1);
+	Lua->Pop(2);
+	return curTime;
+}
