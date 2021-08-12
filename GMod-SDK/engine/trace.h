@@ -21,6 +21,7 @@
 
 #include "../mathlib/math_pfns.h"
 #include "../tier0/Vector.h"
+#include "../mathlib/mathlib.h"
 // Note: These flags need to match the bspfile.h DISPTRI_TAG_* flags.
 #define DISPSURF_FLAG_SURFACE		(1<<0)
 #define DISPSURF_FLAG_WALKABLE		(1<<1)

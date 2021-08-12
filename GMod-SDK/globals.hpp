@@ -50,6 +50,8 @@
 #define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
 #define BSendPacketOffset 0x62
 #define ConColorMsgDec "?ConColorMsg@@YAXAEBVColor@@PEBDZZ"
+#define CClientStateOffset 0x3
+#define CClientStateSize 0x7
 #else
 #define ViewRenderOffset 0xA6
 #define GlobalVarsOffset 0x59
@@ -62,6 +64,8 @@
 #define CL_MovePattern "\xE8????\x83\xC4\x08\xFF\x15????\xDC\x25????"
 #define BSendPacketOffset 0x2F
 #define ConColorMsgDec "?ConColorMsg@@YAXABVColor@@PBDZZ"
+#define CClientStateOffset 0x1
+#define CClientStateSize 0x5
 #endif
 
 typedef HRESULT(__stdcall* _Present)(IDirect3DDevice9*, CONST RECT*, CONST RECT*, HWND, CONST RGNDATA*);

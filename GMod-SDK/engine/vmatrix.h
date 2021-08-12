@@ -1,73 +1,9 @@
 #pragma once
 #include "../tier0/Vector.h"
 #include <limits>
+#include "../mathlib/mathlib.h"
 
-struct cplane_t
-{
-    Vector	normal;
-    float	dist;
-    byte	type;			// for fast side tests
-    byte	signbits;		// signx + (signy<<1) + (signz<<1)
-    byte	pad[2];
 
-};
-
-class matrix3x4_t
-{
-public:
-    matrix3x4_t() {}
-    matrix3x4_t(
-        float m00, float m01, float m02, float m03,
-        float m10, float m11, float m12, float m13,
-        float m20, float m21, float m22, float m23)
-    {
-        flMatVal[0][0] = m00;	flMatVal[0][1] = m01; flMatVal[0][2] = m02; flMatVal[0][3] = m03;
-        flMatVal[1][0] = m10;	flMatVal[1][1] = m11; flMatVal[1][2] = m12; flMatVal[1][3] = m13;
-        flMatVal[2][0] = m20;	flMatVal[2][1] = m21; flMatVal[2][2] = m22; flMatVal[2][3] = m23;
-    }
-    //-----------------------------------------------------------------------------
-    // Creates a matrix where the X axis = forward
-    // the Y axis = left, and the Z axis = up
-    //-----------------------------------------------------------------------------
-    void Init(const Vector& xAxis, const Vector& yAxis, const Vector& zAxis, const Vector& vecOrigin)
-    {
-        flMatVal[0][0] = xAxis.x; flMatVal[0][1] = yAxis.x; flMatVal[0][2] = zAxis.x; flMatVal[0][3] = vecOrigin.x;
-        flMatVal[1][0] = xAxis.y; flMatVal[1][1] = yAxis.y; flMatVal[1][2] = zAxis.y; flMatVal[1][3] = vecOrigin.y;
-        flMatVal[2][0] = xAxis.z; flMatVal[2][1] = yAxis.z; flMatVal[2][2] = zAxis.z; flMatVal[2][3] = vecOrigin.z;
-    }
-
-    //-----------------------------------------------------------------------------
-    // Creates a matrix where the X axis = forward
-    // the Y axis = left, and the Z axis = up
-    //-----------------------------------------------------------------------------
-    matrix3x4_t(const Vector& xAxis, const Vector& yAxis, const Vector& zAxis, const Vector& vecOrigin)
-    {
-        Init(xAxis, yAxis, zAxis, vecOrigin);
-    }
-
-    inline void SetOrigin(Vector const& p)
-    {
-        flMatVal[0][3] = p.x;
-        flMatVal[1][3] = p.y;
-        flMatVal[2][3] = p.z;
-    }
-
-    inline void Invalidate(void)
-    {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
-                flMatVal[i][j] = std::numeric_limits<float>::infinity();;
-            }
-        }
-    }
-
-    float* operator[](int i) { return flMatVal[i]; }
-    const float* operator[](int i) const { return flMatVal[i]; }
-    float* Base() { return &flMatVal[0][0]; }
-    const float* Base() const { return &flMatVal[0][0]; }
-
-    float flMatVal[3][4];
-};
 class VMatrix
 {
 public:

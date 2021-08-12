@@ -257,9 +257,6 @@
     <ClInclude Include="engine\CModelRender.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\CNetChan.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
     <ClInclude Include="engine\CVRenderView.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
@@ -337,6 +334,21 @@
     </ClInclude>
     <ClInclude Include="vgui\ISurfaceV30.h">
       <Filter>Header Files\vgui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\inetmessage.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="tier1\bitbuf.h">
+      <Filter>Header Files\tier1</Filter>
+    </ClInclude>
+    <ClInclude Include="mathlib\mathlib.h">
+      <Filter>Header Files\mathlib</Filter>
+    </ClInclude>
+    <ClInclude Include="tier0\platform.h">
+      <Filter>Header Files\tier0</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\ProcessGMODServerToClient.h">
+      <Filter>Header Files\hooks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

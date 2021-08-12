@@ -16,11 +16,12 @@
 #include "hooks/Present.h"
 #include "hooks/PaintTraverse.h"
 #include "hooks/RunStringEx.h"
+#include "hooks/ProcessGMODServerToClient.h"
 
 #include "Memory.h"
 
 #include "hacks/ConVarSpoofing.h"
-
+#include "engine/inetmessage.h"
 using namespace std;
 
 
@@ -46,6 +47,11 @@ void Main()
     VirtualProtect(Globals::bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
 
     EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
+
+    // x64: thats directly the vtable pointer // CEngineClient::IsPaused points to clientstate https://i.imgur.com/4aWvQbs.png
+    auto ClientState = GetRealFromRelative((*(char***)(EngineClient))[84], CClientStateOffset, CClientStateSize, false) ;
+
+    //void* plim = (plim*)(GetRealFromRelative((char*), 0x1, 5) + BSendPacketOffset);
 
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
 
@@ -87,6 +93,7 @@ void Main()
     oPaintTraverse = VMTHook< _PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
+    oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
 
     //RunStringEx is getting hooked at the end of this function
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!

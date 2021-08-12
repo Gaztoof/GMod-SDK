@@ -14,6 +14,7 @@
 
 #include "../tier0/Vector.h"
 #include "vmatrix.h"
+#include "../mathlib/mathlib.h"
 
 #define	CONTENTS_EMPTY			0		// No contents
 
@@ -196,7 +197,6 @@ class ICollideable;
 class QAngle;
 class CTraceListData;
 class CPhysCollide;
-struct cplane_t;
 
 //-----------------------------------------------------------------------------
 // The standard trace filter... NOTE: Most normal traces inherit from CTraceFilter!!!
