@@ -35,12 +35,15 @@ void Main()
     freopen_s(&f, "CONIN$", "r", stdin);
     SetConsoleTitle(L"GMod SDK - WIP - Coded by t.me/Gaztoof");
 #endif
+    ConColorMsg = (MsgFn)GetProcAddress(GetModuleHandleW(L"tier0.dll"), ConColorMsgDec);
+
+    ConPrint("Successfully injected!", Color(0, 255, 0));
 
     ConfigSystem::LoadConfig("Default");
-    bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
+    Globals::bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
 
     DWORD originalProtection;
-    VirtualProtect(bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
+    VirtualProtect(Globals::bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
 
     EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
 
@@ -59,7 +62,7 @@ void Main()
     EngineTrace = (IEngineTrace*)GetInterface("engine.dll", "EngineTraceClient003");
     IVDebugOverlay = (CIVDebugOverlay*)GetInterface("engine.dll", "VDebugOverlay003");
     GameEventManager = (CGameEventManager*)GetInterface("engine.dll", "GAMEEVENTSMANAGER002");
-    MatSystemSurface = (void*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
+    MatSystemSurface = (CMatSystemSurface*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
     PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
     PhysicsSurfaceProps = (CPhysicsSurfaceProps*)GetInterface("vphysics.dll", "VPhysicsSurfaceProps001");
 
@@ -93,11 +96,11 @@ void Main()
 
     EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
     
-     damageEvent = (void*)new DamageEvent();
-     deathEvent = (void*)new DeathEvent();
+    Globals::damageEvent = (void*)new DamageEvent();
+    Globals::deathEvent = (void*)new DeathEvent();
 
-    GameEventManager->AddListener((IGameEventListener2*)damageEvent, "player_hurt", false);
-    GameEventManager->AddListener((IGameEventListener2*)deathEvent, "entity_killed", false);
+    GameEventManager->AddListener((IGameEventListener2*)Globals::damageEvent, "player_hurt", false);
+    GameEventManager->AddListener((IGameEventListener2*)Globals::deathEvent, "entity_killed", false);
     
     
     ConVar* cvar = CVar->FindVar("mat_fullbright");
@@ -117,18 +120,20 @@ void Main()
     //EngineClient->ClientCmd_Unrestricted("play \"items/suitchargeok1.wav\"");
         //Sleep(2200);
     Sleep(1000);
-    EngineClient->ClientCmd_Unrestricted("play \"HL1/fvox/bell.wav\"");
+    MatSystemSurface->PlaySound("HL1/fvox/bell.wav");
     Sleep(1100);
-    EngineClient->ClientCmd_Unrestricted("play \"HL1/fvox/activated.wav\"");
-    Settings::openMenu = true;
+    MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
+    Globals::openMenu = true;
 
     while (TRUE)
     {
+
         LuaInterface = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
         if (LuaInterface)
         {
             oRunStringEx = VMTHook< _RunStringEx>((PVOID**)LuaInterface, (PVOID)hkRunStringEx, 111);
             break;
+
         }
         Sleep(1);
     }

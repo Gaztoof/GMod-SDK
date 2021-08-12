@@ -18,11 +18,12 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	getKeyState(Settings::Misc::zoomKey, Settings::Misc::zoomKeyStyle, &zoomKeyDown, henlo69, henlo70, henlo71);
 
 	// make this run only if not holding right click for instance to restore fov to what it should be while aiming
+	if(Settings::Visuals::fovEnabled)
 	if (zoomKeyDown && Settings::Misc::zoom)
 		view.fov = Settings::Misc::zoomFOV;
 	else view.fov = Settings::Visuals::fov;
 
-	//view.angles = Settings::lastCmd.viewangles;
+	//view.angles = Globals::lastCmd.viewangles;
 	view.fovViewmodel = Settings::Visuals::viewModelFOV;
 	
 	static Vector camPos = Vector(0,0,0);
@@ -33,7 +34,7 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	if (localPlayer && Settings::Misc::thirdperson && thirdpKeyDown) {
 		lastThirdPersonState = true;
 		ThirdPerson(view);
-		view.angles = Settings::lastCmd.viewangles;
+		view.angles = Globals::lastCmd.viewangles;
 
 		Input->m_fCameraInThirdPerson = true;		
 	}
@@ -50,7 +51,7 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	static bool lastFreeCamState = false;
 	if (localPlayer && Settings::Misc::freeCam && freeCamKeyDown)
 	{
-		view.angles = Settings::lastCmd.viewangles;
+		view.angles = Globals::lastCmd.viewangles;
 		lastFreeCamState = true;
 		Settings::currentlyInFreeCam = true;
 		FreeCam(view, camPos);
@@ -59,7 +60,7 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	else {
 		if (lastFreeCamState)
 		{
-			EngineClient->SetViewAngles(Settings::lastRealCmd.viewangles);
+			EngineClient->SetViewAngles(Globals::lastRealCmd.viewangles);
 			Input->m_fCameraInThirdPerson = false;
 		}
 		lastFreeCamState = false;
@@ -69,7 +70,7 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 
 	if ((!freeCamKeyDown || !Settings::Misc::freeCam) && (!thirdpKeyDown || !Settings::Misc::thirdperson))
 	{
-		//view.angles = Settings::lastCmd.viewangles;
+		//view.angles = Globals::lastCmd.viewangles;
 	}
 	
 	return oRenderView(ViewRender, view, nClearFlags, whatToDraw);

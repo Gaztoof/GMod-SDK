@@ -103,10 +103,10 @@ void DrawRect(Vector pos, float height, float width, ULONG color) {
 }
 void DrawFilledRect(Vector pos, float height, float width, ULONG color) {
 	D3DTLVERTEX qV[4] = {
-		{ float(pos.x), float(pos.y + height), 0.f, 1.f, color },
-		{ float(pos.x), float(pos.y), 0.f, 1.f, color },
-		{ float(pos.x + width), float(pos.y + height), 0.f, 1.f, color },
-		{ float(pos.x + width), float(pos.y) , 0.f, 1.f, color }
+		{ pos.x, pos.y + height, 0.f, 1.f, color },
+		{ pos.x, pos.y, 0.f, 1.f, color },
+		{ pos.x + width, pos.y + height, 0.f, 1.f, color },
+		{ pos.x + width, pos.y , 0.f, 1.f, color }
 	};
 
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
@@ -133,47 +133,79 @@ void DrawEsp2D(Vector targetPos, Vector targetTop, ULONG color) {
 	DrawLineOutlined(tl, bl, color);
 	DrawLineOutlined(tr, br, color);
 }
-
-void DrawEspBox3D(Vector top, Vector bot, float a, D3DCOLOR color)
+void RotateVec(QAngle ang, Vector& in, int height3D)
 {
-	int width = 25;
+	float Sin = sin(DEG2RAD(ang.y));
+	float Cos = cos(DEG2RAD(ang.y));
+	//float CosZ = cos(DEG2RAD(ang.z));
+	//float Tan = tan(DEG2RAD(ang.z));
+	Vector vecCl(in.x, in.y, in.z);
 
-	int height3D = abs(top.z - bot.z);
-	Vector b1, b2, b3, b4, t1, t2, t3, t4;
-	b1.z = b2.z = b3.z = b4.z = bot.z;
-	b1.x = bot.x + (cos(DEG2RAD(a + 45)) * width) + width/2;
-	b1.y = bot.y + (sin(DEG2RAD(a + 45)) * width) + width/2;
+	//std::cout << "tan: " << Tan  << " cosz: " << CosZ << " Cos: " << Cos << " sin: " << sin(DEG2RAD(ang.y)) << " x: " << ang.x << " y: " << ang.y << " z: " << ang.z   << std::endl;
+	in.x = (vecCl.x * Cos - vecCl.y * Sin);
+	in.y = (vecCl.x * Sin + vecCl.y * Cos);
+	in.z = vecCl.z;
+}
 
-	b2.x = bot.x + (cos(DEG2RAD(a + 135)) * width) + width / 2;
-	b2.y = bot.y + (sin(DEG2RAD(a + 135)) * width) + width / 2;
+void DrawEspBox3D(Vector max, Vector min, Vector orig, QAngle ang, D3DCOLOR color)
+{
+	int height3D = max.z - min.z;
+	//max = Vector(10, 10, 10);
+	//min = Vector(-10, -10, -10);
+	//ang.x = std::sin(GlobalVars->realtime) * 180.f + 180.f; // roll
+	//ang.y = std::sin(GlobalVars->realtime) * 180.f + 180.f; // yaw
+	//ang.z = std::sin(GlobalVars->realtime) * 180.f + 180.f; // yaw
 
-	b3.x = bot.x + (cos(DEG2RAD(a + 225)) * width) + width / 2;
-	b3.y = bot.y + (sin(DEG2RAD(a + 225)) * width) + width / 2;
+	Vector b1(min.x, min.y, min.z);
+	Vector b2(min.x, max.y, min.z);
+	Vector b3(max.x, max.y, min.z);
+	Vector b4(max.x, min.y, min.z);
+	
+	RotateVec(ang, b1, height3D);
+	RotateVec(ang, b2, height3D);
+	RotateVec(ang, b3, height3D);
+	RotateVec(ang, b4, height3D);
 
-	b4.x = bot.x + (cos(DEG2RAD(a + 315)) * width) + width / 2;
-	b4.y = bot.y + (sin(DEG2RAD(a + 315)) * width) + width / 2;
+	b1 += orig;
+	b2 += orig;
+	b3 += orig;
+	b4 += orig;
 
-	t1.x = b1.x;
-	t1.y = b1.y;
-	t1.z = b1.z + height3D;
 
-	t2.x = b2.x;
-	t2.y = b2.y;
-	t2.z = b2.z + height3D;
+	Vector t1 = Vector(b1.x , b1.y, b1.z + height3D);
+	Vector t2 = Vector(b2.x , b2.y, b2.z + height3D);
+	Vector t3 = Vector(b3.x , b3.y, b3.z + height3D);
+	Vector t4 = Vector(b4.x , b4.y, b4.z + height3D);
 
-	t3.x = b3.x;
-	t3.y = b3.y;
-	t3.z = b3.z + height3D;
+	// cos(DEG2RAD(ang.z))
+#define W2S(x,y) WorldToScreen(x, y)
+	/*Vector tt1, tt2, tt3, tt4;
+	W2S(b1, tt1);
+	W2S(b2, tt2);
+	W2S(b4, tt3);
+	W2S(t1, tt4);
+	DrawLine(tt1, tt2, 0xFF00FF00);
+	DrawLine(tt1, tt3, 0xFF00FF00);
+	DrawLine(tt1, tt4, 0xFF00FF00);
+	DrawTextW(tt1, L"  OOO", 0xFF00FF00, true);
+	DrawTextW(tt2, L"  XXX", 0xFF00FF00, true);
+	DrawTextW(tt3, L"  YYY", 0xFF00FF00, true);
+	DrawTextW(tt4, L"  ZZZ", 0xFF00FF00, true);*/
 
-	t4.x = b4.x;
-	t4.y = b4.y;
-	t4.z = b4.z + height3D;
 	Vector b1_2, b2_2, b3_2, b4_2, t1_2, t2_2, t3_2, t4_2;
 
-	#define W2S(x,y) WorldToScreen(x, y)
 
 	if (W2S(b1, b1_2) && W2S(b2, b2_2) && W2S(b3, b3_2) && W2S(b4, b4_2) && W2S(t1, t1_2) && W2S(t2, t2_2) && W2S(t3, t3_2) && W2S(t4, t4_2))
 	{
+		/*DrawTextW(b1_2, L"b1", 0xFFFFFFFF, false);
+		DrawTextW(b2_2, L"b2", 0xFFFFFFFF, false);
+		DrawTextW(b3_2, L"b3", 0xFFFFFFFF, false);
+		DrawTextW(b4_2, L"b4", 0xFFFFFFFF, false);
+		DrawTextW(t1_2, L"t1", 0xFFFFFFFF, false);
+		DrawTextW(t2_2, L"t2", 0xFFFFFFFF, false);
+		DrawTextW(t3_2, L"t3", 0xFFFFFFFF, false);
+		DrawTextW(t4_2, L"t4", 0xFFFFFFFF, false);*/
+
 		// collumns
 		DrawLine(t1_2, b1_2, color);
 		DrawLine(t2_2, b2_2, color);

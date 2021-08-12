@@ -17,11 +17,10 @@
 #endif
 IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-_Present oPresent;
 WNDPROC oWndProc;
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
-	if (Settings::openMenu) {
+	if (Globals::openMenu) {
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 		return true;
 	}
@@ -42,7 +41,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	static bool initialized = false;
 	if (!initialized)
 	{
-		EngineClient->GetScreenSize(screenWidth, screenHeight);
+		EngineClient->GetScreenSize(Globals::screenWidth, Globals::screenHeight);
 		InitRenderer(pDevice);
 
 		ImGui::CreateContext();
@@ -78,7 +77,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	
 	static bool lastState = false;
 	if (tempState != lastState && tempState)
-		Settings::openMenu = !Settings::openMenu;
+		Globals::openMenu = !Globals::openMenu;
 	lastState = tempState;
 
 	if (EngineClient->IsInGame())
@@ -87,19 +86,19 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		if (Settings::Aimbot::drawAimbotFov)
 		{
-			DrawCircle(Vector(screenWidth / 2, screenHeight / 2, 0), Settings::Aimbot::aimbotFOV, Settings::Aimbot::aimbotFOV, 0xFFFFFFFF);
+			DrawCircle(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0), Settings::Aimbot::aimbotFOV, Settings::Aimbot::aimbotFOV, 0xFFFFFFFF);
 		}
 		if (Settings::Misc::drawCrosshair) {
-			DrawLine(Vector(screenWidth / 2 - Settings::Misc::crosshairSize, screenHeight / 2, 0), Vector(screenWidth / 2 + Settings::Misc::crosshairSize, screenHeight / 2, 0), 0xFFFFFFFF);
-			DrawLine(Vector(screenWidth / 2, screenHeight / 2 - Settings::Misc::crosshairSize, 0), Vector(screenWidth / 2, screenHeight / 2 + Settings::Misc::crosshairSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2 - Settings::Misc::crosshairSize, Globals::screenHeight / 2, 0), Vector(Globals::screenWidth / 2 + Settings::Misc::crosshairSize, Globals::screenHeight / 2, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2 - Settings::Misc::crosshairSize, 0), Vector(Globals::screenWidth / 2, Globals::screenHeight / 2 + Settings::Misc::crosshairSize, 0), 0xFFFFFFFF);
 		}
 		if ((Settings::lastHitmarkerTime + 0.08f) > EngineClient->Time() && Settings::Misc::hitmarker)
 		{
-			DrawLine(Vector(screenWidth / 2 - 2, screenHeight / 2 - 2, 0), Vector(screenWidth / 2 - Settings::Misc::hitmarkerSize, screenHeight / 2 - Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
-			DrawLine(Vector(screenWidth / 2 + 2, screenHeight / 2 - 2, 0), Vector(screenWidth / 2 + Settings::Misc::hitmarkerSize, screenHeight / 2 - Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2 - 2, Globals::screenHeight / 2 - 2, 0), Vector(Globals::screenWidth / 2 - Settings::Misc::hitmarkerSize, Globals::screenHeight / 2 - Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2 + 2, Globals::screenHeight / 2 - 2, 0), Vector(Globals::screenWidth / 2 + Settings::Misc::hitmarkerSize, Globals::screenHeight / 2 - Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
 
-			DrawLine(Vector(screenWidth / 2 - 2, screenHeight / 2 + 2, 0), Vector(screenWidth / 2 - Settings::Misc::hitmarkerSize, screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
-			DrawLine(Vector(screenWidth / 2 + 2, screenHeight / 2 + 2, 0), Vector(screenWidth / 2 + Settings::Misc::hitmarkerSize, screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2 - 2, Globals::screenHeight / 2 + 2, 0), Vector(Globals::screenWidth / 2 - Settings::Misc::hitmarkerSize, Globals::screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2 + 2, Globals::screenHeight / 2 + 2, 0), Vector(Globals::screenWidth / 2 + Settings::Misc::hitmarkerSize, Globals::screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
 		}
 	}
 	// https://www.unknowncheatsme/forum/3137288-post2.html Thanks to him :)
@@ -111,7 +110,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
 	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
 
-	ImGui::GetIO().MouseDrawCursor = Settings::openMenu;
+	ImGui::GetIO().MouseDrawCursor = Globals::openMenu;
 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -120,7 +119,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 	ImGui::SetNextWindowSize(ImVec2(143.f, 34.f));
-	ImGui::BeginMenuBackground("Credits window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
+	ImGui::BeginMenuBackground("Credits window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar /*| ImGuiWindowFlags_NoMove*/, 0.3f);
 	{
 		ImGui::ColorBar("rainbowBar2", ImVec2(55.f, 2.f));
 		style->ItemSpacing = ImVec2(4, 2);
@@ -129,18 +128,9 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		ImGui::SameLine(15.f);
 		ImGui::Text("Coded by t.me/Gaztoof");
 	}
-	ImGui::End();
-	
-	/*// GOD I KNOW I SHOULDN'T DO THAT ITS AWFUL.
-	static char* _SetCursorPos = (char*)GetProcAddress(GetModuleHandleA("user32.dll"), "SetCursorPos");
-	// if menu is open, and setcursorpos is real, make it a ret
-	if (Settings::openMenu && (*_SetCursorPos == '\xE9'))
-		BytePatch(_SetCursorPos, 0xC3);
-	else if ((*_SetCursorPos == '\xC3') && !Settings::openMenu) // if menu is closed, and setcursorpos is a ret, make it a jmp as it originally is
-		BytePatch(_SetCursorPos, 0xE9);*/
-	
+	ImGui::End();	
 
-	if (Settings::openMenu)
+	if (Globals::openMenu)
 	{
 		rainbowColor(Settings::menuColor, Settings::Misc::rainbowSpeed);
 
@@ -152,7 +142,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		style->ScrollbarSize = 5.f;
 
 		ImGui::SetNextWindowSize(ImVec2(660.f, 560.f));
-		ImGui::BeginMenuBackground("Main Windows", &Settings::openMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar); 
+		ImGui::BeginMenuBackground("Main Windows", &Globals::openMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar); 
 		{
 			ImGui::SameLine(6.f);
 			ImGui::BeginChild("Complete Border", ImVec2(648.f, 550.f), false); {
@@ -254,19 +244,19 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 					switch (tab) {
 
 					case 0:
-						DrawAimbot();
+						GUI::DrawAimbot();
 						break;
 					case 1:
-						DrawVisuals();
+						GUI::DrawVisuals();
 						break;
 					case 2:
-						DrawMisc();
+						GUI::DrawMisc();
 						break;
 					case 3:
-						DrawFilters();
+						GUI::DrawFilters();
 						break;
 					case 4:
-						DrawLua();
+						GUI::DrawLua();
 						break;
 					}
 
@@ -288,6 +278,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	ImGui::EndFrame();
 	ImGui::Render();
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+
 
 	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);

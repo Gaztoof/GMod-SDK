@@ -20,9 +20,9 @@ const char* killMessages[]{
     "you got raped by GMOD-SDK",
 };
 const char* hitMarkers[]{
-    "physics/metal/metal_solid_impact_bullet2",
-    "buttons/arena_switch_press_02",
-    "training/timer_bell",
+    "physics/metal/metal_solid_impact_bullet2.wav",
+    "buttons/arena_switch_press_02.wav",
+    "training/timer_bell.wav",
 };
 
 
@@ -51,12 +51,7 @@ public:
             return;
 
         if (Settings::Misc::hitmarkerSoundEnabled)
-        {
-            std::string command = "play \"";
-            command += hitMarkers[Settings::Misc::hitmarkerSound];
-            command += "\"";
-            EngineClient->ClientCmd_Unrestricted(command.c_str());
-        }
+            MatSystemSurface->PlaySound(hitMarkers[Settings::Misc::hitmarkerSound]);
         
         Settings::lastHitmarkerTime = EngineClient->Time();
     }
@@ -96,7 +91,7 @@ void ThirdPerson(CViewSetup& view)
     Ray_t ray;
     CTraceFilter filter;
     filter.pSkip = localPlayer;
-    ray.Init(view.origin, view.origin + ((Settings::lastCmd.viewangles.toVector() * -1) * Settings::Misc::thirdpersonDistance));
+    ray.Init(view.origin, view.origin + ((Globals::lastCmd.viewangles.toVector() * -1) * Settings::Misc::thirdpersonDistance));
     EngineTrace->TraceRay(ray, MASK_SOLID, &filter, &trace);
 
     view.origin = trace.endpos;
@@ -108,23 +103,23 @@ void FreeCam(CViewSetup &view, Vector& camPos)
 
     float speed = Settings::Misc::freeCamSpeed;
 
-    if (Settings::lastCmd.buttons & IN_SPEED)
+    if (Globals::lastCmd.buttons & IN_SPEED)
         speed *= 5.f;
-    if (Settings::lastCmd.buttons & IN_DUCK)
+    if (Globals::lastCmd.buttons & IN_DUCK)
         speed *= 0.5f;
-    if (Settings::lastCmd.buttons & IN_JUMP)
+    if (Globals::lastCmd.buttons & IN_JUMP)
         camPos.z += speed;
 
-    if (Settings::lastCmd.buttons & IN_FORWARD)
+    if (Globals::lastCmd.buttons & IN_FORWARD)
         camPos += (view.angles.toVector() * speed);
 
-    if (Settings::lastCmd.buttons & IN_BACK)
+    if (Globals::lastCmd.buttons & IN_BACK)
         camPos -= (view.angles.toVector() * speed);
 
-    if (Settings::lastCmd.buttons & IN_MOVELEFT)
+    if (Globals::lastCmd.buttons & IN_MOVELEFT)
         camPos += (view.angles.SideVector() * speed);
 
-    if (Settings::lastCmd.buttons & IN_MOVERIGHT)
+    if (Globals::lastCmd.buttons & IN_MOVERIGHT)
         camPos -= (view.angles.SideVector() * speed);
 
     view.origin = camPos;
@@ -135,7 +130,7 @@ void SpectatorList()
         return;
 
     ImGui::SetNextWindowSize(ImVec2(200.f, 200.f));
-    ImGui::BeginMenuBackground("Spectators window", &Settings::openMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
+    ImGui::BeginMenuBackground("Spectators window", &Globals::openMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
     {
         ImGui::ColorBar("rainbowBar3", ImVec2(648.f, 2.f));
         std::string names = "";

@@ -35,9 +35,9 @@ void doEsp()
 		Vector screenPos;
 		Vector screenTopPos;
 
-		Vector hisOrigPos = entity->GetAbsOrigin();
-		Vector hisPos;
-		Vector hisEyePos;
+		Vector entityAbsOrig = entity->GetAbsOrigin();
+		Vector targetMinS;
+		Vector targetMaxS;
 
 		 rainbowColor(Settings::ESP::espNameColor, Settings::Misc::rainbowSpeed);
 		 rainbowColor(Settings::ESP::espBoundingBoxColor, Settings::Misc::rainbowSpeed);
@@ -47,9 +47,11 @@ void doEsp()
 		 rainbowColor(Settings::ESP::espAmmoColor, Settings::Misc::rainbowSpeed);
 		 rainbowColor(Settings::ESP::espDistanceColor, Settings::Misc::rainbowSpeed);
 
-		entity->GetCollideable()->WorldSpaceTriggerBounds(&hisPos, &hisEyePos);
-		if (WorldToScreen(hisPos, screenPos) &&
-			WorldToScreen(hisEyePos, screenTopPos))
+		entity->GetCollideable()->WorldSpaceTriggerBounds(&targetMinS, &targetMaxS);
+		Vector entCollMid = Vector(entity->GetCollideable()->OBBMins().x + entity->GetCollideable()->OBBMaxs().x, entity->GetCollideable()->OBBMins().y + entity->GetCollideable()->OBBMaxs().y, entity->GetCollideable()->OBBMins().z);
+
+		if (WorldToScreen(entityAbsOrig + entCollMid, screenPos) &&
+			WorldToScreen(entityAbsOrig + entCollMid + Vector(0,0,entity->GetCollideable()->OBBMaxs().z), screenTopPos))
 		{
 			if (isEntity)
 			{
@@ -59,9 +61,14 @@ void doEsp()
 				if (Settings::ESP::espShapeInt == 0)
 					DrawEsp2D(screenPos, screenTopPos, ColorToInt(Settings::ESP::espBoundingBoxColor));
 				else if (Settings::ESP::espShapeInt == 1)
-					DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, ColorToInt(Settings::ESP::espBoundingBoxColor));
+					DrawEspBox3D(entity->GetCollideable()->OBBMaxs(), entity->GetCollideable()->OBBMins(), entity->GetAbsOrigin(), entity->GetAbsAngles(), ColorToInt(Settings::ESP::espBoundingBoxColor));
 				continue;
 			}
+
+			auto foundFriend = Settings::friendList.find(entity);
+			if (Settings::ESP::onlyFriends && (foundFriend == Settings::friendList.end() || !foundFriend->second.first))
+					continue;
+
 
 			matrix3x4_t bones[128];
 			if(((Settings::ESP::skeletonEsp) || Settings::Aimbot::drawAimbotHeadlines)  && // Sometimes SetupBones will crash, and so adding these checks won't make you crash at round beginning if you disable features that need setupbones
@@ -100,21 +107,22 @@ void doEsp()
 
 			Vector screenEyePos;
 			screenEyePos.z = 0;
-			if (Settings::Aimbot::drawAimbotHeadlines && WorldToScreen(Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]), screenEyePos) && Vector(screenWidth / 2, screenHeight / 2, 0).DistTo(screenEyePos) < Settings::Aimbot::aimbotFOV)
+			if (Settings::Aimbot::drawAimbotHeadlines && WorldToScreen(Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]), screenEyePos) && Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0).DistTo(screenEyePos) < Settings::Aimbot::aimbotFOV)
 			{
 				// white if random person, blue'ish if target
 
 				int color = entity == Settings::Aimbot::finalTarget ? 0xFF3333FF : 0xFFFFFFFF;
-				DrawLine(Vector(screenWidth / 2, screenHeight / 2, 0), screenEyePos, color);
+				DrawLine(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0), screenEyePos, color);
 			}
 
 			player_info_s info;
 			EngineClient->GetPlayerInfo(i, &info);
 
-			Vector hisHeadPos;
-			Vector hisBottom;
-			if (WorldToScreen(entity->GetAbsOrigin(), hisBottom) && WorldToScreen(entity->EyePosition(), hisHeadPos))
+			Vector targetScrMaxs;
+			Vector targetScrMins;
+			if (WorldToScreen(entity->GetAbsOrigin(), targetScrMins) && WorldToScreen(entity->EyePosition(), targetScrMaxs))
 			{
+
 				std::wstring playerInfo = L"";
 				if (Settings::ESP::espName)
 					playerInfo = StringToWString(info.name) + L"\n";
@@ -124,16 +132,16 @@ void doEsp()
 				switch (Settings::ESP::infosEmplacement)
 				{
 				case 0: // Above
-					textPos = Vector(hisHeadPos.x, hisHeadPos.y, 0);
+					textPos = Vector(targetScrMaxs.x, targetScrMaxs.y, 0);
 					break;
 				case 1: // Below
-					textPos = Vector(hisHeadPos.x, hisBottom.y, 0);
+					textPos = Vector(targetScrMaxs.x, targetScrMins.y, 0);
 					break;
 				case 2: // Right
-					textPos = Vector(hisHeadPos.x - (hisHeadPos.y - hisBottom.y) / 4, hisHeadPos.y, 0);
+					textPos = Vector(targetScrMaxs.x - (targetScrMaxs.y - targetScrMins.y) / 4, targetScrMaxs.y, 0);
 					break;
 				case 3: // Left
-					textPos= Vector(hisHeadPos.x - (hisHeadPos.y - hisBottom.y) / 4, hisHeadPos.y, 0);
+					textPos= Vector(targetScrMaxs.x - (targetScrMaxs.y - targetScrMins.y) / 4, targetScrMaxs.y, 0);
 					break;
 				}
 				DrawTextW(textPos, playerInfo, ColorToInt(Settings::ESP::espNameColor), true);
@@ -173,9 +181,11 @@ void doEsp()
 				if (Settings::ESP::espBoundingBox)
 				{
 					if (Settings::ESP::espShapeInt == 0)
-						DrawEsp2D(hisBottom, hisHeadPos, ColorToInt(Settings::ESP::espBoundingBoxColor));
+					{
+							DrawEsp2D(targetScrMins, targetScrMaxs, ColorToInt(Settings::ESP::espBoundingBoxColor));
+					}
 					else if (Settings::ESP::espShapeInt == 1)
-						DrawEspBox3D(hisEyePos, hisPos, entity->EyeAngles().y, ColorToInt(Settings::ESP::espBoundingBoxColor));
+						DrawEspBox3D(entity->GetCollideable()->OBBMaxs(), entity->GetCollideable()->OBBMins(), entity->GetAbsOrigin(), entity->EyeAngles(), ColorToInt(Settings::ESP::espBoundingBoxColor));
 				}
 			}
 		}

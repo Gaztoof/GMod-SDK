@@ -86,7 +86,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 				if (!WorldToScreen(entPos, screenPos))
 					continue;
 				screenPos.z = 0;
-				distance = Vector(screenWidth / 2, screenHeight / 2, 0).DistTo(screenPos);
+				distance = Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0).DistTo(screenPos);
 				fovDistance = distance;
 				if (distance > finalDistance)
 					continue;
@@ -101,7 +101,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 					if (!WorldToScreen(entPos, screenPos))
 						continue;
 					screenPos.z = 0;
-					fovDistance = Vector(screenWidth / 2, screenHeight / 2, 0).DistTo(screenPos);
+					fovDistance = Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0).DistTo(screenPos);
 				}
 				if (fovDistance > Settings::Aimbot::aimbotFOV)
 					continue;

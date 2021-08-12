@@ -33,7 +33,7 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 
 			spread = Lua->GetNumber(-1);
 		}
-		// god that's annoying, i got it to work a few minutes ago, did some code cleaning, and suddenly it stopped working...
+		// god that's annoying, i got it to work a few minutes ago, did some code cleaning, and suddenly it stopped working... even the backups...
 		else if (!strcmp(GetLuaEntBase(gun), "fas2_base"))
 		{
 			Lua->GetField(-1, "MaxSpreadInc");
@@ -57,7 +57,7 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 				CUserCmd* prevCmd = Input->GetUserCmd(cmd->command_number - 1);
 				prevCmd->viewangles.x = -cmd->viewangles.x;
 				prevCmd->viewangles.y = cmd->viewangles.y - 180.f;
-				prevCmd->viewangles = prevCmd->viewangles.FixAngles();
+				prevCmd->viewangles.FixAngles();
 
 				Input->m_pVerifiedCommands[prevCmd->command_number % 90].m_cmd = *prevCmd;
 				Input->m_pVerifiedCommands[prevCmd->command_number % 90].m_crc = prevCmd->GetChecksum();

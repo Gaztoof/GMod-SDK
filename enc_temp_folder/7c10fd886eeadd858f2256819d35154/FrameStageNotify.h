@@ -69,7 +69,7 @@ ClientFrameStage_t stage)
 		for (MaterialHandle_t i = MaterialSystem->FirstMaterial(); i != MaterialSystem->InvalidMaterial(); i = MaterialSystem->NextMaterial(i))
 		{
 			auto material = MaterialSystem->GetMaterial(i);
-			if (!material || material->IsErrorMaterial() || !material->IsPrecached())
+			if (!material || material->IsErrorMaterial())
 				continue;
 			// that's quite a big FPS killer
 #pragma region WorldColor

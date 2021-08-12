@@ -4,6 +4,7 @@
 #include <fstream>
 #include "../json.h"
 #include <iomanip>
+#pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ )
 
 using nlohmann::json;
 namespace ConfigSystem
@@ -51,7 +52,7 @@ namespace ConfigSystem
 		j["Globals"]["menuKey"] = Settings::menuKey;
 		j["Globals"]["menuKeyStyle"] = Settings::menuKeyStyle;
 		j["Globals"]["menuColor"] = to_jsonfcol(Settings::menuColor);
-		j["Globals"]["untrusted"] = Settings::Untrusted;
+		j["Globals"]["untrusted"] = Globals::Untrusted;
 
 		j["Chams"]["playerChams"] = to_jsonchams(Settings::Chams::playerChamsSettings);
 		j["Chams"]["teamMate"] = to_jsonchams(Settings::Chams::teamMateSettings);
@@ -75,12 +76,14 @@ namespace ConfigSystem
 		j["ESP"]["skeletonEspColor"] = to_jsonfcol(Settings::ESP::skeletonEspColor);
 		j["ESP"]["espShapeInt"] = Settings::ESP::espShapeInt;
 		j["ESP"]["entEsp"] = Settings::ESP::entEsp;
+		j["ESP"]["onlyFriends"] = Settings::ESP::onlyFriends;
 		j["ESP"]["espDistanceColor"] = to_jsonfcol(Settings::ESP::espDistanceColor);
 		j["ESP"]["espAmmoColor"] = to_jsonfcol(Settings::ESP::espAmmoColor);
 		j["ESP"]["espWeaponColor"] = to_jsonfcol(Settings::ESP::espWeaponColor);
 		j["ESP"]["espNameColor"] = to_jsonfcol(Settings::ESP::espNameColor);
 		j["ESP"]["espHealthColor"] = to_jsonfcol(Settings::ESP::espHealthColor);
 
+		j["Visuals"]["fovEnabled"] = Settings::Visuals::fovEnabled;
 		j["Visuals"]["fov"] = Settings::Visuals::fov;
 		j["Visuals"]["viewModelFOV"] = Settings::Visuals::viewModelFOV;
 		j["Visuals"]["noVisualRecoil"] = Settings::Visuals::noVisualRecoil;
@@ -181,7 +184,7 @@ namespace ConfigSystem
 			Settings::menuKey = j["Globals"]["menuKey"];
 			Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
 			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor);
-			Settings::Untrusted = j["Globals"]["untrusted"];
+			Globals::Untrusted = j["Globals"]["untrusted"];
 
 			Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
 			Settings::Chams::teamMateSettings = from_jsonchams(j["Chams"]["teamMate"]);
@@ -208,10 +211,11 @@ namespace ConfigSystem
 			from_jsonfcol(j["ESP"]["espWeaponColor"], Settings::ESP::espWeaponColor);
 			from_jsonfcol(j["ESP"]["espNameColor"], Settings::ESP::espNameColor);
 			from_jsonfcol(j["ESP"]["espHealthColor"], Settings::ESP::espHealthColor);
-
 			Settings::ESP::espShapeInt = j["ESP"]["espShapeInt"];
 			Settings::ESP::entEsp = j["ESP"]["entEsp"];
+			Settings::ESP::onlyFriends = j["ESP"]["onlyFriends"];
 
+			Settings::Visuals::fovEnabled = j["Visuals"]["fovEnabled"];
 			Settings::Visuals::fov = j["Visuals"]["fov"];
 			Settings::Visuals::viewModelFOV = j["Visuals"]["viewModelFOV"];
 			Settings::Visuals::noVisualRecoil = j["Visuals"]["noVisualRecoil"];
@@ -219,14 +223,13 @@ namespace ConfigSystem
 			Settings::Visuals::changeWorldColor = j["Visuals"]["changeWorldColor"];
 			Settings::Visuals::disableSkyBox = j["Visuals"]["disableSkyBox"];
 			Settings::Visuals::fullBright = j["Visuals"]["fullBright"];
-
 			Settings::AntiAim::currentAntiAimPitch = j["AntiAim"]["currentAntiAimPitch"];
 			Settings::AntiAim::currentAntiAimYaw = j["AntiAim"]["currentAntiAimYaw"];
 			Settings::AntiAim::enableAntiAim = j["AntiAim"]["enableAntiAim"];
 			Settings::AntiAim::antiAimKey = j["AntiAim"]["antiAimKey"];
 			Settings::AntiAim::antiAimKeyStyle = j["AntiAim"]["antiAimKeyStyle"];
 			Settings::AntiAim::fakePitch = j["AntiAim"]["fakePitch"];
-
+			 
 			Settings::Aimbot::aimbotFOV = j["Aimbot"]["aimbotFOV"];
 			Settings::Aimbot::silentAim = j["Aimbot"]["silentAim"];
 			Settings::Aimbot::lockOnTarget = j["Aimbot"]["lockOnTarget"];
@@ -307,7 +310,7 @@ namespace ConfigSystem
 		Settings::menuKey = KEY_INSERT;
 		Settings::menuKeyStyle = 1;
 		Settings::menuColor = Color(0,255,0);
-		Settings::Untrusted = NULL;
+		Globals::Untrusted = NULL;
 
 		Settings::Chams::playerChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
 		Settings::Chams::teamMateSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
@@ -334,17 +337,18 @@ namespace ConfigSystem
 		Settings::ESP::espWeaponColor = Color(255, 255, 255);
 		Settings::ESP::espNameColor = Color(255, 255, 255);
 		Settings::ESP::espHealthColor = Color(255, 255, 255);
-
 		Settings::ESP::espShapeInt = NULL;
 		Settings::ESP::entEsp = NULL;
+		Settings::ESP::onlyFriends = NULL;
 
+		Settings::Visuals::fovEnabled = false;
 		Settings::Visuals::fov = 90.f;
 		Settings::Visuals::viewModelFOV = 90.f;
 		Settings::Visuals::noVisualRecoil = NULL;
 		Settings::Visuals::worldColor = Color(255, 255, 255);
 		Settings::Visuals::changeWorldColor = NULL;
 		Settings::Visuals::disableSkyBox = NULL;
-		Settings::Visuals::fullBright = false;
+		Settings::Visuals::fullBright = NULL;
 
 		Settings::AntiAim::currentAntiAimPitch = NULL;
 		Settings::AntiAim::currentAntiAimYaw = NULL;
@@ -407,8 +411,8 @@ namespace ConfigSystem
 		Settings::Misc::zoomKey = KEY_NONE;
 		Settings::Misc::zoomKeyStyle = 1;
 		Settings::Misc::zoomFOV = 90.f;
-		Settings::Misc::svCheats = false;
-		Settings::Misc::svAllowCsLua = false;
+		Settings::Misc::svCheats = NULL;
+		Settings::Misc::svAllowCsLua = NULL;
 		Settings::Misc::rainbowSpeed = 1.f;
 
 		Settings::Triggerbot::triggerBot = NULL;

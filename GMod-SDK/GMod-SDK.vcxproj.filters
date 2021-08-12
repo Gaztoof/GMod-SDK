@@ -49,6 +49,9 @@
     <Filter Include="Header Files\hacks\menu">
       <UniqueIdentifier>{a3a85829-1bf6-43cf-bf0c-2dc309a45bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\vguimatsurface">
+      <UniqueIdentifier>{023783a6-9948-4ce1-b43a-17b82976a971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -328,6 +331,12 @@
     </ClInclude>
     <ClInclude Include="tier1\checksum_crc.h">
       <Filter>Header Files\tier1</Filter>
+    </ClInclude>
+    <ClInclude Include="vguimatsurface\CMatSystemSurface.h">
+      <Filter>Header Files\vguimatsurface</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui\ISurfaceV30.h">
+      <Filter>Header Files\vgui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

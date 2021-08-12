@@ -34,7 +34,7 @@ QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
 // fake doesn't works yet
 void StaticPitch(CUserCmd* cmd, bool down)
 {
-    if (Settings::Untrusted)
+    if (Globals::Untrusted)
     {
         cmd->viewangles.x = down ? -90.f : 90.f;
     }

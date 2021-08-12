@@ -257,6 +257,8 @@
     <ClInclude Include="tier1\checksum_crc.h" />
     <ClInclude Include="tier1\checksum_md5.h" />
     <ClInclude Include="tier1\KeyValues.h" />
+    <ClInclude Include="vguimatsurface\CMatSystemSurface.h" />
+    <ClInclude Include="vgui\ISurfaceV30.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

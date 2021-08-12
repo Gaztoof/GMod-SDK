@@ -93,7 +93,11 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 		CreateRecurringDir(targetDir.parent_path());
 		CreateRecurringDir(detourDir.parent_path());
 
-		
+		if (fileName != "runString.lua")
+		{
+			std::string strToPrint = "Successfully dumped script \"" + fileName + "\" !";
+			ConPrint(strToPrint.c_str(), Color(204, 51, 255));
+		}
 
 		std::ofstream outFile;
 		outFile.open(targetDir.string());
@@ -105,7 +109,7 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 
 		std::ifstream inFile;
 		inFile.open(detourDir.string());
-		if (inFile.good()) {
+		if (inFile.good() && fileName != "runString.lua") {
 
 			std::string content((std::istreambuf_iterator<char>(inFile)),
 				(std::istreambuf_iterator<char>()));

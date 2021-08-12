@@ -15,7 +15,7 @@ void TriggerBot(CUserCmd* cmd)
 	filter.pSkip = localPlayer;
 	Ray_t Ray;
 
-	Ray.Init(localPlayer->EyePosition(), ((cmd->viewangles + localPlayer->GetViewPunch()).toVector() * 16384.f));
+	Ray.Init(localPlayer->EyePosition(), localPlayer->EyePosition() + cmd->viewangles.toVector() * 69696.f);
 	EngineTrace->TraceRay(Ray, MASK_SHOT, &filter, &Trace);
 
 	C_BasePlayer* target = (C_BasePlayer*)Trace.m_pEnt;

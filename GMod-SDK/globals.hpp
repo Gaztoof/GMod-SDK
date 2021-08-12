@@ -31,6 +31,7 @@
 #include "engine/CGameEventManager.h"
 #include "vgui/VPanelWrapper.h"
 #include "vphysics/CPhysicsSurfaceProps.h"
+#include "vguimatsurface/CMatSystemSurface.h"
 
 #include "hacks/ConVarSpoofing.h"
 
@@ -48,6 +49,7 @@
 #define GetClassNamePattern "\xE8????\x4D\x8B\x47\x10"
 #define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
 #define BSendPacketOffset 0x62
+#define ConColorMsgDec "?ConColorMsg@@YAXAEBVColor@@PEBDZZ"
 #else
 #define ViewRenderOffset 0xA6
 #define GlobalVarsOffset 0x59
@@ -59,17 +61,15 @@
 #define GetClassNamePattern "\xE8????\x50\x8B\x43\x08"
 #define CL_MovePattern "\xE8????\x83\xC4\x08\xFF\x15????\xDC\x25????"
 #define BSendPacketOffset 0x2F
+#define ConColorMsgDec "?ConColorMsg@@YAXABVColor@@PBDZZ"
 #endif
 
 typedef HRESULT(__stdcall* _Present)(IDirect3DDevice9*, CONST RECT*, CONST RECT*, HWND, CONST RGNDATA*);
 typedef bool(__thiscall* _FireEvent)(CGameEventManager*, IGameEvent*);
 typedef void(__thiscall* _PaintTraverse)(void*, VPanel*, bool, bool);
 typedef const char* (__thiscall* _GetClassName)(C_BasePlayer*);
+typedef void(__cdecl* MsgFn)(Color const& color, const char* msg, ...);
 
-_PaintTraverse oPaintTraverse;
-_FireEvent oFireEvent;
-char* present; // clean that
-bool* bSendpacket;
 
 CLuaShared* LuaShared;
 CClientEntityList* ClientEntityList;
@@ -91,15 +91,23 @@ CModelInfo* ModelInfo;
 CInput* Input;
 CIVDebugOverlay* IVDebugOverlay;
 CGameEventManager* GameEventManager;
-void* MatSystemSurface;
 VPanelWrapper* PanelWrapper;
 CPhysicsSurfaceProps* PhysicsSurfaceProps;
+CMatSystemSurface* MatSystemSurface;
 
-int screenWidth, screenHeight;
+_PaintTraverse oPaintTraverse;
+_FireEvent oFireEvent;
+char* present; // clean that
+_Present oPresent;
+MsgFn ConColorMsg;
 
-
-void* damageEvent;
-void* deathEvent;
+const void ConPrint(const char* text, Color col)
+{
+	Color color(153,204,255);
+	ConColorMsg(color, "[GaztoofScriptHook] ");
+	ConColorMsg(col, text);
+	ConColorMsg(col, "\n");
+}
 
 std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
 
@@ -126,19 +134,32 @@ struct chamsSetting {
 	}
 };
 #define ColorToInt(x) D3DCOLOR_ARGB((uint8_t)(x.fCol[3] * 255), (uint8_t)(x.fCol[0] * 255), (uint8_t)(x.fCol[1] * 255), (uint8_t)(x.fCol[2] * 255))
-
-namespace Settings {
+namespace Globals {
 	bool openMenu = false;
-	ButtonCode_t menuKey = KEY_INSERT;
-	int menuKeyStyle = 1;
-	Color menuColor(0, 255, 0);
 	bool nothing;
 	bool Untrusted;
 	CUserCmd lastCmd;
 	CUserCmd lastRealCmd;
 	CUserCmd lastNetworkedCmd;
-	bool choke; 
+	bool choke;
 	VPanel* lastPanelIdentifier;
+
+	SpoofedConVar* spoofedAllowCsLua;
+	SpoofedConVar* spoofedCheats;
+
+	std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
+
+	int screenWidth, screenHeight;
+
+	void* damageEvent;
+	void* deathEvent;
+
+	bool* bSendpacket;
+}
+namespace Settings {
+	ButtonCode_t menuKey = KEY_INSERT;
+	int menuKeyStyle = 1;
+	Color menuColor(0, 255, 0);
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::map<const char*, bool> luaEntList;
@@ -185,9 +206,12 @@ namespace Settings {
 
 		bool entEsp = false;
 
+		bool onlyFriends = false;
+
 	}
 	namespace Visuals {
 		float fov = 130.f;
+		bool fovEnabled = false;
 		float viewModelFOV = 130.f;
 		bool noVisualRecoil;
 		Color worldColor(17.f, 33.f, 71.f, 255.f);

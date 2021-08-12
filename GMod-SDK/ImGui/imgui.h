@@ -247,7 +247,7 @@ namespace ImGui
 
 	IMGUI_API bool          BeginColorPickerBackground(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
 	IMGUI_API bool          BeginTabsBackground(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
-	IMGUI_API bool          BeginMenuBackground(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
+	IMGUI_API bool          BeginMenuBackground(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0, float alphaMul = 1.f);
 	IMGUI_API bool          BeginShadowBackground(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
 	IMGUI_API bool          BeginGroupBoxMain(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
 	IMGUI_API bool          BeginGroupBoxScrollMain(const char* name, const char* groupboxName, bool* p_open = NULL, ImGuiWindowFlags flags = 0);

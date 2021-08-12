@@ -16,12 +16,12 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 	* What does this do? Blocks any form of input while the menu is open, doing only EnableInput(false) will automatically 
 	* set your mouse to the screen's center which is real annoying cause you have to pause the game everytime you open the menu.
 	*/
-	InputSystem->EnableInput(!Settings::openMenu);
+	InputSystem->EnableInput(!Globals::openMenu);
 	if (!strcmp(PanelWrapper->GetName(panel), "FocusOverlayPanel"))
 	{
-		Settings::lastPanelIdentifier = panel;
-		PanelWrapper->SetKeyBoardInputEnabled(panel, Settings::openMenu);
-		PanelWrapper->SetMouseInputEnabled(panel, Settings::openMenu);
+		Globals::lastPanelIdentifier = panel;
+		PanelWrapper->SetKeyBoardInputEnabled(panel, Globals::openMenu);
+		PanelWrapper->SetMouseInputEnabled(panel, Globals::openMenu);
 	}
 	auto l = waitingToBeExecuted.load();
 	if(l.first && l.second)

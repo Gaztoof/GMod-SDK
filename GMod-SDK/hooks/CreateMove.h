@@ -18,7 +18,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 #endif
 	float flInputSampleTime, CUserCmd* cmd)
 {
-	Settings::lastCmd = *cmd;
+	Globals::lastCmd = *cmd;
 	uintptr_t stackTop;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
@@ -27,7 +27,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	if (localPlayer && localPlayer->IsAlive() && LuaInterface && !Settings::currentlyInFreeCam)
 	{
 
-		Settings::lastRealCmd = *cmd;
+		Globals::lastRealCmd = *cmd;
 		DoMisc(cmd);
 		BackupCMD(cmd, false);
 
@@ -46,7 +46,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		if (antiAimKeyDown && !inCombat && Settings::AntiAim::enableAntiAim) {
 			AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
 			AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
-			if (!Settings::Untrusted)
+			if (!Globals::Untrusted)
 				cmd->viewangles.FixAngles();
 		}
 
@@ -66,7 +66,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	{
 		cmd->buttons = NULL;
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
-		cmd->viewangles = Settings::lastRealCmd.viewangles;
+		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
 
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
@@ -76,19 +76,20 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 	if (NetChan->m_nChokedPackets < 14 && fakeLagKeyDown && Settings::Misc::fakeLag)
 	{
-		*bSendpacket = false;
+		*Globals::bSendpacket = false;
 		++NetChan->m_nChokedPackets;
 	}
 
 	if (NetChan && NetChan->m_nChokedPackets >= 14)
 	{
-		*bSendpacket = true;
+		*Globals::bSendpacket = true;
 		NetChan->m_nChokedPackets = 0;
 	}
 	
-	if (*bSendpacket)
+	if (*Globals::bSendpacket)
 	{
-		Settings::lastNetworkedCmd = *cmd;
+		Globals::lastNetworkedCmd = *cmd;
 	}
+
 	return false;
 }
