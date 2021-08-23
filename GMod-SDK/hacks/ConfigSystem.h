@@ -119,6 +119,7 @@ namespace ConfigSystem
 		j["Aimbot"]["pistolFastShoot"] = Settings::Aimbot::pistolFastShoot;
 		j["Aimbot"]["smoothing"] = Settings::Aimbot::smoothing;
 		j["Aimbot"]["smoothSteps"] = Settings::Aimbot::smoothSteps;
+		j["Aimbot"]["fovColor"] = to_jsonfcol(Settings::Aimbot::fovColor);
 
 		j["Misc"]["drawSpectators"] = Settings::Misc::drawSpectators;
 		j["Misc"]["drawCrosshair"] = Settings::Misc::drawCrosshair;
@@ -156,6 +157,7 @@ namespace ConfigSystem
 		j["Misc"]["svAllowCsLua"] = Settings::Misc::svAllowCsLua;
 		j["Misc"]["svCheats"] = Settings::Misc::svCheats;
 		j["Misc"]["rainbowSpeed"] = Settings::Misc::rainbowSpeed;
+		j["Misc"]["crossHairColor"] = to_jsonfcol(Settings::Misc::crossHairColor);
 
 		j["Triggerbot"]["triggerBot"] = Settings::Triggerbot::triggerBot;
 		j["Triggerbot"]["triggerBotHead"] = Settings::Triggerbot::triggerBotHead;
@@ -250,6 +252,7 @@ namespace ConfigSystem
 			Settings::Aimbot::pistolFastShoot = j["Aimbot"]["pistolFastShoot"];
 			Settings::Aimbot::smoothing = j["Aimbot"]["smoothing"];
 			Settings::Aimbot::smoothSteps = j["Aimbot"]["smoothSteps"];
+			from_jsonfcol( j["Aimbot"]["fovColor"], Settings::Aimbot::fovColor);
 
 			Settings::Misc::drawSpectators = j["Misc"]["drawSpectators"];
 			Settings::Misc::drawCrosshair = j["Misc"]["drawCrosshair"];
@@ -287,6 +290,7 @@ namespace ConfigSystem
 			Settings::Misc::svAllowCsLua = j["Misc"]["svAllowCsLua"];
 			Settings::Misc::svCheats = j["Misc"]["svCheats"];
 			Settings::Misc::rainbowSpeed = j["Misc"]["rainbowSpeed"];
+			from_jsonfcol(j["Misc"]["crossHairColor"], Settings::Misc::crossHairColor);
 
 			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
 			Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
@@ -377,6 +381,7 @@ namespace ConfigSystem
 		Settings::Aimbot::pistolFastShoot = NULL;
 		Settings::Aimbot::smoothing = NULL;
 		Settings::Aimbot::smoothSteps = 1;
+		Settings::Aimbot::fovColor = Color(255,255,255);
 
 		Settings::Misc::drawSpectators = NULL;
 		Settings::Misc::drawCrosshair = NULL;
@@ -414,6 +419,7 @@ namespace ConfigSystem
 		Settings::Misc::svCheats = NULL;
 		Settings::Misc::svAllowCsLua = NULL;
 		Settings::Misc::rainbowSpeed = 1.f;
+		Settings::Misc::crossHairColor = Color(255, 255, 255);
 
 		Settings::Triggerbot::triggerBot = NULL;
 		Settings::Triggerbot::triggerBotHead = NULL;

@@ -18,6 +18,9 @@ QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
         oldAng = cmd->viewangles;
     }
     else {
+        if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER)
+            return oldAng;
+
         // old = 160
         // new = 30
         //if(x < 0.) return x+360

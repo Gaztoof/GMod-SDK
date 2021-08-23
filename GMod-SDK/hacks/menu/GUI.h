@@ -13,6 +13,8 @@
 #include "../../hacks/ConfigSystem.h"
 #include "../../hacks/Executor.h"
 #include "../../hooks/RunStringEx.h"
+#include "../../hooks/ProcessGMODServerToClient.h"
+
 extern _Present oPresent;
 
 namespace GUI
@@ -173,6 +175,8 @@ namespace GUI
 				ImGui::CustomSpacing(9.f);
 
 				Menu::InsertCheckbox("Crosshair", &Settings::Misc::drawCrosshair);
+				Menu::InsertColorPicker("##Crosshair color", &Settings::Misc::crossHairColor, false);
+
 				Menu::InsertSlider("Crosshair Size", &Settings::Misc::crosshairSize, 1, 20);
 				Menu::InsertCheckbox("Spectators", &Settings::Misc::drawSpectators);
 
@@ -254,6 +258,7 @@ namespace GUI
 				Menu::InsertCheckbox("Check FOV", &Settings::Aimbot::aimbotFovEnabled);
 				Menu::InsertSlider("Aimbot FOV", &Settings::Aimbot::aimbotFOV, 5, 720);
 				Menu::InsertCheckbox("Draw FOV Circle", &Settings::Aimbot::drawAimbotFov);
+				Menu::InsertColorPicker("##FOV Circle Color", &Settings::Aimbot::fovColor, false);
 				Menu::InsertCheckbox("Draw FOV Headlines (can crash at roundstart)", &Settings::Aimbot::drawAimbotHeadlines);
 
 				style->ItemSpacing = ImVec2(0, 0);
@@ -583,6 +588,8 @@ namespace GUI
 
 					if(LuaInterface)
 					RestoreVMTHook((PVOID**)LuaInterface, (PVOID)oRunStringEx, 111);
+
+					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
 
 					*Globals::bSendpacket = true;
 					

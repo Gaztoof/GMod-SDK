@@ -1,5 +1,7 @@
 #pragma once
 
+#define CheatVersion "1.1.9"
+
 #include <map>
 #include <mutex>
 #include <d3dx9.h>
@@ -98,6 +100,7 @@ CGameEventManager* GameEventManager;
 VPanelWrapper* PanelWrapper;
 CPhysicsSurfaceProps* PhysicsSurfaceProps;
 CMatSystemSurface* MatSystemSurface;
+void* ClientState; // implement that?
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
@@ -137,7 +140,7 @@ struct chamsSetting {
 		visibleMaterial = visiblematerial;
 	}
 };
-#define ColorToInt(x) D3DCOLOR_ARGB((uint8_t)(x.fCol[3] * 255), (uint8_t)(x.fCol[0] * 255), (uint8_t)(x.fCol[1] * 255), (uint8_t)(x.fCol[2] * 255))
+#define ColorToRGBA(x) D3DCOLOR_ARGB((uint8_t)(x.fCol[3] * 255), (uint8_t)(x.fCol[0] * 255), (uint8_t)(x.fCol[1] * 255), (uint8_t)(x.fCol[2] * 255))
 namespace Globals {
 	bool openMenu = false;
 	bool nothing;
@@ -258,10 +261,14 @@ namespace Settings {
 		bool smoothing;
 		float smoothSteps;
 
+		Color fovColor(255, 255, 255);
+
 	}
 	namespace Misc {
 
 		bool drawSpectators;
+
+		Color crossHairColor(255, 255, 255);
 		bool drawCrosshair;
 
 		bool quickStop;

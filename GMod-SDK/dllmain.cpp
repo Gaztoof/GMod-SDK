@@ -49,7 +49,7 @@ void Main()
     EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
 
     // x64: thats directly the vtable pointer // CEngineClient::IsPaused points to clientstate https://i.imgur.com/4aWvQbs.png
-    auto ClientState = GetRealFromRelative((*(char***)(EngineClient))[84], CClientStateOffset, CClientStateSize, false) ;
+    ClientState = GetRealFromRelative((*(char***)(EngineClient))[84], CClientStateOffset, CClientStateSize, false) ;
 
     //void* plim = (plim*)(GetRealFromRelative((char*), 0x1, 5) + BSendPacketOffset);
 

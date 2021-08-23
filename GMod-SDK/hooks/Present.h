@@ -83,14 +83,16 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	if (EngineClient->IsInGame())
 	{
 		doEsp();
+		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
+		rainbowColor(Settings::Misc::crossHairColor, Settings::Misc::rainbowSpeed);
 
 		if (Settings::Aimbot::drawAimbotFov)
 		{
-			DrawCircle(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0), Settings::Aimbot::aimbotFOV, Settings::Aimbot::aimbotFOV, 0xFFFFFFFF);
+			DrawCircle(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0), Settings::Aimbot::aimbotFOV, Settings::Aimbot::aimbotFOV, ColorToRGBA(Settings::Aimbot::fovColor));
 		}
 		if (Settings::Misc::drawCrosshair) {
-			DrawLine(Vector(Globals::screenWidth / 2 - Settings::Misc::crosshairSize, Globals::screenHeight / 2, 0), Vector(Globals::screenWidth / 2 + Settings::Misc::crosshairSize, Globals::screenHeight / 2, 0), 0xFFFFFFFF);
-			DrawLine(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2 - Settings::Misc::crosshairSize, 0), Vector(Globals::screenWidth / 2, Globals::screenHeight / 2 + Settings::Misc::crosshairSize, 0), 0xFFFFFFFF);
+			DrawLine(Vector(Globals::screenWidth / 2 - Settings::Misc::crosshairSize, Globals::screenHeight / 2, 0), Vector(Globals::screenWidth / 2 + Settings::Misc::crosshairSize, Globals::screenHeight / 2, 0), ColorToRGBA(Settings::Misc::crossHairColor));
+			DrawLine(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2 - Settings::Misc::crosshairSize, 0), Vector(Globals::screenWidth / 2, Globals::screenHeight / 2 + Settings::Misc::crosshairSize, 0), ColorToRGBA(Settings::Misc::crossHairColor));
 		}
 		if ((Settings::lastHitmarkerTime + 0.08f) > EngineClient->Time() && Settings::Misc::hitmarker)
 		{
@@ -118,7 +120,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImColor(9, 8, 9,255);
 
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
-	ImGui::SetNextWindowSize(ImVec2(143.f, 34.f));
+	ImGui::SetNextWindowSize(ImVec2(187.f, 34.f));
 	ImGui::BeginMenuBackground("Credits window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar /*| ImGuiWindowFlags_NoMove*/, 0.3f);
 	{
 		ImGui::ColorBar("rainbowBar2", ImVec2(55.f, 2.f));
@@ -126,7 +128,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		style->WindowPadding = ImVec2(4, 4);
 		ImGui::NewLine();
 		ImGui::SameLine(15.f);
-		ImGui::Text("Coded by t.me/Gaztoof");
+		ImGui::Text(std::string("Coded by t.me/Gaztoof - v" + std::string(CheatVersion)).c_str());
 	}
 	ImGui::End();	
 

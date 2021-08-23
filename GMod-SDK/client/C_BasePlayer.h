@@ -525,6 +525,8 @@ public:
 	* For exemple, in https://i.imgur.com/88fYuYY.png this case, the offset will be 0x01F4 AND NOT 0x010F4 !
 	*/
 
+	// Note to myself, before releasing x86, update x86 offsets...
+		
 	int getTeamNum() {
 #ifdef _WIN64
 		return *(int*)((uintptr_t)this + 0xD4); // m_iTeamNum
