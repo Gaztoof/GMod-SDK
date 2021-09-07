@@ -586,7 +586,7 @@ namespace GUI
 
 					RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
 
-					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCreateLuaInterface, 4);
+					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCreateLuaInterfaceFn, 4);
 					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCloseLuaInterfaceFn, 5);
 					
 					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
