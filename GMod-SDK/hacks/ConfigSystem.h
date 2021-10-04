@@ -53,6 +53,7 @@ namespace ConfigSystem
 		j["Globals"]["menuKeyStyle"] = Settings::menuKeyStyle;
 		j["Globals"]["menuColor"] = to_jsonfcol(Settings::menuColor);
 		j["Globals"]["untrusted"] = Globals::Untrusted;
+		j["Globals"]["supportMulticore"] = Settings::supportMulticore;
 
 		j["Chams"]["playerChams"] = to_jsonchams(Settings::Chams::playerChamsSettings);
 		j["Chams"]["teamMate"] = to_jsonchams(Settings::Chams::teamMateSettings);
@@ -187,6 +188,7 @@ namespace ConfigSystem
 			Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
 			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor);
 			Globals::Untrusted = j["Globals"]["untrusted"];
+			Settings::supportMulticore = j["Globals"]["supportMulticore"];
 
 			Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
 			Settings::Chams::teamMateSettings = from_jsonchams(j["Chams"]["teamMate"]);
@@ -315,6 +317,7 @@ namespace ConfigSystem
 		Settings::menuKeyStyle = 1;
 		Settings::menuColor = Color(0,255,0);
 		Globals::Untrusted = NULL;
+		Settings::supportMulticore = true;
 
 		Settings::Chams::playerChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
 		Settings::Chams::teamMateSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);

@@ -79,6 +79,8 @@ namespace GUI
 		"Config1",
 		"Config2",
 		"Config3",
+		"Config4",
+		"Config5",
 	};
 	const char* hitmarkerSound[]{
 		"Metal",
@@ -524,6 +526,7 @@ namespace GUI
 				Menu::InsertText("Menu color");
 				Menu::InsertColorPicker("Menu color", &Settings::menuColor, false);
 				Menu::InsertCheckbox("Untrusted", &Globals::Untrusted);
+				Menu::InsertCheckbox("Multicore Support (perf but wobbly ESP)", &Settings::supportMulticore);
 				Menu::InsertSlider("Rainbow speed", &Settings::Misc::rainbowSpeed, 1.f, 15.f);
 
 				style->ItemSpacing = ImVec2(0, 0);

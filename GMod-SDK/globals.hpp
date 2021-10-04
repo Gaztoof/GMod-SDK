@@ -167,6 +167,7 @@ namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;
 	int menuKeyStyle = 1;
 	Color menuColor(0, 255, 0);
+	bool supportMulticore = true;
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::map<std::string, bool> luaEntList;
