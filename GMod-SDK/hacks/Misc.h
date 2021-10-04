@@ -188,7 +188,7 @@ void UseSpam(CUserCmd* cmd)
 }
 void BunnyHop(CUserCmd* cmd)
 {
-    if (InputSystem->IsButtonDown(KEY_SPACE)) {
+    if (InputSystem->IsButtonDown(KEY_SPACE) && cmd->buttons &= ) {
         int flags = localPlayer->getFlags();
         if (Settings::Misc::bunnyHop)
         {

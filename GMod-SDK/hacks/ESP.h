@@ -65,6 +65,7 @@ void doEsp()
 				/*if (Settings::ESP::espShapeInt == 0)
 					DrawEsp2D(screenPos, screenTopPos, ColorToRGBA(Settings::ESP::espBoundingBoxColor));
 				else if (Settings::ESP::espShapeInt == 1)*/
+				if(Settings::ESP::espBoundingBox)
 				DrawEspBox3D(entity->GetCollideable()->OBBMaxs(), entity->GetCollideable()->OBBMins(), entity->GetAbsOrigin(), entity->GetAbsAngles(), ColorToRGBA(Settings::ESP::espBoundingBoxColor));
 				continue;
 			}
