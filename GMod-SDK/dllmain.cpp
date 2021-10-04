@@ -101,7 +101,7 @@ void Main()
 
     present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern, "Present"), 0x2, 6, false);
 
-    EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
+    //EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0"); // Not needed anymore
     
     Globals::damageEvent = (void*)new DamageEvent();
     Globals::deathEvent = (void*)new DeathEvent();
