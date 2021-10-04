@@ -141,10 +141,14 @@ void RotateVec(QAngle ang, Vector& in, int height3D)
 	//float Tan = tan(DEG2RAD(ang.z));
 	Vector vecCl(in.x, in.y, in.z);
 
-	//std::cout << "tan: " << Tan  << " cosz: " << CosZ << " Cos: " << Cos << " sin: " << sin(DEG2RAD(ang.y)) << " x: " << ang.x << " y: " << ang.y << " z: " << ang.z   << std::endl;
-	in.x = (vecCl.x * Cos - vecCl.y * Sin);
+	//std::cout << " Cos: " << sin(DEG2RAD(ang.z)) << " sin: " << sin(DEG2RAD(ang.z)) << " x: " << ang.x << " y: " << ang.y << " z: " << ang.z   << std::endl;
+
+	in.x = (vecCl.x * Cos + -(vecCl.y * Sin));
 	in.y = (vecCl.x * Sin + vecCl.y * Cos);
-	in.z = vecCl.z;
+
+	// To anyone reading this, I didn't do trigonometry in years, so i'm struggling real hard to make it work in XYZ directions...
+	// Help welcome
+	
 }
 
 void DrawEspBox3D(Vector max, Vector min, Vector orig, QAngle ang, D3DCOLOR color)

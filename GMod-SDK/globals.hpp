@@ -116,7 +116,6 @@ const void ConPrint(const char* text, Color col)
 	ConColorMsg(col, "\n");
 }
 
-std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
 
 SpoofedConVar* spoofedAllowCsLua;
 SpoofedConVar* spoofedCheats;
@@ -154,6 +153,7 @@ namespace Globals {
 	SpoofedConVar* spoofedAllowCsLua;
 	SpoofedConVar* spoofedCheats;
 
+	std::atomic<vmatrix_t> viewMatr;
 	std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
 
 	int screenWidth, screenHeight;
@@ -169,7 +169,7 @@ namespace Settings {
 	Color menuColor(0, 255, 0);
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
-	std::map<const char*, bool> luaEntList;
+	std::map<std::string, bool> luaEntList;
 	float lastHitmarkerTime = -1.f;
 	std::mutex friendListMutex;
 	std::mutex luaEntListMutex;

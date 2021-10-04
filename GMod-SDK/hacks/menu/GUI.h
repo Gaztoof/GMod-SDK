@@ -413,28 +413,28 @@ namespace GUI
 					if (ClientEntityList && EngineClient->IsInGame())
 					{
 						Settings::luaEntListMutex.lock();
-						std::map<const char*, bool> tempEntList;
+
 						for (int i = 0; i < ClientEntityList->GetHighestEntityIndex(); i++)
 						{
 							C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(i);
-							if (entity == nullptr || entity->IsPlayer() || entity->IsWeapon() || !entity->UsesLua() || entity == localPlayer)
+							if (entity == nullptr || entity->IsPlayer() || !entity->UsesLua() || entity == localPlayer)
 								continue;
 
-							const char* entName = GetClassName(entity);
-							if (!strlen(entName))continue;
+							std::string entName = GetClassName(entity);
+							if (!entName.length())continue;
 
 							bool found = false;
 							for (auto var : Settings::luaEntList)
-								if (var.first && !strcmp(var.first, entName))
-									found = true;
-							if (!found)
-								Settings::luaEntList.emplace(entName, false);
+								if (var.first == entName)
+									break;
+							
+							Settings::luaEntList.emplace(entName, false);
 						}
-						for (std::map<const char*, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
+						for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
 						{
 							bool found = false;
 							for (auto var : Settings::luaEntList)
-								if (var.first && !strcmp(var.first, it->first))
+								if (var.first == it->first)
 									found = true;
 
 							if (!found)
@@ -443,7 +443,7 @@ namespace GUI
 							}
 							else
 							{
-								ImGui::Selectable(it->first, &it->second);
+								ImGui::Selectable(it->first.c_str(), &it->second);
 								it++;
 							}
 						}
@@ -457,7 +457,7 @@ namespace GUI
 				Menu::InsertButtonMiddle("Reset all", resetAll);
 				if (resetAll)
 				{
-					for (std::map<const char*, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
+					for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
 					{
 						it->second = false;
 						it++;

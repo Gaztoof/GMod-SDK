@@ -11,7 +11,7 @@ void ExecuteScript(const char* input)
 	CLuaInterface* LuaInterface = LuaShared->GetLuaInterface(0);
 	if (!LuaInterface) return;
     std::unique_lock lock(executorMutex);
-    waitingToBeExecuted.store(std::make_pair(true, input));
+    Globals::waitingToBeExecuted.store(std::make_pair(true, input));
 }
 void LoadScriptFromFile()
 {
