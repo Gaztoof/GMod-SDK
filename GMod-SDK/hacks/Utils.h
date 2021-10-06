@@ -17,7 +17,6 @@ bool WorldToScreen(Vector in, Vector& out)
 		auto matrix = Globals::viewMatr.load().m;
 
 		float w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
-
 		if (w > 0.001f)
 		{
 			float fl1DBw = 1 / w;

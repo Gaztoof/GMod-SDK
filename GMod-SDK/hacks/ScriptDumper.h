@@ -118,7 +118,7 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 			fileContent = content;
 			return fileContent;
 		}
-		else {
+		/*else {
 			std::ofstream outDetourFile;
 			outDetourFile.open(detourDir.string());
 			if (outDetourFile.good())
@@ -126,7 +126,7 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 				outDetourFile << fileContent;
 				outDetourFile.close();
 			}
-		}
+		}*/
 	}
 	catch (...) {}
 
