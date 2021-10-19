@@ -85,11 +85,11 @@ ButtonCode_t VKToButtonCode(int input)
 	return InputSystem->VirtualKeyToButtonCode(input);
 };
 
-#define getKeyState(key, style, out, hi, hi2, hi3)\
+#define getKeyState(key, style, out)\
 {\
-	static bool hi = false; \
-	static bool hi2 = false;\
-	bool hi3 = false;\
+	static bool toggleState = false; \
+	static bool lastButtonState = false;\
+	bool tempButtonState = false;\
 		\
 	switch (style)\
 	{\
@@ -97,14 +97,14 @@ ButtonCode_t VKToButtonCode(int input)
 			*out = true;\
 			break;\
 		case 1:\
-			*out = InputSystem->IsButtonDown(key);\
+			*out = InputSystem->IsButtonDown(key) && !MatSystemSurface->IsCursorVisible();\
 			break;\
 		case 2:\
-			hi3 = InputSystem->IsButtonDown(key);\
-			if (hi3 != hi2 && hi3)\
-				hi = !hi;\
-			hi2 = hi3;\
-			*out = hi;\
+			tempButtonState = InputSystem->IsButtonDown(key) && !MatSystemSurface->IsCursorVisible();\
+			if (tempButtonState != lastButtonState && tempButtonState)\
+				toggleState = !toggleState;\
+			lastButtonState = tempButtonState;\
+			*out = toggleState;\
 				break;\
 		case 3:\
 			*out = false;\
@@ -128,8 +128,7 @@ const char* IntToBoneName(int input)
 }
 std::wstring StringToWString(std::string input)
 {
-	return std::wstring(input.begin(), input.end());
-
+	return std::wstring(input.begin(), input.end()); 
 }
 
 mstudiobone_t* Studio_BoneIndexByName(studiohdr_t* pStudioHdr, char const* pName, int* outIndex = NULL)

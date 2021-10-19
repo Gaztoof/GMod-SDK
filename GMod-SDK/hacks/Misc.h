@@ -21,7 +21,6 @@ const char* killMessages[]{
 };
 const char* hitMarkers[]{
     "physics/metal/metal_solid_impact_bullet2.wav",
-    "buttons/arena_switch_press_02.wav",
     "training/timer_bell.wav",
 };
 
@@ -45,7 +44,8 @@ public:
         EngineClient->GetPlayerInfo(target, &targetInfo);
         EngineClient->GetPlayerInfo(attacker, &attackerInfo);
 
-        std::cout << attackerInfo.name << " damaged " << targetInfo.name << ". Target new health: " << event->GetInt("health") << std::endl;
+        if(strlen(attackerInfo.name) && attacker != localPlayerID)
+            std::cout << attackerInfo.name << " attacked " << targetInfo.name << ". NEW HP: " << event->GetInt("health") << std::endl;
 
         if (target == localPlayerID || attacker != localPlayerID)
             return;
@@ -174,12 +174,12 @@ void QuickStop(CUserCmd* cmd)
 }
 void FlashSpam(CUserCmd* cmd)
 {
-    if (Settings::Misc::flashlightSpam && InputSystem->IsButtonDown(KEY_F))
+    if (Settings::Misc::flashlightSpam && InputSystem->IsButtonDown(KEY_F) && !MatSystemSurface->IsCursorVisible())
         cmd->impulse = 100; // FlashLight spam
 }
 void UseSpam(CUserCmd* cmd)
 {
-    if (Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E))
+    if (Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E) && !MatSystemSurface->IsCursorVisible())
     {
         if(cmd->command_number % 2)
         cmd->buttons |= IN_USE;

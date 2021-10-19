@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include "AutoWall.h"
 
+// That's bad, honestly needs a little improve
 void TriggerBot(CUserCmd* cmd)
 {
 	if (!Settings::Triggerbot::triggerBot)return;
