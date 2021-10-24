@@ -4,6 +4,7 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 #include <map>
+#include <algorithm>
 
 #include "../../ImGui/imgui.h"
 #include "../../ImGui/imgui_impl_dx9.h"
@@ -433,6 +434,16 @@ namespace GUI
 
 						for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end(); it++)
 						{
+							bool listHas = std::find(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), it->first) != Settings::selectedLuaEntList.end();
+							if (it->second && !listHas)
+							{
+								Settings::selectedLuaEntList.push_back(it->first);
+							}
+							else if (!it->second && listHas)
+							{
+								std::remove(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), it->first);
+							}
+
 								ImGui::Selectable(it->first.c_str(), &it->second);
 						}
 

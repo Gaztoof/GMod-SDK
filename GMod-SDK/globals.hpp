@@ -171,6 +171,8 @@ namespace Settings {
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::map<std::string, bool> luaEntList;
+	std::vector<std::string> selectedLuaEntList;
+
 	float lastHitmarkerTime = -1.f;
 	std::mutex friendListMutex;
 	std::mutex luaEntListMutex;

@@ -20,14 +20,7 @@ void doEsp()
 		if (Settings::ESP::entEsp && entity->UsesLua())
 		{
 			Settings::luaEntListMutex.lock();
-			for (auto var : Settings::luaEntList)
-			{
-				if (var.second && var.first == entName)
-				{
-					isEntity = true;
-					break;
-				}
-			}
+			isEntity = std::find(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), entName) != Settings::selectedLuaEntList.end();
 			Settings::luaEntListMutex.unlock();
 		}
 
