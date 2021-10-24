@@ -452,7 +452,7 @@ namespace GUI
 							{
 								Settings::selectedLuaEntList.push_back(it->first);
 							}
-							else if (!it->second && listHas)
+							else if (!it->second)
 							{
 								std::remove(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), it->first);
 							}
