@@ -425,30 +425,17 @@ namespace GUI
 							std::string entName = GetClassName(entity);
 							if (!entName.length())continue;
 
-							bool found = false;
-							for (auto var : Settings::luaEntList)
-								if (var.first == entName)
-									break;
+							if (Settings::luaEntList.count(entName))
+								continue;
 							
 							Settings::luaEntList.emplace(entName, false);
 						}
-						for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
-						{
-							bool found = false;
-							for (auto var : Settings::luaEntList)
-								if (var.first == it->first)
-									found = true;
 
-							if (!found)
-							{
-								Settings::luaEntList.erase(it++);
-							}
-							else
-							{
+						for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end(); it++)
+						{
 								ImGui::Selectable(it->first.c_str(), &it->second);
-								it++;
-							}
 						}
+
 						Settings::luaEntListMutex.unlock();
 					}
 					ImGui::EndGroupBox();
@@ -460,10 +447,7 @@ namespace GUI
 				if (resetAll)
 				{
 					Settings::luaEntListMutex.lock();
-					for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
-					{
-						Settings::luaEntList.erase(it);
-					}
+					Settings::luaEntList.clear();
 					Settings::luaEntListMutex.unlock();
 				}
 			}Menu::InsertEndGroupBoxRight("Entities Cover", "Entities");
