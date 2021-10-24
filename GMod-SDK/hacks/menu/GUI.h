@@ -459,11 +459,12 @@ namespace GUI
 				Menu::InsertButtonMiddle("Reset all", resetAll);
 				if (resetAll)
 				{
+					Settings::luaEntListMutex.lock();
 					for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
 					{
-						it->second = false;
-						it++;
+						Settings::luaEntList.erase(it);
 					}
+					Settings::luaEntListMutex.unlock();
 				}
 			}Menu::InsertEndGroupBoxRight("Entities Cover", "Entities");
 		}
