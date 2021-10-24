@@ -17,20 +17,19 @@ void doEsp()
 		bool isEntity = false;
 		std::string entName = GetClassName(entity);
 
-		Settings::luaEntListMutex.lock();
-
 		if (Settings::ESP::entEsp && entity->UsesLua())
 		{
+			Settings::luaEntListMutex.lock();
 			for (auto var : Settings::luaEntList)
 			{
-				if (var.first == entName && var.second)
+				if (var.second && var.first == entName)
 				{
 					isEntity = true;
 					break;
 				}
 			}
+			Settings::luaEntListMutex.unlock();
 		}
-		Settings::luaEntListMutex.unlock();
 
 		if (!isEntity && (!entity->IsPlayer() || !entity->IsAlive()))
 			continue;
