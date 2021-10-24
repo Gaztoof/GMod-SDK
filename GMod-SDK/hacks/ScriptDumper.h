@@ -64,10 +64,12 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 			Lua->GetField(-1, "GetHostName");
 			Lua->Push(-2);
 			Lua->Call(1, 1);
-			auto hostName = Lua->GetString(-1, NULL);
+			std::string hostName = Lua->GetString(-1, NULL);
 			Lua->Pop(2);
 
-			if (hostName) {
+
+			if (hostName.length()) {
+				std::replace(hostName.begin(), hostName.end(), '/', ' ');
 				scripthookPath += hostName;
 				detourPath += hostName;
 			}
