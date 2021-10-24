@@ -62,8 +62,8 @@ void doEsp()
 				continue;
 			}
 
-			auto foundFriend = Settings::friendList.find(entity);
-			if (Settings::ESP::onlyFriends && (foundFriend == Settings::friendList.end() || !foundFriend->second.first))
+			bool foundFriend = std::find(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), entity) != Settings::selectedFriendList.end();
+			if (Settings::ESP::onlyFriends && !foundFriend)
 				continue;
 
 

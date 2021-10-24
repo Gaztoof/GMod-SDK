@@ -170,6 +170,8 @@ namespace Settings {
 	bool supportMulticore = true;
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
+	std::vector<C_BasePlayer*> selectedFriendList;
+
 	std::map<std::string, bool> luaEntList;
 	std::vector<std::string> selectedLuaEntList;
 

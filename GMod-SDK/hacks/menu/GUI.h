@@ -364,11 +364,11 @@ namespace GUI
 								Settings::friendList.emplace(entity, std::pair(false, i));
 
 						}
-						for (std::map<C_BasePlayer*, std::pair<bool, int>>::iterator it = Settings::friendList.begin(); it != Settings::friendList.end();)
+						for (std::map<C_BasePlayer*, std::pair<bool, int>>::iterator it = Settings::friendList.begin(); it != Settings::friendList.end(); it++)
 						{
 							if (tempFriendList.find(it->first) == tempFriendList.end())
 							{
-								Settings::friendList.erase(it++);
+								Settings::friendList.erase(it);
 							}
 							else
 							{
@@ -379,7 +379,17 @@ namespace GUI
 								name += " | ";
 								name += info.guid;
 								ImGui::Selectable(name.c_str(), &it->second.first);
-								it++;
+								it;
+							}
+
+							bool listHas = std::find(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), it->first) != Settings::selectedFriendList.end();
+							if (it->second.first && !listHas)
+							{
+								Settings::selectedFriendList.push_back(it->first);
+							}
+							else if (!it->second.first && listHas)
+							{
+								std::remove(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), it->first);
 							}
 						}
 						Settings::friendListMutex.unlock();
@@ -392,11 +402,14 @@ namespace GUI
 				Menu::InsertButtonMiddle("Reset all", resetAll);
 				if (resetAll)
 				{
+					Settings::friendListMutex.lock();
 					for (std::map<C_BasePlayer*, std::pair<bool, int>>::iterator it = Settings::friendList.begin(); it != Settings::friendList.end();)
 					{
 						it->second.first = false;
 						it++;
 					}
+					Settings::selectedFriendList.clear();
+					Settings::friendListMutex.unlock();
 				}
 			}Menu::InsertEndGroupBoxLeft("Players Cover", "Players");
 			ImGui::NextColumn();
