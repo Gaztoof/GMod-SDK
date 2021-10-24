@@ -536,7 +536,7 @@ namespace GUI
 				Menu::InsertColorPicker("Menu color", &Settings::menuColor, false);
 				Menu::InsertCheckbox("Untrusted", &Globals::Untrusted);
 				Menu::InsertCheckbox("Multicore Support (perf but wobbly ESP)", &Settings::supportMulticore);
-				Menu::InsertSlider("Rainbow speed", &Settings::Misc::rainbowSpeed, 1.f, 15.f);
+				Menu::InsertSlider("Rainbow speed", &Settings::Misc::rainbowSpeed, 1.f, 30.f);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
