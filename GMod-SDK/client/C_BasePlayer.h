@@ -573,6 +573,8 @@ public:
 		// the method is C_BasePlayer::CalcPlayerView
 		// the x86 sig is "E8 ? ? ? ? 8B CE E8 ? ? ? ? 84 C0 74 19"
 		// the x64 sig is "E8 ? ? ? ? 48 8B CB E8 ? ? ? ? 4C 8B 7C 24 ? 4C 8B 74 24 ?"
+		// Update 30/10/2021: Tests show that you can't sig CalcPlayerView anymore (tested in X64), so here's an alternative:
+		// String XREF "Initialize All Game Systems", you'll find this https://i.imgur.com/rWlXdHI.png, so XREF vieweffects, and the first reference should look like this: https://i.imgur.com/rxXt4Wt.png. That's your CalcPlayerView
 #ifdef _WIN64
 		return *(QAngle*)((uintptr_t)this + 0x29F8);
 #else

@@ -350,5 +350,8 @@
     <ClInclude Include="hooks\ProcessGMODServerToClient.h">
       <Filter>Header Files\hooks</Filter>
     </ClInclude>
+    <ClInclude Include="hooks\RunCommand.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

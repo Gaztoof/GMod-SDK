@@ -232,6 +232,7 @@
     <ClInclude Include="hooks\Present.h" />
     <ClInclude Include="hooks\ProcessGMODServerToClient.h" />
     <ClInclude Include="hooks\RenderView.h" />
+    <ClInclude Include="hooks\RunCommand.h" />
     <ClInclude Include="hooks\RunStringEx.h" />
     <ClInclude Include="lua_shared\CLuaConVars.h" />
     <ClInclude Include="lua_shared\CLuaInterface.h" />

@@ -101,6 +101,7 @@ VPanelWrapper* PanelWrapper;
 CPhysicsSurfaceProps* PhysicsSurfaceProps;
 CMatSystemSurface* MatSystemSurface;
 void* ClientState; // implement that?
+void* Prediction; // implement that?
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;

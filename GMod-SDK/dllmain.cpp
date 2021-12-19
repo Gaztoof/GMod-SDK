@@ -17,6 +17,7 @@
 #include "hooks/PaintTraverse.h"
 #include "hooks/RunStringEx.h"
 #include "hooks/ProcessGMODServerToClient.h"
+#include "hooks/RunCommand.h"
 
 #include "Memory.h"
 
@@ -72,6 +73,8 @@ void Main()
     PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
     PhysicsSurfaceProps = (CPhysicsSurfaceProps*)GetInterface("vphysics.dll", "VPhysicsSurfaceProps001");
 
+    Prediction = (void*)GetInterface("client.dll", "VClientPrediction001");
+
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
 
@@ -94,6 +97,7 @@ void Main()
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
+    oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 17);
 
     //RunStringEx is getting hooked at the end of this function
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!

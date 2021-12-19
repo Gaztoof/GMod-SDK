@@ -31,7 +31,7 @@ ClientFrameStage_t stage)
 
 	//Input->cameraoffset
 
-	if (localPlayer && localPlayer->IsAlive())
+	if(localPlayer && localPlayer->IsAlive())
 	{
 		//https://i.imgur.com/Y5hSyqS.png
 		if (Settings::Visuals::noVisualRecoil)

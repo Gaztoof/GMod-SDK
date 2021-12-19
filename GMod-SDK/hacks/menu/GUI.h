@@ -15,6 +15,7 @@
 #include "../../hacks/Executor.h"
 #include "../../hooks/RunStringEx.h"
 #include "../../hooks/ProcessGMODServerToClient.h"
+#include "../../hooks/RunCommand.h"
 
 extern _Present oPresent;
 
@@ -91,7 +92,7 @@ namespace GUI
 	const char* autostrafeStyle[]{
 		"Normal",
 		"Silent strafe",
-		"Rage"
+		//"Rage"
 	};
 
 
@@ -248,7 +249,7 @@ namespace GUI
 				Menu::InsertCheckbox("Auto wall", &Settings::Aimbot::aimbotAutoWall);
 				Menu::InsertCheckbox("Silent aim", &Settings::Aimbot::silentAim);
 				Menu::InsertCheckbox("Smoothing", &Settings::Aimbot::smoothing);
-				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 1, 20);
+				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 10, 35);
 
 				Menu::InsertCheckbox("Aim lock", &Settings::Aimbot::lockOnTarget);
 				Menu::InsertCheckbox("Target teammates", &Settings::Aimbot::aimAtTeammates);
@@ -602,6 +603,7 @@ namespace GUI
 					RestoreVMTHook((PVOID**)LuaInterface, (PVOID)oRunStringEx, 111);
 
 					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
+					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 17);
 
 					*Globals::bSendpacket = true;
 					

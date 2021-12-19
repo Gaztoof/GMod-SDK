@@ -7,6 +7,7 @@
 	
 void DoLegitAimbot(CUserCmd* cmd)
 {
+	static C_BasePlayer* lastTarget = nullptr;
 	static bool tempState = false;
 	static int smoothSteps = 0;
 
@@ -130,6 +131,10 @@ void DoLegitAimbot(CUserCmd* cmd)
 		canHit = CanHit(Settings::Aimbot::finalTarget, eyePos, targetPos);
 
 		bool shouldFire = true;
+		if (lastTarget != Settings::Aimbot::finalTarget)
+			smoothSteps = 0;
+		
+
 		if (Settings::Aimbot::smoothing && !Settings::Aimbot::silentAim)
 		{
 			smoothSteps++;
@@ -170,4 +175,6 @@ void DoLegitAimbot(CUserCmd* cmd)
 		}
 
 	} else smoothSteps = 0;
+	lastTarget = Settings::Aimbot::finalTarget;
+
 }

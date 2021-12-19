@@ -23,6 +23,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 	LuaInterface = LuaShared->GetLuaInterface(0);
+	*Globals::bSendpacket = true;
 
 	if (localPlayer && localPlayer->IsAlive() && LuaInterface && !Settings::currentlyInFreeCam)
 	{
@@ -71,21 +72,23 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	CNetChan* NetChan = EngineClient->GetNetChannelInfo();
+	static int m_nChokedPackets = 0;
 	bool fakeLagKeyDown = false;
 	getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
 
-	if (NetChan->m_nChokedPackets < 14 && fakeLagKeyDown && Settings::Misc::fakeLag)
+	if (fakeLagKeyDown && Settings::Misc::fakeLag)
 	{
-		*Globals::bSendpacket = false;
-		++NetChan->m_nChokedPackets;
+		if (m_nChokedPackets < 9)
+		{
+			*Globals::bSendpacket = false;
+			++m_nChokedPackets;
+		}
+		else
+		{
+			*Globals::bSendpacket = true;
+			m_nChokedPackets = 0;
+		}
 	}
-
-	if (NetChan && NetChan->m_nChokedPackets >= 14)
-	{
-		*Globals::bSendpacket = true;
-		NetChan->m_nChokedPackets = 0;
-	}
-	
 	if (*Globals::bSendpacket)
 	{
 		Globals::lastNetworkedCmd = *cmd;
