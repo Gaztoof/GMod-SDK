@@ -78,7 +78,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 	if (fakeLagKeyDown && Settings::Misc::fakeLag)
 	{
-		if (m_nChokedPackets < 9)
+		if (m_nChokedPackets < (int)Settings::Misc::fakeLagTicks)
 		{
 			*Globals::bSendpacket = false;
 			++m_nChokedPackets;

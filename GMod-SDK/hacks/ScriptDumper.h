@@ -117,6 +117,9 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 				(std::istreambuf_iterator<char>()));
 			if (!strcmp(content.c_str(), fileContent.c_str()))return {};
 
+			std::string strToPrint = "Successfully detoured script \"" + fileName + "\" !";
+			ConPrint(strToPrint.c_str(), Color(255, 51, 113));
+
 			fileContent = content;
 			return fileContent;
 		}

@@ -249,7 +249,7 @@ namespace GUI
 				Menu::InsertCheckbox("Auto wall", &Settings::Aimbot::aimbotAutoWall);
 				Menu::InsertCheckbox("Silent aim", &Settings::Aimbot::silentAim);
 				Menu::InsertCheckbox("Smoothing", &Settings::Aimbot::smoothing);
-				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 10, 35);
+				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 10, 50);
 
 				Menu::InsertCheckbox("Aim lock", &Settings::Aimbot::lockOnTarget);
 				Menu::InsertCheckbox("Target teammates", &Settings::Aimbot::aimAtTeammates);
@@ -301,6 +301,7 @@ namespace GUI
 				Menu::InsertCheckbox("Remove recoil", &Settings::Misc::noRecoil);
 				Menu::InsertCheckbox("Fake-Lag", &Settings::Misc::fakeLag);
 				ImGui::Keybind("fakelagkey", (int*)&Settings::Misc::fakeLagKey, &Settings::Misc::fakeLagKeyStyle);
+				Menu::InsertSlider("Fake-Lag ticks", &Settings::Misc::fakeLagTicks, 1, 16);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);

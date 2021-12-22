@@ -1,6 +1,6 @@
 #pragma once
 
-#define CheatVersion "1.1.9"
+#define CheatVersion "1.2.0"
 
 #include <map>
 #include <mutex>
@@ -312,6 +312,7 @@ namespace Settings {
 		float hitmarkerSize = 10.f;
 
 		bool fakeLag;
+		float fakeLagTicks;
 		ButtonCode_t fakeLagKey = KEY_NONE;
 		int fakeLagKeyStyle = 1;
 

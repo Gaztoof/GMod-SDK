@@ -149,6 +149,7 @@ namespace ConfigSystem
 		j["Misc"]["hitmarker"] = Settings::Misc::hitmarker;
 		j["Misc"]["hitmarkerSize"] = Settings::Misc::hitmarkerSize;
 		j["Misc"]["fakeLag"] = Settings::Misc::fakeLag;
+		j["Misc"]["fakeLagTicks"] = Settings::Misc::fakeLagTicks;
 		j["Misc"]["fakeLagKey"] = Settings::Misc::fakeLagKey;
 		j["Misc"]["fakeLagKeyStyle"] = Settings::Misc::fakeLagKeyStyle;
 		j["Misc"]["zoom"] = Settings::Misc::zoom;
@@ -283,6 +284,7 @@ namespace ConfigSystem
 			Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
 			Settings::Misc::hitmarkerSize = j["Misc"]["hitmarkerSize"];
 			Settings::Misc::fakeLag = j["Misc"]["fakeLag"];
+			Settings::Misc::fakeLagTicks = j["Misc"]["fakeLagTicks"];
 			Settings::Misc::fakeLagKey = j["Misc"]["fakeLagKey"];
 			Settings::Misc::fakeLagKeyStyle = j["Misc"]["fakeLagKeyStyle"];
 			Settings::Misc::zoom = j["Misc"]["zoom"];
@@ -413,6 +415,7 @@ namespace ConfigSystem
 		Settings::Misc::hitmarker = NULL;
 		Settings::Misc::hitmarkerSize = 10.f;
 		Settings::Misc::fakeLag = NULL;
+		Settings::Misc::fakeLagTicks = 1;
 		Settings::Misc::fakeLagKey = KEY_NONE;
 		Settings::Misc::fakeLagKeyStyle = 1;
 		Settings::Misc::zoom = NULL;
