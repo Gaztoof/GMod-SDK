@@ -366,13 +366,12 @@ namespace GUI
 								Settings::friendList.emplace(entity, std::pair(false, i));
 
 						}
-						for (std::map<C_BasePlayer*, std::pair<bool, int>>::iterator it = Settings::friendList.begin(); it != Settings::friendList.end(); it++)
+
+						std::vector<C_BasePlayer*> toRemoveMap;
+						for (auto it = Settings::friendList.begin(); it != Settings::friendList.end(); it++)
 						{
-							if (tempFriendList.find(it->first) == tempFriendList.end())
-							{
-								Settings::friendList.erase(it);
-							}
-							else
+							bool toDelete = tempFriendList.find(it->first) == tempFriendList.end();
+							if (!toDelete)
 							{
 								player_info_s info;
 								EngineClient->GetPlayerInfo(it->second.second, &info);
@@ -381,18 +380,22 @@ namespace GUI
 								name += " | ";
 								name += info.guid;
 								ImGui::Selectable(name.c_str(), &it->second.first);
-								it;
 							}
-
 							bool listHas = std::find(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), it->first) != Settings::selectedFriendList.end();
-							if (it->second.first && !listHas)
+							if (!listHas && it->second.first)
 							{
 								Settings::selectedFriendList.push_back(it->first);
 							}
-							else if (!it->second.first && listHas)
+							else if (listHas && !it->second.first)
 							{
 								std::remove(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), it->first);
 							}
+							if (toDelete)
+								toRemoveMap.push_back(it->first);
+						}
+						for (auto it = toRemoveMap.begin(); it != toRemoveMap.end(); it++)
+						{
+							Settings::friendList.erase(*it);
 						}
 						Settings::friendListMutex.unlock();
 					}
