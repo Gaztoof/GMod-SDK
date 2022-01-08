@@ -224,6 +224,61 @@ void BunnyHop(CUserCmd* cmd)
             cmd->buttons &= ~IN_SPEED;
     }
 }
+void BunnyHopOptimizer(CUserCmd* cmd)
+{
+    if (InputSystem->IsButtonDown(KEY_SPACE) && !MatSystemSurface->IsCursorVisible()) {
+        float tickrate = 100;
+        float strafes = 10;
+
+        float fm = cmd->forwardmove;
+        float sm = cmd->sidemove;
+        Vector wishvel = cmd->viewangles.toVector() * fm + cmd->viewangles.SideVector() * sm; 
+        wishvel.z = 0;
+        float wishspeed = clamp(wishvel.Length(), 0, 32.8);
+
+        auto wishdir = wishvel.Normalized();
+        float current = localPlayer->getVelocity().Dot(wishdir);
+
+
+        auto currVel = localPlayer->getVelocity();
+        currVel.z = 0;
+
+        float maxVel = sqrt(pow(30, 2) + pow(currVel.Length(), 2)); // max possible new velocity in this tick given a perfect strafe angle
+
+
+        float A = atan(30 / currVel.Length()) * (180 / PI); // difference of angle to the next tick's optimal strafe angle
+
+
+        float D = (0.75 * tickrate * A) / strafes;// optimal number of degrees per strafe given the desired number of strafes per jump, the tickrate of the server, and the current player velocity defined in v_1
+
+        printf("%.f/%.f A: %.2f D: %.2f\n", currVel.Length(), maxVel, A, D);
+
+        QAngle viewAngles;
+        EngineClient->GetViewAngles(viewAngles);
+        static QAngle previousAngles = viewAngles;
+        static QAngle lastNAngles;
+        if (cmd->mousedy == 0.f)
+        {
+            lastNAngles = viewAngles;
+        }
+        if (cmd->mousedy > 0.f)
+        {
+            // newAngles > (lastAngles.y - D)
+            if (ANG2DEG(viewAngles.y) < (ANG2DEG(lastNAngles.y) - D))
+            {
+                viewAngles = previousAngles;
+            }
+            //viewAngles.y += D;
+        }
+        else if(cmd->mousedy < 0.f){
+            
+            //viewAngles.y -= D;
+        }
+        cmd->viewangles.FixAngles();
+        previousAngles = viewAngles;
+        EngineClient->SetViewAngles(viewAngles);
+    }
+}
 
 void DoMisc(CUserCmd* cmd)
 {
@@ -233,4 +288,5 @@ void DoMisc(CUserCmd* cmd)
     FlashSpam(cmd);
     UseSpam(cmd);
     BunnyHop(cmd);
+    //BunnyHopOptimizer(cmd);
 }

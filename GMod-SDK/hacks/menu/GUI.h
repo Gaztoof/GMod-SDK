@@ -438,7 +438,7 @@ namespace GUI
 						for (int i = 0; i < ClientEntityList->GetHighestEntityIndex(); i++)
 						{
 							C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(i);
-							if (entity == nullptr || entity->IsPlayer() || !entity->UsesLua() || entity == localPlayer)
+							if (entity == nullptr || entity->IsPlayer() || !entity->UsesLua() || entity == localPlayer || entity->IsBaseCombatWeapon())
 								continue;
 
 							std::string entName = GetClassName(entity);
