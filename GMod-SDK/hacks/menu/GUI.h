@@ -92,7 +92,7 @@ namespace GUI
 	const char* autostrafeStyle[]{
 		"Normal",
 		"Silent strafe",
-		//"Rage"
+		"Optimizer",
 	};
 
 
