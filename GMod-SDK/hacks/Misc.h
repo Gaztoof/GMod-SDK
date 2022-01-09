@@ -206,8 +206,12 @@ void BunnyHopOptimizer(CUserCmd* cmd)
             float angDiff = 0.f;
             if (!Settings::Misc::optiStyle)
             {
+                if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f))
                 angDiff = (viewAngles.y) - (previousAngles.y);
-                if (angDiff < 0) angDiff += 360.f;
+                else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f))
+                    angDiff = (previousAngles.y) - (viewAngles.y);
+
+                while (angDiff < 0) angDiff += 360.f;
 
                 if (angDiff < D)
                     angDiff += ((D - angDiff) * (Settings::Misc::optiStrength / 100));
@@ -219,11 +223,13 @@ void BunnyHopOptimizer(CUserCmd* cmd)
             angDiff += (0.05 + (float)(rand()) / ((float)(RAND_MAX / (0.1 - 0.05)))); // Randomization for anticheats
 
             if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f)) { // Left
+                printf("l mousedx: %d\n", cmd->mousedx);
                 viewAngles.y = (previousAngles.y + angDiff);
             }
             else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f)) { // Right
-                angDiff *= -1;
-                viewAngles.y = (previousAngles.y + angDiff);
+                printf("r mousedx: %d\n", cmd->mousedx);
+                viewAngles.y = (previousAngles.y - angDiff);
+                angDiff = -angDiff;
             }
 
             cmd->mousedx = angDiff;
@@ -261,6 +267,10 @@ void BunnyHop(CUserCmd* cmd)
 
                 }
                 else  cmd->sidemove = cmd->mousedx < 0 ? -10000.f : 10000.f;
+                if (cmd->sidemove > 0)
+                    cmd->buttons |= IN_MOVELEFT;
+                else if (cmd->sidemove < 0)cmd->buttons |= IN_MOVERIGHT;
+
                 cmd->viewangles.FixAngles();
             }
         }
