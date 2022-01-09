@@ -276,6 +276,19 @@ public:
 
 		return delta.LengthSqr();
 	}
+
+	FORCEINLINE Vector NormalizeAngle(const Vector& vOther)
+	{
+		while (y <= -180.f)y += 360.f;
+		while (y > 180.f) y -= 360.f;
+
+		if (x > 89.f) x = 89.f;
+		if (x < -89.f) x = -89.f;
+
+		z = 0;
+		return *this;
+	}
+
 	FORCEINLINE QAngle AngleTo(const Vector& vOther);
 	// Copy
 	void	CopyToArray(float* rgfl) const;
