@@ -210,7 +210,6 @@ void BunnyHopOptimizer(CUserCmd* cmd)
                 angDiff = (viewAngles.y) - (previousAngles.y);
                 else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f))
                     angDiff = (previousAngles.y) - (viewAngles.y);
-
                 while (angDiff < 0) angDiff += 360.f;
 
                 if (angDiff < D)
@@ -223,11 +222,9 @@ void BunnyHopOptimizer(CUserCmd* cmd)
             angDiff += (0.05 + (float)(rand()) / ((float)(RAND_MAX / (0.1 - 0.05)))); // Randomization for anticheats
 
             if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f)) { // Left
-                printf("l mousedx: %d\n", cmd->mousedx);
                 viewAngles.y = (previousAngles.y + angDiff);
             }
             else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f)) { // Right
-                printf("r mousedx: %d\n", cmd->mousedx);
                 viewAngles.y = (previousAngles.y - angDiff);
                 angDiff = -angDiff;
             }
@@ -260,7 +257,7 @@ void BunnyHop(CUserCmd* cmd)
                 }
             }
             else if (Settings::Misc::autoStrafeStyle == 1) { // Silent-strafe
-                if (cmd->mousedy == 0.f)
+                if (cmd->mousedx == 0.f)
                 {
                     cmd->viewangles.y += (cmd->command_number % 2) ? 1.f : -1.f;
                     cmd->sidemove = (cmd->command_number % 2) ? 10000.f : -10000.f;
