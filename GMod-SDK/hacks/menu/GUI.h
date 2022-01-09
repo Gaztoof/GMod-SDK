@@ -505,7 +505,11 @@ namespace GUI
 				Menu::InsertCheckbox("BunnyHop", &Settings::Misc::bunnyHop);
 				Menu::InsertCheckbox("Autostrafe", &Settings::Misc::autoStrafe);
 				Menu::InsertCombo("Autostrafe style", &Settings::Misc::autoStrafeStyle, autostrafeStyle, IM_ARRAYSIZE(autostrafeStyle));
-
+				if (Settings::Misc::autoStrafeStyle == 2)
+				{
+					Menu::InsertCheckbox("Clamp optimizer angle", &Settings::Misc::optiClamp);
+					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
+				}
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
 				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);
 

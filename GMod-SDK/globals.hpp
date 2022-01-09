@@ -286,6 +286,9 @@ namespace Settings {
 		bool autoStrafe;
 		int autoStrafeStyle;
 
+		bool optiClamp;
+		float optiStrength;
+
 		float crosshairSize;
 		
 		bool thirdperson;
