@@ -195,32 +195,38 @@ void BunnyHopOptimizer(CUserCmd* cmd)
 
         auto currVel = localPlayer->getVelocity();
         currVel.z = 0;
-        float A = RAD2DEG(atan(32.8 / currVel.Length())); // difference of angle to the next tick's optimal strafe angle
-        float D = (0.75 * A) / strafes;// optimal number of degrees per strafe given the desired number of strafes per jump, the tickrate of the server, and the current player velocity defined in v_1
+        float A = RAD2DEG(atan(32.8f / currVel.Length())); // difference of angle to the next tick's optimal strafe angle
+        float D = (0.75* A) / strafes;// optimal number of degrees per strafe given the desired number of strafes per jump, the tickrate of the server, and the current player velocity defined in v_1
 
         QAngle viewAngles;
         EngineClient->GetViewAngles(viewAngles);
         viewAngles.FixAngles();
         if (currVel.Length())
         {
-            if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f)) { // Left
-                float angDiff = (viewAngles.y) - (previousAngles.y);
+            float angDiff = 0.f;
+            if (!Settings::Misc::optiStyle)
+            {
+                angDiff = (viewAngles.y) - (previousAngles.y);
                 if (angDiff < 0) angDiff += 360.f;
+
                 if (angDiff < D)
                     angDiff += ((D - angDiff) * (Settings::Misc::optiStrength / 100));
-                else if(Settings::Misc::optiClamp) angDiff = D;
+                else if (Settings::Misc::optiClamp) angDiff = D;
+            }
+            else angDiff = D * (Settings::Misc::optiStrength / 100);
+
+            if(Settings::Misc::optiRandomization)
+            angDiff += (0.05 + (float)(rand()) / ((float)(RAND_MAX / (0.1 - 0.05)))); // Randomization for anticheats
+
+            if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f)) { // Left
                 viewAngles.y = (previousAngles.y + angDiff);
             }
             else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f)) { // Right
-                float angDiff = (previousAngles.y) - (viewAngles.y);
-                if (angDiff < 0) angDiff += 360.f;
-
-                if(angDiff < D)
-                angDiff += ((D - angDiff) * (Settings::Misc::optiStrength / 100));
-                else if(Settings::Misc::optiClamp) angDiff = D;
-                viewAngles.y = (previousAngles.y - angDiff);
+                angDiff *= -1;
+                viewAngles.y = (previousAngles.y + angDiff);
             }
-            cmd->mousedx = 0;
+
+            cmd->mousedx = angDiff;
             viewAngles.FixAngles();
             cmd->viewangles = viewAngles;
             EngineClient->SetViewAngles(viewAngles);
@@ -244,24 +250,27 @@ void BunnyHop(CUserCmd* cmd)
             if (Settings::Misc::autoStrafeStyle == 0) // Legit
             {
                 if (!(flags & FL_ONGROUND)) {
-                    cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
+                    cmd->sidemove = cmd->mousedx < 0 ? -10000.f : 10000.f;
                 }
             }
             else if (Settings::Misc::autoStrafeStyle == 1) { // Silent-strafe
                 if (cmd->mousedy == 0.f)
                 {
                     cmd->viewangles.y += (cmd->command_number % 2) ? 1.f : -1.f;
-                    cmd->sidemove = (cmd->command_number % 2) ? 450.f : -450.f;
+                    cmd->sidemove = (cmd->command_number % 2) ? 10000.f : -10000.f;
+
                 }
-                else  cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
-            }
-            else if (Settings::Misc::autoStrafeStyle == 2) { // Optimizer
-                BunnyHopOptimizer(cmd);
+                else  cmd->sidemove = cmd->mousedx < 0 ? -10000.f : 10000.f;
+                cmd->viewangles.FixAngles();
             }
         }
 
         if (!(flags & FL_ONGROUND))
             cmd->buttons &= ~IN_SPEED;
+    }
+
+    if (Settings::Misc::autoStrafeStyle == 2) { // Optimizer
+        BunnyHopOptimizer(cmd);
     }
 }
 

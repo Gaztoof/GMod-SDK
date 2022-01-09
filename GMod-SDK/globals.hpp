@@ -288,6 +288,8 @@ namespace Settings {
 
 		bool optiClamp;
 		float optiStrength;
+		bool optiStyle;
+		bool optiRandomization;
 
 		float crosshairSize;
 		

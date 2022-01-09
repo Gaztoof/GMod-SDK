@@ -132,6 +132,8 @@ namespace ConfigSystem
 		j["Misc"]["autoStrafeStyle"] = Settings::Misc::autoStrafeStyle;
 		j["Misc"]["optiClamp"] = Settings::Misc::optiClamp;
 		j["Misc"]["optiStrength"] = Settings::Misc::optiStrength;
+		j["Misc"]["optiStyle"] = Settings::Misc::optiStyle;
+		j["Misc"]["optiRandomization"] = Settings::Misc::optiRandomization;
 		j["Misc"]["crosshairSize"] = Settings::Misc::crosshairSize;
 		j["Misc"]["thirdperson"] = Settings::Misc::thirdperson;
 		j["Misc"]["thirdpersonKey"] = Settings::Misc::thirdpersonKey;
@@ -269,6 +271,8 @@ namespace ConfigSystem
 			Settings::Misc::autoStrafeStyle = j["Misc"]["autoStrafeStyle"];
 			Settings::Misc::optiClamp = j["Misc"]["optiClamp"];
 			Settings::Misc::optiStrength = j["Misc"]["optiStrength"];
+			Settings::Misc::optiStyle = j["Misc"]["optiStyle"];
+			Settings::Misc::optiRandomization = j["Misc"]["optiRandomization"];
 			Settings::Misc::crosshairSize = j["Misc"]["crosshairSize"];
 			Settings::Misc::thirdperson = j["Misc"]["thirdperson"];
 			Settings::Misc::thirdpersonKey = j["Misc"]["thirdpersonKey"];
@@ -402,6 +406,8 @@ namespace ConfigSystem
 		Settings::Misc::autoStrafeStyle = NULL;
 		Settings::Misc::optiClamp = NULL;
 		Settings::Misc::optiStrength = 100.f;
+		Settings::Misc::optiStyle = NULL;
+		Settings::Misc::optiRandomization = NULL;
 		Settings::Misc::crosshairSize = 1.f;
 		Settings::Misc::thirdperson = NULL;
 		Settings::Misc::thirdpersonKey = KEY_NONE;
