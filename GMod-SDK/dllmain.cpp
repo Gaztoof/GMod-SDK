@@ -24,7 +24,6 @@
 #include "hacks/ConVarSpoofing.h"
 #include "engine/inetmessage.h"
 
-
 void Main()
 {
     ZeroMemory(Settings::ScriptInput, sizeof(Settings::ScriptInput));
@@ -98,7 +97,9 @@ void Main()
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
     oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 17);
 
-    //RunStringEx is getting hooked at the end of this function
+    oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
+    oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
+	
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 
@@ -134,19 +135,6 @@ void Main()
     Sleep(1100);
     MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
     Globals::openMenu = true;
-
-    while (TRUE)
-    {
-
-        LuaInterface = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
-        if (LuaInterface)
-        {
-            oRunStringEx = VMTHook< _RunStringEx>((PVOID**)LuaInterface, (PVOID)hkRunStringEx, 111);
-            break;
-
-        }
-        Sleep(1);
-    }
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)
