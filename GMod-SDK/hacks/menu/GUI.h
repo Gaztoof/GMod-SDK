@@ -507,6 +507,7 @@ namespace GUI
 				Menu::InsertCombo("Autostrafe style", &Settings::Misc::autoStrafeStyle, autostrafeStyle, IM_ARRAYSIZE(autostrafeStyle));
 				if (Settings::Misc::autoStrafeStyle == 2)
 				{
+					Menu::InsertCheckbox("Opti Autostrafe", &Settings::Misc::optiAutoStrafe);
 					Menu::InsertCheckbox("Randomization(for anticheats)", &Settings::Misc::optiRandomization);
 					Menu::InsertCheckbox("Static optimizer", &Settings::Misc::optiStyle);
 					Menu::InsertCheckbox("Clamp optimizer angle", &Settings::Misc::optiClamp);

@@ -221,6 +221,18 @@ void BunnyHopOptimizer(CUserCmd* cmd)
             if(Settings::Misc::optiRandomization)
             angDiff += (0.05 + (float)(rand()) / ((float)(RAND_MAX / (0.1 - 0.05)))); // Randomization for anticheats
 
+            if (!(localPlayer->getFlags() & FL_ONGROUND)) {
+                if (cmd->mousedx < 0)
+                {
+                    cmd->sidemove = -10000.f;
+                    cmd->buttons |= IN_MOVELEFT;
+                }
+                else if (cmd->mousedx > 0) {
+                    cmd->sidemove = 10000.f;
+                    cmd->buttons |= IN_MOVERIGHT;
+                }
+            }
+
             if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f)) { // Left
                 viewAngles.y = (previousAngles.y + angDiff);
             }

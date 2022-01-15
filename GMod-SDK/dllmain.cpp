@@ -23,7 +23,6 @@
 
 #include "hacks/ConVarSpoofing.h"
 #include "engine/inetmessage.h"
-using namespace std;
 
 
 void Main()
