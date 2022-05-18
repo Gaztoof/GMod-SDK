@@ -108,7 +108,9 @@ ClientFrameStage_t stage)
 	bool freecamKeyDown = false;
 	getKeyState(Settings::Misc::freeCamKey, Settings::Misc::freeCamKeyStyle, &freecamKeyDown);
 
-	bool needsSetViewAngles = (Settings::Misc::thirdperson && thirdpKeyDown) || (Settings::Misc::freeCam && freecamKeyDown);
+	// check toggle instead of key if we have the toggle option on
+	bool thirdPersonEnabled = (Settings::Misc::thirdperson && (Settings::Misc::toggleThirdperson || thirdpKeyDown));
+	bool needsSetViewAngles = thirdPersonEnabled || (Settings::Misc::freeCam && freecamKeyDown);
 
 	if(localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && needsSetViewAngles)
 		localPlayer->SetLocalViewAngles(Globals::lastNetworkedCmd.viewangles);

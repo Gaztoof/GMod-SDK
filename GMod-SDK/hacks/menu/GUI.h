@@ -215,6 +215,7 @@ namespace GUI
 
 				Menu::InsertCheckbox("Third person", &Settings::Misc::thirdperson);
 				ImGui::Keybind("thirdpersonkey", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
+				Menu::InsertCheckbox("Toggle third person", &Settings::Misc::toggleThirdperson);
 				Menu::InsertSlider("Third person distance", &Settings::Misc::thirdpersonDistance, 20, 1000);
 
 				Menu::InsertCheckbox("Full Bright", &Settings::Visuals::fullBright);

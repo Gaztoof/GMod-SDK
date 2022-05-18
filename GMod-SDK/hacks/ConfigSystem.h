@@ -139,6 +139,7 @@ namespace ConfigSystem
 		j["Misc"]["thirdperson"] = Settings::Misc::thirdperson;
 		j["Misc"]["thirdpersonKey"] = Settings::Misc::thirdpersonKey;
 		j["Misc"]["thirdpersonKeyStyle"] = Settings::Misc::thirdpersonKeyStyle;
+		j["Misc"]["toggleThirdperson"] = Settings::Misc::toggleThirdperson;
 		j["Misc"]["thirdpersonDistance"] = Settings::Misc::thirdpersonDistance;
 		j["Misc"]["removeHands"] = Settings::Misc::removeHands;
 		j["Misc"]["flashlightSpam"] = Settings::Misc::flashlightSpam;
@@ -415,6 +416,7 @@ namespace ConfigSystem
 		Settings::Misc::thirdperson = NULL;
 		Settings::Misc::thirdpersonKey = KEY_NONE;
 		Settings::Misc::thirdpersonKeyStyle = 1;
+		Settings::Misc::toggleThirdperson = NULL;
 		Settings::Misc::thirdpersonDistance = 20.f;
 		Settings::Misc::removeHands = NULL;
 		Settings::Misc::flashlightSpam = NULL;

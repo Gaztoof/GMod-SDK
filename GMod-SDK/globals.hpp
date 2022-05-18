@@ -297,6 +297,7 @@ namespace Settings {
 		bool thirdperson;
 		ButtonCode_t thirdpersonKey = KEY_NONE;
 		int thirdpersonKeyStyle = 1;
+		bool toggleThirdperson;
 		float thirdpersonDistance;
 
 		bool removeHands;

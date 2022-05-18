@@ -30,19 +30,30 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 
 	bool thirdpKeyDown = false;
 	getKeyState(Settings::Misc::thirdpersonKey, Settings::Misc::thirdpersonKeyStyle, &thirdpKeyDown, henlo1, henlo2, henlo3);
+	
+	static bool shouldDetectPress = true;	// This variable will be true on the first time the button is pressed
+	if (thirdpKeyDown) {
+		if (shouldDetectPress) {
+			// Toggle thirdperson setting itself
+			if (Settings::Misc::toggleThirdperson) Settings::Misc::thirdperson = !Settings::Misc::thirdperson;
+			shouldDetectPress = false;		// And ignore after toggle until button is released
+		}
+	}
+	else shouldDetectPress = true;
+
+	bool thirdPersonEnabled = (Settings::Misc::thirdperson && (Settings::Misc::toggleThirdperson || thirdpKeyDown));
+
 	static bool lastThirdPersonState = false;
-	if (localPlayer && Settings::Misc::thirdperson && thirdpKeyDown) {
+	if (localPlayer && thirdPersonEnabled) {
 		lastThirdPersonState = true;
 		ThirdPerson(view);
 		view.angles = Globals::lastCmd.viewangles;
 
-		Input->m_fCameraInThirdPerson = true;		
+		Input->m_fCameraInThirdPerson = true;
 	}
-	else {
-		if (lastThirdPersonState)
-			Input->m_fCameraInThirdPerson = false;
+	else if (lastThirdPersonState) {
+		Input->m_fCameraInThirdPerson = false;
 		lastThirdPersonState = false;
-		
 	}
 
 	bool freeCamKeyDown = false;
