@@ -34,7 +34,8 @@
 #include "vgui/VPanelWrapper.h"
 #include "vphysics/CPhysicsSurfaceProps.h"
 #include "vguimatsurface/CMatSystemSurface.h"
-
+#include "client/IPrediction.h"
+#include "client/IGameMovement.h"
 #include "hacks/ConVarSpoofing.h"
 
 #include <math.h>
@@ -50,6 +51,7 @@
 #define PresentPattern "\xFF\x15????\x8B\xF8\xEB\x1E"
 #define GetClassNamePattern "\xE8????\x4D\x8B\x47\x10"
 #define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
+#define PredictionSeedPattern "\x48\x85\xC9\x75\x0B\xC7\x05????\xFF\xFF\xFF\xFF\xC3\x8B\x41\x30"
 #define BSendPacketOffset 0x62
 #define ConColorMsgDec "?ConColorMsg@@YAXAEBVColor@@PEBDZZ"
 #define CClientStateOffset 0x3
@@ -101,7 +103,8 @@ VPanelWrapper* PanelWrapper;
 CPhysicsSurfaceProps* PhysicsSurfaceProps;
 CMatSystemSurface* MatSystemSurface;
 void* ClientState; // implement that?
-void* Prediction; // implement that?
+CPrediction* Prediction; // implement that?
+CGameMovement* GameMovement;
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
@@ -146,6 +149,7 @@ namespace Globals {
 	bool nothing;
 	bool Untrusted;
 	CUserCmd lastCmd;
+	CUserCmd lastEndCmd;
 	CUserCmd lastRealCmd;
 	CUserCmd lastNetworkedCmd;
 	bool choke;
@@ -163,6 +167,7 @@ namespace Globals {
 	void* deathEvent;
 
 	bool* bSendpacket;
+	unsigned int* predictionRandomSeed;
 }
 namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;
@@ -285,6 +290,9 @@ namespace Settings {
 		bool bunnyHop;
 		bool autoStrafe;
 		int autoStrafeStyle;
+
+		bool fastWalk;
+		bool edgeJump;
 
 		bool optiClamp;
 		float optiStrength;

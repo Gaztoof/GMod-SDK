@@ -8,6 +8,7 @@
 #include "../hacks/GunHacks.h"
 #include "../hacks/Triggerbot.h"
 #include "../hacks/Misc.h"
+#include "../hacks/Prediction.h"
 
 typedef bool(__thiscall* _CreateMove)(ClientModeShared*, float, CUserCmd*);
 _CreateMove oCreateMove;
@@ -18,6 +19,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 #endif
 	float flInputSampleTime, CUserCmd* cmd)
 {
+	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	Globals::lastCmd = *cmd;
 	uintptr_t stackTop;
 
@@ -30,7 +32,14 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 		Globals::lastRealCmd = *cmd;
 		DoMisc(cmd);
+		if (Settings::Misc::autoStrafeStyle == 2)
+			PrePredOptimizer(cmd);
+		PrePredEdgeJump(cmd);
+		StartPrediction(cmd);
 		BackupCMD(cmd, false);
+		if (Settings::Misc::autoStrafeStyle == 2)
+			PostPredOptimizer(cmd);
+		PostPredEdgeJump(cmd);
 
 		int flags = localPlayer->getFlags();
 
@@ -62,6 +71,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 			cmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
 		}
 		BackupCMD(cmd, true);
+		EndPrediction(cmd);
 	}
 	if (Settings::currentlyInFreeCam)
 	{
@@ -69,13 +79,13 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
-
-	oCreateMove(ClientMode, flInputSampleTime, cmd);
+	//oCreateMove(ClientMode, flInputSampleTime, cmd);
 	CNetChan* NetChan = EngineClient->GetNetChannelInfo();
 	static int m_nChokedPackets = 0;
 	bool fakeLagKeyDown = false;
 	getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
 
+	//Settings::Misc::fakeLagTicks = 24;
 	if (fakeLagKeyDown && Settings::Misc::fakeLag)
 	{
 		if (m_nChokedPackets < (int)Settings::Misc::fakeLagTicks)
@@ -93,6 +103,6 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	{
 		Globals::lastNetworkedCmd = *cmd;
 	}
-
+	Globals::lastEndCmd = *cmd;
 	return false;
 }

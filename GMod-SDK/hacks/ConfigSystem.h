@@ -130,6 +130,8 @@ namespace ConfigSystem
 		j["Misc"]["bunnyHop"] = Settings::Misc::bunnyHop;
 		j["Misc"]["autoStrafe"] = Settings::Misc::autoStrafe;
 		j["Misc"]["autoStrafeStyle"] = Settings::Misc::autoStrafeStyle;
+		j["Misc"]["fastWalk"] = Settings::Misc::fastWalk;
+		j["Misc"]["edgeJump"] = Settings::Misc::edgeJump;
 		j["Misc"]["optiClamp"] = Settings::Misc::optiClamp;
 		j["Misc"]["optiStrength"] = Settings::Misc::optiStrength;
 		j["Misc"]["optiStyle"] = Settings::Misc::optiStyle;
@@ -270,6 +272,8 @@ namespace ConfigSystem
 			Settings::Misc::bunnyHop = j["Misc"]["bunnyHop"];
 			Settings::Misc::autoStrafe = j["Misc"]["autoStrafe"];
 			Settings::Misc::autoStrafeStyle = j["Misc"]["autoStrafeStyle"];
+			Settings::Misc::fastWalk = j["Misc"]["fastWalk"];
+			Settings::Misc::edgeJump = j["Misc"]["edgeJump"];
 			Settings::Misc::optiClamp = j["Misc"]["optiClamp"];
 			Settings::Misc::optiStrength = j["Misc"]["optiStrength"];
 			Settings::Misc::optiStyle = j["Misc"]["optiStyle"];
@@ -406,6 +410,8 @@ namespace ConfigSystem
 		Settings::Misc::bunnyHop = NULL;
 		Settings::Misc::autoStrafe = NULL;
 		Settings::Misc::autoStrafeStyle = NULL;
+		Settings::Misc::fastWalk = NULL;
+		Settings::Misc::edgeJump = NULL;
 		Settings::Misc::optiClamp = NULL;
 		Settings::Misc::optiStrength = 100.f;
 		Settings::Misc::optiStyle = NULL;

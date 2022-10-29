@@ -42,7 +42,7 @@ void Main()
 
     ConfigSystem::LoadConfig("Default");
     Globals::bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
-
+    Globals::predictionRandomSeed = (unsigned int*)(GetRealFromRelative((char*)findPattern("client", PredictionSeedPattern, "predictionRandomSeed") + 0x5, 0x2, 0xA));
     DWORD originalProtection;
     VirtualProtect(Globals::bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
 
@@ -72,7 +72,8 @@ void Main()
     PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
     PhysicsSurfaceProps = (CPhysicsSurfaceProps*)GetInterface("vphysics.dll", "VPhysicsSurfaceProps001");
 
-    Prediction = (void*)GetInterface("client.dll", "VClientPrediction001");
+    Prediction = (CPrediction*)GetInterface("client.dll", "VClientPrediction001");
+    GameMovement = (CGameMovement*)GetInterface("client.dll", "GameMovement001");
 
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png

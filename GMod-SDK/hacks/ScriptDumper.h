@@ -46,11 +46,14 @@ void CreateRecurringDir(fs::path in)
 	}
 }
 
+// Idk why, but thinking that the server can just spam runstrings to you will just eventually overload your disk / lag you sucks.
+// And at the same time, they could be loading all of their scripts through net/runstrings :/
 std::optional<std::string> SaveScript(std::string fileName, std::string fileContent)
 {
 	try
 	{
-		if (fileName == "RunString(Ex)")fileName = "runString.lua";
+		if (fileName == "RunString(Ex)" || fileName.find('.') == std::string::npos)fileName = "runString.lua";
+
 		fs::path scripthookPath = "C:\\GaztoofScriptHook\\Original\\";
 		fs::path detourPath = "C:\\GaztoofScriptHook\\Detour\\";
 		CLuaInterface* Lua = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);

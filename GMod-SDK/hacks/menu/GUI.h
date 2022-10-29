@@ -92,7 +92,7 @@ namespace GUI
 	const char* autostrafeStyle[]{
 		"Normal",
 		"Silent strafe",
-		"Optimizer",
+		"Optimizer(WIP)",
 	};
 
 
@@ -513,6 +513,9 @@ namespace GUI
 					Menu::InsertCheckbox("Clamp optimizer angle", &Settings::Misc::optiClamp);
 					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
 				}
+				Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
+				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
+
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
 				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);
 

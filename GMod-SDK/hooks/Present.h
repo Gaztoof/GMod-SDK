@@ -82,6 +82,18 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	if (EngineClient->IsInGame())
 	{
+#ifdef _DEBUG
+		auto cmd = Globals::lastEndCmd;
+		if (cmd.command_number != 0 || true)
+		{
+			std::wstring userCmdDebug = L"UserCMD Data\nCommandNumber: " + std::to_wstring(cmd.command_number)
+				+ L"\nMove: " + std::to_wstring(cmd.forwardmove) + L", " + std::to_wstring(cmd.sidemove) + L", " + std::to_wstring(cmd.upmove)
+				+ L"\ntick_count: " + std::to_wstring(cmd.tick_count)
+				+ L"\nviewangles: " + std::to_wstring(cmd.viewangles.x) + L", " + std::to_wstring(cmd.viewangles.y) + L", " + std::to_wstring(cmd.viewangles.z);
+			DebugDrawTextW(Vector(10, 50, 0), userCmdDebug, ColorToRGBA(Color(255, 255, 255)), true);
+		}
+#endif // DEBUG
+
 		doEsp();
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
 		rainbowColor(Settings::Misc::crossHairColor, Settings::Misc::rainbowSpeed);

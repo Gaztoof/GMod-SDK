@@ -417,7 +417,7 @@ public:
 	/*342*/	virtual C_BaseCombatWeapon* GetActiveWeapon(void)const = 0;
 	/*343*/	virtual void* SharedSpawn(void) = 0;
 	/*344*/	virtual int GetSteamID(void*) = 0;
-	/*345*/	virtual void* GetPlayerMaxSpeed(void) = 0;
+	/*345*/	virtual float GetPlayerMaxSpeed(void) = 0;
 	/*346*/	virtual void* CalcView(Vector&,QAngle&,float&,float&,float&) = 0;
 	/*347*/	virtual void* CalcViewModelView(Vector const&,QAngle const&) = 0;
 	/*348*/	virtual void* CalcRoll(QAngle const&,Vector const&,float,float) = 0;
@@ -549,6 +549,14 @@ public:
 		return *(int*)((uintptr_t)this + 0x350); // m_fFlags
 #endif
 	}
+	unsigned int getTickBase() {
+#ifdef _WIN64
+		return *(unsigned int*)((uintptr_t)this + 0x2D48);
+#else
+		return *(unsigned int*)((uintptr_t)this + 0x350); // m_nTickBase // THIS IS UNSET!!!!!!!!!!
+#endif
+	}
+
 	Vector getVelocity() {
 #ifdef _WIN64
 		return *(Vector*)((uintptr_t)this + 0x148);

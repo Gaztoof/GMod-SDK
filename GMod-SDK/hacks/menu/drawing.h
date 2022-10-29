@@ -14,22 +14,29 @@ ID3DXLine* pLine = nullptr;
 ID3DXFont* pFont = nullptr;
 IDirect3DDevice9* pDevice = nullptr;
 
+#ifdef _DEBUG
+ID3DXFont* pDebugFont = nullptr;
+#endif
+
 int DrawingFontSize = 11;
 
 void InitRenderer(IDirect3DDevice9* pdevice)
 {
 	D3DXCreateLine(pdevice, &pLine);
 	D3DXCreateFont(pdevice, DrawingFontSize, NULL, FW_HEAVY, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, (L"Tahoma"), &pFont);
+#ifdef _DEBUG
+	D3DXCreateFont(pdevice, 15, NULL, FW_HEAVY, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, (L"Arial"), &pDebugFont);
+#endif
 	pDevice = pdevice;
 }
 
-void DrawTextW(Vector pos, std::wstring txt, ULONG color, bool outlined) {
+void _DrawTextW(Vector pos, std::wstring txt, ULONG color, bool outlined, ID3DXFont* font) {
 	RECT desktop;
 	GetWindowRect(GetDesktopWindow(), &desktop);
 
 	auto _text = [&](std::wstring_view _text, int _x, int _y, unsigned long _color) {
 		RECT r{ _x, _y, _x, _y };
-		pFont->DrawTextW(NULL, _text.data(), -1, &r, DT_NOCLIP, _color);
+		font->DrawTextW(NULL, _text.data(), -1, &r, DT_NOCLIP, _color);
 	};
 
 	if (outlined) {
@@ -43,6 +50,9 @@ void DrawTextW(Vector pos, std::wstring txt, ULONG color, bool outlined) {
 
 	//tar->DrawText(txt.c_str(), txt.length(), format, D2D1::RectF(pos.x, pos.y, desktop.right, desktop.bottom), brush);
 }
+#define DebugDrawTextW(a,b,c,d) _DrawTextW(a,b,c,d,pDebugFont)
+#define DrawTextW(a,b,c,d) _DrawTextW(a,b,c,d,pFont)
+
 void DrawLineOutlined(Vector from, Vector to, ULONG color) {
 	D3DXVECTOR2 lines[2] = {
 		D3DXVECTOR2(from.x, from.y),
