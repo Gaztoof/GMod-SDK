@@ -33,7 +33,7 @@ enum class LuaObjectType
 	USERDATA,
 	THREAD,
 
-	ENTITY,
+	ENTITY, // 9
 	VECTOR,
 	ANGLE,
 	PHYSOBJ,
@@ -151,9 +151,9 @@ public:
 	/*80*/	virtual void* SetMember(void*, void*, void*) = 0;
 	/*81*/	virtual void* GetNewTable(void) = 0;
 	/*82*/	virtual void* SetMember(void*, float) = 0;
-	/*83*/	virtual void* SetMember(void*, float, void*) = 0;
+	/*83*/	virtual void* SetMember(void*, float, void*) = 0; // ILuaObject
 	/*84*/	virtual void* SetMember(void*, char const*) = 0;
-	/*85*/	virtual void* SetMember(void*, char const*, void*) = 0;
+	/*85*/	virtual void* SetMember(void*, char const*, void*) = 0; // ILuaObject* key, ILuaObject* value
 	/*86*/	virtual void* SetType(unsigned char) = 0;
 	/*87*/	virtual void* PushLong(long) = 0;
 	/*88*/	virtual void* GetFlags(int) = 0;

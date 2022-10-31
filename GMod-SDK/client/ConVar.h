@@ -44,7 +44,7 @@ public:
 	uint32_t nflags; //0x0028
 	char pad_002C[4]; //0x002C
 	void *s_pConCommandBases; //0x0030
-	void *pParent; //0x0038
+	ConVar *pParent; //0x0038
 	char *pszDefaultValue; //0x0040
 	char *pszValueStr; //0x0048
 	uint32_t strLength; //0x0050

@@ -56,6 +56,7 @@
 #define ConColorMsgDec "?ConColorMsg@@YAXAEBVColor@@PEBDZZ"
 #define CClientStateOffset 0x3
 #define CClientStateSize 0x7
+#define HostNamePattern "\x48\x8D\x15????\x45\x33\xC0\x48\x8B\x01\xFF\x90????\xB8????\x48\x83\xC4\x28\xC3\xCC\xCC\xCC\xCC\xCC\xCC\xCC"
 #else
 #define ViewRenderOffset 0xA6
 #define GlobalVarsOffset 0x59
@@ -77,7 +78,6 @@ typedef bool(__thiscall* _FireEvent)(CGameEventManager*, IGameEvent*);
 typedef void(__thiscall* _PaintTraverse)(void*, VPanel*, bool, bool);
 typedef const char* (__thiscall* _GetClassName)(C_BasePlayer*);
 typedef void(__cdecl* MsgFn)(Color const& color, const char* msg, ...);
-
 
 CLuaShared* LuaShared;
 CClientEntityList* ClientEntityList;
@@ -168,6 +168,7 @@ namespace Globals {
 
 	bool* bSendpacket;
 	unsigned int* predictionRandomSeed;
+	char* hostName; // UTF-8 encoding
 }
 namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;

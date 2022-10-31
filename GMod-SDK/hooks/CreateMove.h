@@ -19,7 +19,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 #endif
 	float flInputSampleTime, CUserCmd* cmd)
 {
-	oCreateMove(ClientMode, flInputSampleTime, cmd);
+//	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	Globals::lastCmd = *cmd;
 	uintptr_t stackTop;
 
@@ -79,7 +79,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
-	//oCreateMove(ClientMode, flInputSampleTime, cmd);
+	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	CNetChan* NetChan = EngineClient->GetNetChannelInfo();
 	static int m_nChokedPackets = 0;
 	bool fakeLagKeyDown = false;

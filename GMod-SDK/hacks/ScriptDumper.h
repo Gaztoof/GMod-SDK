@@ -56,20 +56,10 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 
 		fs::path scripthookPath = "C:\\GaztoofScriptHook\\Original\\";
 		fs::path detourPath = "C:\\GaztoofScriptHook\\Detour\\";
-		CLuaInterface* Lua = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
-		if (!Lua)return {};
 
 		if (EngineClient->GetNetChannelInfo() && EngineClient->GetNetChannelInfo()->GetAddress())
 		{
-			// That's pretty bad...
-
-			Lua->PushSpecial(0); // https://github.com/Facepunch/gmod-module-base/blob/master/include/GarrysMod/Lua/LuaBase.h
-			Lua->GetField(-1, "GetHostName");
-			Lua->Push(-2);
-			Lua->Call(1, 1);
-			std::string hostName = Lua->GetString(-1, NULL);
-			Lua->Pop(2);
-
+			std::string hostName = Globals::hostName;
 
 			if (hostName.length()) {
 				std::replace(hostName.begin(), hostName.end(), '/', ' ');

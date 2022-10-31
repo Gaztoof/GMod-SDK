@@ -18,6 +18,9 @@
 #include "../../hooks/RunCommand.h"
 
 extern _Present oPresent;
+#ifdef _DEBUG
+extern ImFont* executorFont;
+#endif
 
 namespace GUI
 {
@@ -661,8 +664,9 @@ namespace GUI
 
 				ImGui::SameLine(6.f);
 				ImGui::GetStyle().Colors[ImGuiCol_FrameBg] = ImColor(24, 24, 24);
+				ImGui::PushFont(executorFont);
 				Menu::InsertMultiTextInput("##Script input", Settings::ScriptInput, IM_ARRAYSIZE(Settings::ScriptInput), 487.f, 415.f);
-
+				ImGui::PopFont();
 				bool executePressed = false;
 				Menu::InsertButtonLeft("Execute script", executePressed);
 				if (executePressed)

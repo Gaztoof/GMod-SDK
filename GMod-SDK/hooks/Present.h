@@ -32,6 +32,9 @@ ImFont* menuFont;
 ImFont* boldMenuFont;
 ImFont* tabFont;
 ImFont* massiveFont;
+#ifdef _DEBUG
+ImFont* executorFont;
+#endif
 
 ImGuiStyle* style;
 IDirect3DTexture9* menuBg;
@@ -70,6 +73,9 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		boldMenuFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBoldBytes, sizeof(verdanaBoldBytes), 11);
 		massiveFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBoldBytes, sizeof(verdanaBoldBytes), 34);
 		tabFont = io.Fonts->AddFontFromMemoryTTF((void*)rawTabBytes, sizeof(rawTabBytes), 42);
+#ifdef _DEBUG
+		executorFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBytes, sizeof(verdanaBytes), 14);
+#endif
 
 		initialized = true;
 	}
