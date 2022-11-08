@@ -22,20 +22,19 @@ void StartPrediction(CUserCmd* cmd)
 
 
 	memset((void*)&moveData, 0, sizeof(moveData));
-	GameMovement->StartTrackPredictionErrors((CBasePlayer*)localPlayer);
+	GameMovement->StartTrackPredictionErrors(localPlayer);
 
-	Prediction->SetupMove((C_BaseEntity*)localPlayer, cmd, nullptr, &moveData);
-	GameMovement->FullWalkMove();
-	Prediction->FinishMove((C_BaseEntity*)localPlayer, cmd, &moveData);
+	Prediction->SetupMove(localPlayer, cmd, nullptr, &moveData);
+	GameMovement->ProcessMovement(localPlayer, &moveData);
+	Prediction->FinishMove(localPlayer, cmd, &moveData);
 	//CMoveData
 	
 }
 void EndPrediction(CUserCmd* cmd)
 {
-
 	GlobalVars->curtime = m_flOldCurtime;
 	GlobalVars->frametime = m_flOldFrametime;
 
-	GameMovement->FinishTrackPredictionErrors((CBasePlayer*)localPlayer);
+	GameMovement->FinishTrackPredictionErrors(localPlayer);
 	*Globals::predictionRandomSeed = -1;
 };

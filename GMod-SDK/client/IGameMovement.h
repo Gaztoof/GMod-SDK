@@ -37,9 +37,9 @@ public:
 	virtual			~CGameMovement(void) {}
 
 	// Process the current movement command
-	virtual void	ProcessMovement(CBasePlayer * pPlayer, CMoveData * pMove) = 0;
-	virtual void	StartTrackPredictionErrors(CBasePlayer* pPlayer) = 0;
-	virtual void	FinishTrackPredictionErrors(CBasePlayer* pPlayer) = 0;
+	virtual void	ProcessMovement(C_BasePlayer* pPlayer, CMoveData * pMove) = 0;
+	virtual void	StartTrackPredictionErrors(C_BasePlayer* pPlayer) = 0;
+	virtual void	FinishTrackPredictionErrors(C_BasePlayer* pPlayer) = 0;
 	virtual void	DiffPrint(char const* fmt, ...) = 0;
 
 	// Allows other parts of the engine to find out the normal and ducked player bbox sizes

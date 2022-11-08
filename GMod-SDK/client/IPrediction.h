@@ -42,8 +42,8 @@ public:
 
     virtual void RunCommand(void* player, CUserCmd* cmd, void* moveHelper);//17
 
-    virtual void SetupMove(C_BaseEntity* player, CUserCmd* cmd, void* pHelper, void* move);//18
-    virtual void FinishMove(C_BaseEntity* player, CUserCmd* cmd, void* move);//19
+    virtual void SetupMove(C_BasePlayer* player, CUserCmd* cmd, void* pHelper, void* move);//18
+    virtual void FinishMove(C_BasePlayer* player, CUserCmd* cmd, void* move);//19
     virtual void SetIdealPitch(int nSlot, void* player, const Vector& origin, const Vector& angles, const Vector& viewheight);//20
 
     virtual void CheckError(int nSlot, void* player, int commands_acknowledged);//
