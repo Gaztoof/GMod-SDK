@@ -6,9 +6,26 @@
 #include "../tier0/Vector.h"
 #include "../client/C_BaseCombatWeapon.h"
 
-bool WorldToScreen(Vector in, Vector& out)
+/*bool WorldToScreen(Vector in, Vector& out)
 {
 	return !IVDebugOverlay->ScreenPosition(in, out);
+}*/
+bool WorldToScreen(Vector in, Vector& out)
+{
+	if (Settings::supportMulticore)
+	{
+		auto matrix = Globals::viewMatr.load().m;
+
+		float w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
+		if (w > 0.001f)
+		{
+			float fl1DBw = 1 / w;
+			out.x = (Globals::screenWidth / 2) + (0.5f * ((matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3]) * fl1DBw) * Globals::screenWidth + 0.5f);
+			out.y = (Globals::screenHeight / 2) - (0.5f * ((matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3]) * fl1DBw) * Globals::screenHeight + 0.5f);
+			return true;
+		}
+	}else return !IVDebugOverlay->ScreenPosition(in, out);
+	return false;
 }
 
 const char* GetLuaEntBase(C_BaseCombatWeapon* _this)
@@ -65,11 +82,11 @@ ButtonCode_t VKToButtonCode(int input)
 	return InputSystem->VirtualKeyToButtonCode(input);
 };
 
-#define getKeyState(key, style, out, hi, hi2, hi3)\
+#define getKeyState(key, style, out)\
 {\
-	static bool hi = false; \
-	static bool hi2 = false;\
-	bool hi3 = false;\
+	static bool toggleState = false; \
+	static bool lastButtonState = false;\
+	bool tempButtonState = false;\
 		\
 	switch (style)\
 	{\
@@ -77,14 +94,14 @@ ButtonCode_t VKToButtonCode(int input)
 			*out = true;\
 			break;\
 		case 1:\
-			*out = InputSystem->IsButtonDown(key);\
+			*out = InputSystem->IsButtonDown(key) && !MatSystemSurface->IsCursorVisible();\
 			break;\
 		case 2:\
-			hi3 = InputSystem->IsButtonDown(key);\
-			if (hi3 != hi2 && hi3)\
-				hi = !hi;\
-			hi2 = hi3;\
-			*out = hi;\
+			tempButtonState = InputSystem->IsButtonDown(key) && !MatSystemSurface->IsCursorVisible();\
+			if (tempButtonState != lastButtonState && tempButtonState)\
+				toggleState = !toggleState;\
+			lastButtonState = tempButtonState;\
+			*out = toggleState;\
 				break;\
 		case 3:\
 			*out = false;\
@@ -108,8 +125,7 @@ const char* IntToBoneName(int input)
 }
 std::wstring StringToWString(std::string input)
 {
-	return std::wstring(input.begin(), input.end());
-
+	return std::wstring(input.begin(), input.end()); 
 }
 
 mstudiobone_t* Studio_BoneIndexByName(studiohdr_t* pStudioHdr, char const* pName, int* outIndex = NULL)

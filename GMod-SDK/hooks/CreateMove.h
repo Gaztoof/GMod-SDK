@@ -8,6 +8,7 @@
 #include "../hacks/GunHacks.h"
 #include "../hacks/Triggerbot.h"
 #include "../hacks/Misc.h"
+#include "../hacks/Prediction.h"
 
 typedef bool(__thiscall* _CreateMove)(ClientModeShared*, float, CUserCmd*);
 _CreateMove oCreateMove;
@@ -18,17 +19,26 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 #endif
 	float flInputSampleTime, CUserCmd* cmd)
 {
+//	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	Globals::lastCmd = *cmd;
 	uintptr_t stackTop;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
+	*Globals::bSendpacket = true;
 
 	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam)
 	{
 
 		Globals::lastRealCmd = *cmd;
 		DoMisc(cmd);
+		if (Settings::Misc::autoStrafeStyle == 2)
+			PrePredOptimizer(cmd);
+		PrePredEdgeJump(cmd);
+		StartPrediction(cmd);
 		BackupCMD(cmd, false);
+		if (Settings::Misc::autoStrafeStyle == 2)
+			PostPredOptimizer(cmd);
+		PostPredEdgeJump(cmd);
 
 		int flags = localPlayer->getFlags();
 
@@ -60,6 +70,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 			cmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
 		}
 		BackupCMD(cmd, true);
+		EndPrediction(cmd);
 	}
 	if (Settings::currentlyInFreeCam)
 	{
@@ -67,28 +78,30 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
-
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	CNetChan* NetChan = EngineClient->GetNetChannelInfo();
+	static int m_nChokedPackets = 0;
 	bool fakeLagKeyDown = false;
 	getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
 
-	if (NetChan->m_nChokedPackets < 14 && fakeLagKeyDown && Settings::Misc::fakeLag)
+	//Settings::Misc::fakeLagTicks = 24;
+	if (fakeLagKeyDown && Settings::Misc::fakeLag)
 	{
-		*Globals::bSendpacket = false;
-		++NetChan->m_nChokedPackets;
+		if (m_nChokedPackets < (int)Settings::Misc::fakeLagTicks)
+		{
+			*Globals::bSendpacket = false;
+			++m_nChokedPackets;
+		}
+		else
+		{
+			*Globals::bSendpacket = true;
+			m_nChokedPackets = 0;
+		}
 	}
-
-	if (NetChan && NetChan->m_nChokedPackets >= 14)
-	{
-		*Globals::bSendpacket = true;
-		NetChan->m_nChokedPackets = 0;
-	}
-	
 	if (*Globals::bSendpacket)
 	{
 		Globals::lastNetworkedCmd = *cmd;
 	}
-
+	Globals::lastEndCmd = *cmd;
 	return false;
 }

@@ -21,7 +21,6 @@ const char* killMessages[]{
 };
 const char* hitMarkers[]{
     "physics/metal/metal_solid_impact_bullet2.wav",
-    "buttons/arena_switch_press_02.wav",
     "training/timer_bell.wav",
 };
 
@@ -45,7 +44,8 @@ public:
         EngineClient->GetPlayerInfo(target, &targetInfo);
         EngineClient->GetPlayerInfo(attacker, &attackerInfo);
 
-        std::cout << attackerInfo.name << " damaged " << targetInfo.name << ". Target new health: " << event->GetInt("health") << std::endl;
+        if(strlen(attackerInfo.name) && attacker != localPlayerID)
+            std::cout << attackerInfo.name << " attacked " << targetInfo.name << ". NEW HP: " << event->GetInt("health") << std::endl;
 
         if (target == localPlayerID || attacker != localPlayerID)
             return;
@@ -174,22 +174,159 @@ void QuickStop(CUserCmd* cmd)
 }
 void FlashSpam(CUserCmd* cmd)
 {
-    if (Settings::Misc::flashlightSpam && InputSystem->IsButtonDown(KEY_F))
+    if (Settings::Misc::flashlightSpam && InputSystem->IsButtonDown(KEY_F) && !MatSystemSurface->IsCursorVisible())
         cmd->impulse = 100; // FlashLight spam
 }
 void UseSpam(CUserCmd* cmd)
 {
-    if (Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E))
+    if (Settings::Misc::useSpam && InputSystem->IsButtonDown(KEY_E) && !MatSystemSurface->IsCursorVisible())
     {
         if(cmd->command_number % 2)
         cmd->buttons |= IN_USE;
         else cmd->buttons &= ~IN_USE;
     }
 }
+void BunnyHopOptimizer(CUserCmd* cmd)
+{
+    /*float dStack92 = cmd->viewangles.y;
+    float dStack76 = 0.f;
+    dStack76 = (dStack76 * 180.f) / M_PI;
+
+    float dStack84 = dStack76 - dStack92;
+    float dStack68 = dStack84 + 180.f;
+    float dVar17 = dStack68 - 180.f;
+    if (180.f <= dVar17)
+    {
+        dVar17 = dVar17 - 360.f;
+    }
+    if (dVar17 < 24.f)
+    {
+        dVar17 = dStack76;
+        float dVar18 = dStack92;
+        if (180.f < dStack84)
+        {
+            dVar18 = cmd->viewangles.y;
+            if (dStack76 <= dVar18)
+                dVar17 = dStack76 + 360.f;
+            else dVar18 = dVar18 - 360.f;
+        }
+        dStack68 = (dVar17 - dVar18) + dVar18 + 180.f;
+        cmd->viewangles.y = (dStack68 - 180.f);
+    }
+
+    return;
+
+    */
+    if (!(localPlayer->getFlags() & FL_ONGROUND))
+    {
+        cmd->sidemove = -10000.f;
+        cmd->forwardmove = 0.f;
+        cmd->mousedx = -1.f;
+    }
+    QAngle viewAngles = cmd->viewangles;
+    static QAngle lastViewAng = viewAngles;
+    Vector absVel = localPlayer->getVelocity();
+    absVel.z = 0;
+
+    if((cmd->sidemove > 0.f && cmd->mousedx > 0.f) || (cmd->sidemove < 0.f && cmd->mousedx < 0.f))
+    if ((InputSystem->IsButtonDown(KEY_SPACE) && !(localPlayer->getFlags() & FL_ONGROUND)) && localPlayer->getVelocity().Length() > 50.f && cmd->sidemove != 0.f && absVel.Length() != 0)
+    {
+        float tickrate = (1.f / GlobalVars->interval_per_tick);
+        float strafes = (1.f / GlobalVars->frametime) / tickrate; // framerate / tickrate
+        QAngle currVelAng = localPlayer->getVelocity().toAngle();
+        QAngle angDiff = (currVelAng - lastViewAng).FixAngles();
+        std::cout << "old angDiff: " << angDiff.y << " : absVel: " << absVel.x << " : "<< absVel.y << " : " << absVel.Length() << std::endl;
+        angDiff.y = RAD2DEG(asin(32.8f / absVel.Length()));// * 57.29577951308;
+        std::cout << "new angDiff: " << angDiff.y << std::endl;
+        std::cout << strafes << std::endl;
+        if (Settings::Misc::optiRandomization)
+            angDiff.y *= (0.6 + (float)(rand()) / ((float)(RAND_MAX / (1.4 - 0.6)))); // Randomization for anticheats
+
+        viewAngles.y += (angDiff.y * (Settings::Misc::optiStrength/100.f));
+        viewAngles.y = lastViewAng.y + (angDiff.y * (Settings::Misc::optiStrength / 100.f) / strafes);
+        viewAngles.FixAngles();
+        //viewAngles = currVelAng;
+
+        cmd->viewangles = viewAngles;
+        EngineClient->SetViewAngles(viewAngles);
+    }
+    //lastViewAng = localPlayer->getVelocity().toAngle();
+    lastViewAng = viewAngles;
+
+    return;
+
+    static QAngle previousAngles = cmd->viewangles;
+    if (InputSystem->IsButtonDown(KEY_SPACE) && !MatSystemSurface->IsCursorVisible()) {
+        float tickrate = (1.f / GlobalVars->interval_per_tick);
+        float strafes = (1.f / GlobalVars->frametime) / tickrate; // framerate / tickrate
+
+        auto currVel = localPlayer->getVelocity();
+        currVel.z = 0;
+        float A = RAD2DEG(atan(32.8f / currVel.Length())); // difference of angle to the next tick's optimal strafe angle
+        float D = (0.75* A) / strafes;// optimal number of degrees per strafe given the desired number of strafes per jump, the tickrate of the server, and the current player velocity defined in v_1
+
+        QAngle viewAngles;
+        EngineClient->GetViewAngles(viewAngles);
+        viewAngles.FixAngles();
+        if (currVel.Length())
+        {
+            float angDiff = 0.f;
+            if (!Settings::Misc::optiStyle)
+            {
+                if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f))
+                angDiff = (viewAngles.y) - (previousAngles.y);
+                else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f))
+                    angDiff = (previousAngles.y) - (viewAngles.y);
+                while (angDiff < 0) angDiff += 360.f;
+
+                if (angDiff < D)
+                    angDiff += ((D - angDiff) * (Settings::Misc::optiStrength / 100));
+                else if (Settings::Misc::optiClamp) angDiff = D;
+            }
+            else angDiff = D * (Settings::Misc::optiStrength / 100);
+
+            if(Settings::Misc::optiRandomization)
+            angDiff += (0.05 + (float)(rand()) / ((float)(RAND_MAX / (0.1 - 0.05)))); // Randomization for anticheats
+
+            if (!(localPlayer->getFlags() & FL_ONGROUND)) {
+                if (cmd->mousedx < 0)
+                {
+                    cmd->sidemove = -10000.f;
+                    cmd->buttons |= IN_MOVELEFT;
+                }
+                else if (cmd->mousedx > 0) {
+                    cmd->sidemove = 10000.f;
+                    cmd->buttons |= IN_MOVERIGHT;
+                }
+            }
+
+            if (cmd->mousedx < 0.f && (cmd->sidemove < 0.f)) { // Left
+                viewAngles.y = (previousAngles.y + angDiff);
+            }
+            else if (cmd->mousedx > 0.f && (cmd->sidemove > 0.f)) { // Right
+                viewAngles.y = (previousAngles.y - angDiff);
+                angDiff = -angDiff;
+            }
+
+            cmd->mousedx = angDiff;
+            viewAngles.FixAngles();
+            cmd->viewangles = viewAngles;
+            EngineClient->SetViewAngles(viewAngles);
+        }
+    }
+    previousAngles = cmd->viewangles;
+}
 void BunnyHop(CUserCmd* cmd)
 {
-    if (InputSystem->IsButtonDown(KEY_SPACE)) {
-        int flags = localPlayer->getFlags();
+    int flags = localPlayer->getFlags();
+    if (Settings::Misc::fastWalk && flags & FL_ONGROUND && (cmd->forwardmove != 0.f || cmd->sidemove == 0.f)) // Fastwalk
+    {
+        if(cmd->command_number % 2 == 0)
+            cmd->sidemove = -5000.f;
+        else cmd->sidemove = 5000.f;
+    }
+
+    if (InputSystem->IsButtonDown(KEY_SPACE) && !MatSystemSurface->IsCursorVisible() && localPlayer->getMoveType() != MOVETYPE_NOCLIP) {
         if (Settings::Misc::bunnyHop)
         {
             if (!(flags & FL_ONGROUND))
@@ -197,32 +334,100 @@ void BunnyHop(CUserCmd* cmd)
             else
                 cmd->buttons |= IN_JUMP;
         }
-        if (Settings::Misc::autoStrafe && !(flags & FL_ONGROUND))
+        if ((Settings::Misc::autoStrafe || Settings::Misc::optiAutoStrafe) && !(flags & FL_ONGROUND))
         {
-            if (Settings::Misc::autoStrafeStyle == 0) // Legit
+            if (Settings::Misc::autoStrafeStyle == 0 || (Settings::Misc::optiAutoStrafe && Settings::Misc::autoStrafeStyle == 2)) // Legit
             {
                 if (!(flags & FL_ONGROUND)) {
-                    cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
+                    if (cmd->mousedx > 0.f)
+                        cmd->sidemove = 10000.f;
+                    else if (cmd->mousedx < 0.f) cmd->sidemove = -10000.f;
                 }
             }
             else if (Settings::Misc::autoStrafeStyle == 1) { // Silent-strafe
-                if (cmd->mousedy == 0.f)
+                if (cmd->mousedx == 0.f)
                 {
                     cmd->viewangles.y += (cmd->command_number % 2) ? 1.f : -1.f;
-                    cmd->sidemove = (cmd->command_number % 2) ? 450.f : -450.f;
+                    cmd->sidemove = (cmd->command_number % 2) ? 10000.f : -10000.f;
+
+                    /*QAngle absVelAng = localPlayer->getVelocity().toAngle();
+
+                    cmd->viewangles.y = absVelAng.y;
+                    cmd->viewangles.FixAngles();*/
+
                 }
-                else  cmd->sidemove = cmd->mousedx < 0 ? -450.f : 450.f;
-            }
-            else if (Settings::Misc::autoStrafeStyle == 2) { // Rage-strafe
-                
+                else  cmd->sidemove = cmd->mousedx < 0 ? -10000.f : 10000.f;
+                if (cmd->sidemove > 0)
+                    cmd->buttons |= IN_MOVELEFT;
+                else if (cmd->sidemove < 0)cmd->buttons |= IN_MOVERIGHT;
 
-
+                cmd->viewangles.FixAngles();
             }
         }
 
         if (!(flags & FL_ONGROUND))
             cmd->buttons &= ~IN_SPEED;
     }
+
+    if (Settings::Misc::autoStrafeStyle == 2) { // Optimizer
+        //BunnyHopOptimizer(cmd);
+    }
+}
+
+
+int flagsBackup = 0;
+void PrePredOptimizer(CUserCmd* cmd)
+{
+    if (localPlayer->getMoveType() == MOVETYPE_LADDER || localPlayer->getMoveType() == MOVETYPE_NOCLIP)
+        return;
+
+    flagsBackup = localPlayer->getFlags();
+
+    if (!(InputSystem->IsButtonDown(KEY_SPACE) || cmd->buttons & IN_JUMP) || localPlayer->getFlags() & FL_ONGROUND)
+        return;
+    cmd->sidemove = (cmd->command_number % 2) ? 10000.f : -10000.f;
+    cmd->forwardmove = 0.f;
+
+}
+void PostPredOptimizer(CUserCmd* cmd)
+{
+    if (localPlayer->getMoveType() == MOVETYPE_LADDER || localPlayer->getMoveType() == MOVETYPE_NOCLIP)
+        return;
+
+    if (!(flagsBackup & FL_ONGROUND) && localPlayer->getFlags() & FL_ONGROUND)
+    {
+        cmd->buttons &= ~IN_DUCK;
+        cmd->buttons |= IN_JUMP;
+    }
+    else if(!(localPlayer->getFlags() & FL_ONGROUND)/* && !(flagsBackup & FL_ONGROUND)*/)
+        cmd->buttons |= IN_DUCK;
+
+    //if ((cmd->sidemove > 0.f && cmd->mousedx > 0.f) || (cmd->sidemove < 0.f && cmd->mousedx < 0.f))
+    if ((InputSystem->IsButtonDown(KEY_SPACE) && !(localPlayer->getFlags() & FL_ONGROUND)) && localPlayer->getVelocity().Length() > 50.f && cmd->sidemove != 0.f)
+    {
+        QAngle viewAngles = cmd->viewangles;
+        QAngle currVelAng = localPlayer->getVelocity().toAngle();
+        viewAngles.y = currVelAng.y;
+        viewAngles.FixAngles();
+        //viewAngles = currVelAng;
+
+        cmd->viewangles = viewAngles;
+        EngineClient->SetViewAngles(viewAngles);
+    }
+}
+
+void PrePredEdgeJump(CUserCmd* cmd)
+{
+    flagsBackup = localPlayer->getFlags();
+}
+void PostPredEdgeJump(CUserCmd* cmd)
+{
+    if (!Settings::Misc::edgeJump) return;
+    int flags = localPlayer->getFlags();
+    if (localPlayer->getMoveType() == MOVETYPE_LADDER || localPlayer->getMoveType() == MOVETYPE_NOCLIP)
+        return;
+    if (flagsBackup & FL_ONGROUND && !(localPlayer->getFlags() & FL_ONGROUND))
+        cmd->buttons |= IN_JUMP;
 }
 
 void DoMisc(CUserCmd* cmd)

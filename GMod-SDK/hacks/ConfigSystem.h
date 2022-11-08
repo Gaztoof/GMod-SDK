@@ -53,6 +53,7 @@ namespace ConfigSystem
 		j["Globals"]["menuKeyStyle"] = Settings::menuKeyStyle;
 		j["Globals"]["menuColor"] = to_jsonfcol(Settings::menuColor);
 		j["Globals"]["untrusted"] = Globals::Untrusted;
+		j["Globals"]["supportMulticore"] = Settings::supportMulticore;
 
 		j["Chams"]["playerChams"] = to_jsonchams(Settings::Chams::playerChamsSettings);
 		j["Chams"]["teamMate"] = to_jsonchams(Settings::Chams::teamMateSettings);
@@ -129,6 +130,13 @@ namespace ConfigSystem
 		j["Misc"]["bunnyHop"] = Settings::Misc::bunnyHop;
 		j["Misc"]["autoStrafe"] = Settings::Misc::autoStrafe;
 		j["Misc"]["autoStrafeStyle"] = Settings::Misc::autoStrafeStyle;
+		j["Misc"]["fastWalk"] = Settings::Misc::fastWalk;
+		j["Misc"]["edgeJump"] = Settings::Misc::edgeJump;
+		j["Misc"]["optiClamp"] = Settings::Misc::optiClamp;
+		j["Misc"]["optiStrength"] = Settings::Misc::optiStrength;
+		j["Misc"]["optiStyle"] = Settings::Misc::optiStyle;
+		j["Misc"]["optiRandomization"] = Settings::Misc::optiRandomization;
+		j["Misc"]["optiAutoStrafe"] = Settings::Misc::optiAutoStrafe;
 		j["Misc"]["crosshairSize"] = Settings::Misc::crosshairSize;
 		j["Misc"]["thirdperson"] = Settings::Misc::thirdperson;
 		j["Misc"]["thirdpersonKey"] = Settings::Misc::thirdpersonKey;
@@ -148,6 +156,7 @@ namespace ConfigSystem
 		j["Misc"]["hitmarker"] = Settings::Misc::hitmarker;
 		j["Misc"]["hitmarkerSize"] = Settings::Misc::hitmarkerSize;
 		j["Misc"]["fakeLag"] = Settings::Misc::fakeLag;
+		j["Misc"]["fakeLagTicks"] = Settings::Misc::fakeLagTicks;
 		j["Misc"]["fakeLagKey"] = Settings::Misc::fakeLagKey;
 		j["Misc"]["fakeLagKeyStyle"] = Settings::Misc::fakeLagKeyStyle;
 		j["Misc"]["zoom"] = Settings::Misc::zoom;
@@ -187,6 +196,7 @@ namespace ConfigSystem
 			Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
 			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor);
 			Globals::Untrusted = j["Globals"]["untrusted"];
+			Settings::supportMulticore = j["Globals"]["supportMulticore"];
 
 			Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
 			Settings::Chams::teamMateSettings = from_jsonchams(j["Chams"]["teamMate"]);
@@ -262,6 +272,13 @@ namespace ConfigSystem
 			Settings::Misc::bunnyHop = j["Misc"]["bunnyHop"];
 			Settings::Misc::autoStrafe = j["Misc"]["autoStrafe"];
 			Settings::Misc::autoStrafeStyle = j["Misc"]["autoStrafeStyle"];
+			Settings::Misc::fastWalk = j["Misc"]["fastWalk"];
+			Settings::Misc::edgeJump = j["Misc"]["edgeJump"];
+			Settings::Misc::optiClamp = j["Misc"]["optiClamp"];
+			Settings::Misc::optiStrength = j["Misc"]["optiStrength"];
+			Settings::Misc::optiStyle = j["Misc"]["optiStyle"];
+			Settings::Misc::optiRandomization = j["Misc"]["optiRandomization"];
+			Settings::Misc::optiAutoStrafe = j["Misc"]["optiAutoStrafe"];
 			Settings::Misc::crosshairSize = j["Misc"]["crosshairSize"];
 			Settings::Misc::thirdperson = j["Misc"]["thirdperson"];
 			Settings::Misc::thirdpersonKey = j["Misc"]["thirdpersonKey"];
@@ -281,6 +298,7 @@ namespace ConfigSystem
 			Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
 			Settings::Misc::hitmarkerSize = j["Misc"]["hitmarkerSize"];
 			Settings::Misc::fakeLag = j["Misc"]["fakeLag"];
+			Settings::Misc::fakeLagTicks = j["Misc"]["fakeLagTicks"];
 			Settings::Misc::fakeLagKey = j["Misc"]["fakeLagKey"];
 			Settings::Misc::fakeLagKeyStyle = j["Misc"]["fakeLagKeyStyle"];
 			Settings::Misc::zoom = j["Misc"]["zoom"];
@@ -315,6 +333,7 @@ namespace ConfigSystem
 		Settings::menuKeyStyle = 1;
 		Settings::menuColor = Color(0,255,0);
 		Globals::Untrusted = NULL;
+		Settings::supportMulticore = true;
 
 		Settings::Chams::playerChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
 		Settings::Chams::teamMateSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
@@ -391,6 +410,13 @@ namespace ConfigSystem
 		Settings::Misc::bunnyHop = NULL;
 		Settings::Misc::autoStrafe = NULL;
 		Settings::Misc::autoStrafeStyle = NULL;
+		Settings::Misc::fastWalk = NULL;
+		Settings::Misc::edgeJump = NULL;
+		Settings::Misc::optiClamp = NULL;
+		Settings::Misc::optiStrength = 100.f;
+		Settings::Misc::optiStyle = NULL;
+		Settings::Misc::optiRandomization = NULL;
+		Settings::Misc::optiAutoStrafe = NULL;
 		Settings::Misc::crosshairSize = 1.f;
 		Settings::Misc::thirdperson = NULL;
 		Settings::Misc::thirdpersonKey = KEY_NONE;
@@ -410,6 +436,7 @@ namespace ConfigSystem
 		Settings::Misc::hitmarker = NULL;
 		Settings::Misc::hitmarkerSize = 10.f;
 		Settings::Misc::fakeLag = NULL;
+		Settings::Misc::fakeLagTicks = 1;
 		Settings::Misc::fakeLagKey = KEY_NONE;
 		Settings::Misc::fakeLagKeyStyle = 1;
 		Settings::Misc::zoom = NULL;

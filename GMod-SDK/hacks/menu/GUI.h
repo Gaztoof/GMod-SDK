@@ -4,6 +4,7 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 #include <map>
+#include <algorithm>
 
 #include "../../ImGui/imgui.h"
 #include "../../ImGui/imgui_impl_dx9.h"
@@ -14,8 +15,12 @@
 #include "../../hacks/Executor.h"
 #include "../../hooks/RunStringEx.h"
 #include "../../hooks/ProcessGMODServerToClient.h"
+#include "../../hooks/RunCommand.h"
 
 extern _Present oPresent;
+#ifdef _DEBUG
+extern ImFont* executorFont;
+#endif
 
 namespace GUI
 {
@@ -79,6 +84,8 @@ namespace GUI
 		"Config1",
 		"Config2",
 		"Config3",
+		"Config4",
+		"Config5",
 	};
 	const char* hitmarkerSound[]{
 		"Metal",
@@ -88,7 +95,11 @@ namespace GUI
 	const char* autostrafeStyle[]{
 		"Normal",
 		"Silent strafe",
-		"Rage"
+		"Optimizer(WIP)",
+	};
+	const char* executorLuaState[]{
+		"Client",
+		"Menu",
 	};
 
 
@@ -245,7 +256,7 @@ namespace GUI
 				Menu::InsertCheckbox("Auto wall", &Settings::Aimbot::aimbotAutoWall);
 				Menu::InsertCheckbox("Silent aim", &Settings::Aimbot::silentAim);
 				Menu::InsertCheckbox("Smoothing", &Settings::Aimbot::smoothing);
-				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 1, 20);
+				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 10, 50);
 
 				Menu::InsertCheckbox("Aim lock", &Settings::Aimbot::lockOnTarget);
 				Menu::InsertCheckbox("Target teammates", &Settings::Aimbot::aimAtTeammates);
@@ -297,6 +308,7 @@ namespace GUI
 				Menu::InsertCheckbox("Remove recoil", &Settings::Misc::noRecoil);
 				Menu::InsertCheckbox("Fake-Lag", &Settings::Misc::fakeLag);
 				ImGui::Keybind("fakelagkey", (int*)&Settings::Misc::fakeLagKey, &Settings::Misc::fakeLagKeyStyle);
+				Menu::InsertSlider("Fake-Lag ticks", &Settings::Misc::fakeLagTicks, 1, 16);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -361,13 +373,12 @@ namespace GUI
 								Settings::friendList.emplace(entity, std::pair(false, i));
 
 						}
-						for (std::map<C_BasePlayer*, std::pair<bool, int>>::iterator it = Settings::friendList.begin(); it != Settings::friendList.end();)
+
+						std::vector<C_BasePlayer*> toRemoveMap;
+						for (auto it = Settings::friendList.begin(); it != Settings::friendList.end(); it++)
 						{
-							if (tempFriendList.find(it->first) == tempFriendList.end())
-							{
-								Settings::friendList.erase(it++);
-							}
-							else
+							bool toDelete = tempFriendList.find(it->first) == tempFriendList.end();
+							if (!toDelete)
 							{
 								player_info_s info;
 								EngineClient->GetPlayerInfo(it->second.second, &info);
@@ -376,8 +387,22 @@ namespace GUI
 								name += " | ";
 								name += info.guid;
 								ImGui::Selectable(name.c_str(), &it->second.first);
-								it++;
 							}
+							bool listHas = std::find(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), it->first) != Settings::selectedFriendList.end();
+							if (!listHas && it->second.first)
+							{
+								Settings::selectedFriendList.push_back(it->first);
+							}
+							else if (listHas && !it->second.first)
+							{
+								std::remove(Settings::selectedFriendList.begin(), Settings::selectedFriendList.end(), it->first);
+							}
+							if (toDelete)
+								toRemoveMap.push_back(it->first);
+						}
+						for (auto it = toRemoveMap.begin(); it != toRemoveMap.end(); it++)
+						{
+							Settings::friendList.erase(*it);
 						}
 						Settings::friendListMutex.unlock();
 					}
@@ -389,11 +414,14 @@ namespace GUI
 				Menu::InsertButtonMiddle("Reset all", resetAll);
 				if (resetAll)
 				{
+					Settings::friendListMutex.lock();
 					for (std::map<C_BasePlayer*, std::pair<bool, int>>::iterator it = Settings::friendList.begin(); it != Settings::friendList.end();)
 					{
 						it->second.first = false;
 						it++;
 					}
+					Settings::selectedFriendList.clear();
+					Settings::friendListMutex.unlock();
 				}
 			}Menu::InsertEndGroupBoxLeft("Players Cover", "Players");
 			ImGui::NextColumn();
@@ -413,40 +441,37 @@ namespace GUI
 					if (ClientEntityList && EngineClient->IsInGame())
 					{
 						Settings::luaEntListMutex.lock();
-						std::map<const char*, bool> tempEntList;
+
 						for (int i = 0; i < ClientEntityList->GetHighestEntityIndex(); i++)
 						{
 							C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(i);
-							if (entity == nullptr || entity->IsPlayer() || entity->IsWeapon() || !entity->UsesLua() || entity == localPlayer)
+							if (entity == nullptr || entity->IsPlayer() || !entity->UsesLua() || entity == localPlayer || entity->IsBaseCombatWeapon())
 								continue;
 
-							const char* entName = GetClassName(entity);
-							if (!strlen(entName))continue;
+							std::string entName = GetClassName(entity);
+							if (!entName.length())continue;
 
-							bool found = false;
-							for (auto var : Settings::luaEntList)
-								if (var.first && !strcmp(var.first, entName))
-									found = true;
-							if (!found)
-								Settings::luaEntList.emplace(entName, false);
+							if (Settings::luaEntList.count(entName))
+								continue;
+							
+							Settings::luaEntList.emplace(entName, false);
 						}
-						for (std::map<const char*, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
+
+						for (std::map<std::string, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end(); it++)
 						{
-							bool found = false;
-							for (auto var : Settings::luaEntList)
-								if (var.first && !strcmp(var.first, it->first))
-									found = true;
+							bool listHas = std::find(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), it->first) != Settings::selectedLuaEntList.end();
+							if (it->second && !listHas)
+							{
+								Settings::selectedLuaEntList.push_back(it->first);
+							}
+							else if (!it->second)
+							{
+								std::remove(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), it->first);
+							}
 
-							if (!found)
-							{
-								Settings::luaEntList.erase(it++);
-							}
-							else
-							{
-								ImGui::Selectable(it->first, &it->second);
-								it++;
-							}
+								ImGui::Selectable(it->first.c_str(), &it->second);
 						}
+
 						Settings::luaEntListMutex.unlock();
 					}
 					ImGui::EndGroupBox();
@@ -457,11 +482,9 @@ namespace GUI
 				Menu::InsertButtonMiddle("Reset all", resetAll);
 				if (resetAll)
 				{
-					for (std::map<const char*, bool>::iterator it = Settings::luaEntList.begin(); it != Settings::luaEntList.end();)
-					{
-						it->second = false;
-						it++;
-					}
+					Settings::luaEntListMutex.lock();
+					Settings::luaEntList.clear();
+					Settings::luaEntListMutex.unlock();
 				}
 			}Menu::InsertEndGroupBoxRight("Entities Cover", "Entities");
 		}
@@ -489,6 +512,16 @@ namespace GUI
 				Menu::InsertCheckbox("BunnyHop", &Settings::Misc::bunnyHop);
 				Menu::InsertCheckbox("Autostrafe", &Settings::Misc::autoStrafe);
 				Menu::InsertCombo("Autostrafe style", &Settings::Misc::autoStrafeStyle, autostrafeStyle, IM_ARRAYSIZE(autostrafeStyle));
+				if (Settings::Misc::autoStrafeStyle == 2)
+				{
+					Menu::InsertCheckbox("Opti Autostrafe", &Settings::Misc::optiAutoStrafe);
+					Menu::InsertCheckbox("Randomization(for anticheats)", &Settings::Misc::optiRandomization);
+					Menu::InsertCheckbox("Static optimizer", &Settings::Misc::optiStyle);
+					Menu::InsertCheckbox("Clamp optimizer angle", &Settings::Misc::optiClamp);
+					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
+				}
+				Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
+				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
 
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
 				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);
@@ -524,7 +557,8 @@ namespace GUI
 				Menu::InsertText("Menu color");
 				Menu::InsertColorPicker("Menu color", &Settings::menuColor, false);
 				Menu::InsertCheckbox("Untrusted", &Globals::Untrusted);
-				Menu::InsertSlider("Rainbow speed", &Settings::Misc::rainbowSpeed, 1.f, 15.f);
+				Menu::InsertCheckbox("Multicore Support (perf but wobbly ESP)", &Settings::supportMulticore);
+				Menu::InsertSlider("Rainbow speed", &Settings::Misc::rainbowSpeed, 1.f, 30.f);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -590,6 +624,7 @@ namespace GUI
 					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCloseLuaInterfaceFn, 5);
 					
 					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
+					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 17);
 
 					*Globals::bSendpacket = true;
 					
@@ -633,8 +668,9 @@ namespace GUI
 
 				ImGui::SameLine(6.f);
 				ImGui::GetStyle().Colors[ImGuiCol_FrameBg] = ImColor(24, 24, 24);
+				ImGui::PushFont(executorFont);
 				Menu::InsertMultiTextInput("##Script input", Settings::ScriptInput, IM_ARRAYSIZE(Settings::ScriptInput), 487.f, 415.f);
-
+				ImGui::PopFont();
 				bool executePressed = false;
 				Menu::InsertButtonLeft("Execute script", executePressed);
 				if (executePressed)
@@ -647,6 +683,7 @@ namespace GUI
 				{
 					std::thread(LoadScriptFromFile).detach();
 				}
+				ImGui::SameLine(345.f); ImGui::PushItemWidth(158.f); ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.f); ImGui::Combo("Lua State", &Globals::executeState, executorLuaState, IM_ARRAYSIZE(executorLuaState)); ImGui::PopItemWidth();
 
 			}Menu::InsertEndGroupBoxLarge("Lua Executor Cover", "Lua Executor");
 		}

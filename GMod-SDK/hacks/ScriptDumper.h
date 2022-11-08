@@ -46,27 +46,23 @@ void CreateRecurringDir(fs::path in)
 	}
 }
 
+// Idk why, but thinking that the server can just spam runstrings to you will just eventually overload your disk / lag you sucks.
+// And at the same time, they could be loading all of their scripts through net/runstrings :/
 std::optional<std::string> SaveScript(std::string fileName, std::string fileContent)
 {
 	try
 	{
-		if (fileName == "RunString(Ex)")fileName = "runString.lua";
+		if (fileName == "RunString(Ex)" || fileName.find('.') == std::string::npos)fileName = "runString.lua";
+
 		fs::path scripthookPath = "C:\\GaztoofScriptHook\\Original\\";
 		fs::path detourPath = "C:\\GaztoofScriptHook\\Detour\\";
-		if (!Lua)return {};
 
 		if (EngineClient->GetNetChannelInfo() && EngineClient->GetNetChannelInfo()->GetAddress())
 		{
-			// That's pretty bad...
+			std::string hostName = Globals::hostName;
 
-			Lua->PushSpecial(0); // https://github.com/Facepunch/gmod-module-base/blob/master/include/GarrysMod/Lua/LuaBase.h
-			Lua->GetField(-1, "GetHostName");
-			Lua->Push(-2);
-			Lua->Call(1, 1);
-			auto hostName = Lua->GetString(-1, NULL);
-			Lua->Pop(2);
-
-			if (hostName) {
+			if (hostName.length()) {
+				std::replace(hostName.begin(), hostName.end(), '/', ' ');
 				scripthookPath += hostName;
 				detourPath += hostName;
 			}
@@ -114,10 +110,13 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 				(std::istreambuf_iterator<char>()));
 			if (!strcmp(content.c_str(), fileContent.c_str()))return {};
 
+			std::string strToPrint = "Successfully detoured script \"" + fileName + "\" !";
+			ConPrint(strToPrint.c_str(), Color(255, 51, 113));
+
 			fileContent = content;
 			return fileContent;
 		}
-		else {
+		/*else {
 			std::ofstream outDetourFile;
 			outDetourFile.open(detourDir.string());
 			if (outDetourFile.good())
@@ -125,7 +124,7 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 				outDetourFile << fileContent;
 				outDetourFile.close();
 			}
-		}
+		}*/
 	}
 	catch (...) {}
 

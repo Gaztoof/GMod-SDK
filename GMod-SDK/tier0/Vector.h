@@ -276,6 +276,19 @@ public:
 
 		return delta.LengthSqr();
 	}
+
+	FORCEINLINE Vector NormalizeAngle()
+	{
+		while (y <= -180.f)y += 360.f;
+		while (y > 180.f) y -= 360.f;
+
+		if (x > 89.f) x = 89.f;
+		if (x < -89.f) x = -89.f;
+
+		z = 0;
+		return *this;
+	}
+
 	FORCEINLINE QAngle AngleTo(const Vector& vOther);
 	// Copy
 	void	CopyToArray(float* rgfl) const;
@@ -2429,9 +2442,18 @@ inline vec_t Vector::NormalizeInPlace()
 
 inline Vector Vector::Normalized() const
 {
-	Vector norm = *this;
-	VectorNormalize(norm);
-	return norm;
+	Vector vec = *this;
+
+	float radius = sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+
+	// FLT_EPSILON is added to the radius to eliminate the possibility of divide by zero.
+	float iradius = 1.f / (radius + 1.192092896e-07F);
+
+	vec.x *= iradius;
+	vec.y *= iradius;
+	vec.z *= iradius;
+
+	return vec;
 }
 
 inline bool Vector::IsLengthGreaterThan(float val) const

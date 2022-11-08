@@ -16,6 +16,12 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 	* What does this do? Blocks any form of input while the menu is open, doing only EnableInput(false) will automatically 
 	* set your mouse to the screen's center which is real annoying cause you have to pause the game everytime you open the menu.
 	*/
+
+	vmatrix_t matrix;
+	memcpy(&matrix, &EngineClient->WorldToScreenMatrix().m, sizeof(vmatrix_t));
+	
+	Globals::viewMatr.store(matrix);
+
 	InputSystem->EnableInput(!Globals::openMenu);
 	if (!strcmp(PanelWrapper->GetName(panel), "FocusOverlayPanel"))
 	{
@@ -23,11 +29,11 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 		PanelWrapper->SetKeyBoardInputEnabled(panel, Globals::openMenu);
 		PanelWrapper->SetMouseInputEnabled(panel, Globals::openMenu);
 	}
-	auto l = waitingToBeExecuted.load();
+	auto l = Globals::waitingToBeExecuted.load();
 	if(l.first && l.second)
 	{
-		oRunStringEx(Lua, "gazfootmoment", "", l.second, true, true, true, true);
-		waitingToBeExecuted.store(std::make_pair(false, nullptr));
+		oRunStringEx(LuaShared->GetLuaInterface(Globals::executeState * 2), RandomString(16).c_str(), "", l.second, true, true, true, true);
+		Globals::waitingToBeExecuted.store(std::make_pair(false, nullptr));
 	}
 
 	oPaintTraverse(_this, panel, force_repaint, allow_force);

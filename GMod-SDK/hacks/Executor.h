@@ -10,7 +10,7 @@ void ExecuteScript(const char* input)
 {
 	if (!Lua) return;
     std::unique_lock lock(executorMutex);
-    waitingToBeExecuted.store(std::make_pair(true, input));
+    Globals::waitingToBeExecuted.store(std::make_pair(true, input));
 }
 void LoadScriptFromFile()
 {

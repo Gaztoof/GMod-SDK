@@ -17,12 +17,12 @@
 #include "hooks/PaintTraverse.h"
 #include "hooks/RunStringEx.h"
 #include "hooks/ProcessGMODServerToClient.h"
+#include "hooks/RunCommand.h"
 
 #include "Memory.h"
 
 #include "hacks/ConVarSpoofing.h"
 #include "engine/inetmessage.h"
-using namespace std;
 
 void Main()
 {
@@ -41,10 +41,11 @@ void Main()
 
     ConfigSystem::LoadConfig("Default");
     Globals::bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
-
+    Globals::predictionRandomSeed = (unsigned int*)(GetRealFromRelative((char*)findPattern("client", PredictionSeedPattern, "predictionRandomSeed") + 0x5, 0x2, 0xA));
+    Globals::hostName= (char*)(GetRealFromRelative((char*)findPattern("client", HostNamePattern, "HostName"), 0x3, 7));
     DWORD originalProtection;
     VirtualProtect(Globals::bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
-
+    
     EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
 
     // x64: thats directly the vtable pointer // CEngineClient::IsPaused points to clientstate https://i.imgur.com/4aWvQbs.png
@@ -70,6 +71,9 @@ void Main()
     PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
     PhysicsSurfaceProps = (CPhysicsSurfaceProps*)GetInterface("vphysics.dll", "VPhysicsSurfaceProps001");
 
+    Prediction = (CPrediction*)GetInterface("client.dll", "VClientPrediction001");
+    GameMovement = (CGameMovement*)GetInterface("client.dll", "GameMovement001");
+
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
 
@@ -92,6 +96,7 @@ void Main()
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
+    oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 17);
 
     oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
     oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
@@ -102,7 +107,7 @@ void Main()
 
     present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern, "Present"), 0x2, 6, false);
 
-    EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0");
+    //EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0"); // Not needed anymore
     
     Globals::damageEvent = (void*)new DamageEvent();
     Globals::deathEvent = (void*)new DeathEvent();
@@ -132,6 +137,7 @@ void Main()
     Sleep(1100);
     MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
     Globals::openMenu = true;
+
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

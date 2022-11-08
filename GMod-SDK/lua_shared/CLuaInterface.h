@@ -33,7 +33,7 @@ enum class LuaObjectType
 	USERDATA,
 	THREAD,
 
-	ENTITY,
+	ENTITY, // 9
 	VECTOR,
 	ANGLE,
 	PHYSOBJ,
@@ -151,9 +151,9 @@ public:
 	/*80*/	virtual void* SetMember(void*, void*, void*) = 0;
 	/*81*/	virtual void* GetNewTable(void) = 0;
 	/*82*/	virtual void* SetMember(void*, float) = 0;
-	/*83*/	virtual void* SetMember(void*, float, void*) = 0;
+	/*83*/	virtual void* SetMember(void*, float, void*) = 0; // ILuaObject
 	/*84*/	virtual void* SetMember(void*, char const*) = 0;
-	/*85*/	virtual void* SetMember(void*, char const*, void*) = 0;
+	/*85*/	virtual void* SetMember(void*, char const*, void*) = 0; // ILuaObject* key, ILuaObject* value
 	/*86*/	virtual void* SetType(unsigned char) = 0;
 	/*87*/	virtual void* PushLong(long) = 0;
 	/*88*/	virtual void* GetFlags(int) = 0;
@@ -167,12 +167,12 @@ public:
 	/*96*/	virtual void* RunLuaModule(char const*) = 0;
 	/*97*/	virtual void* FindAndRunScript(char const*, bool, bool, char const*, bool) = 0;
 	/*98*/	virtual void* SetPathID(char const*) = 0;
-	/*99*/	virtual void* GetPathID(void) = 0;
+	/*99*/	virtual const char* GetPathID(void) = 0;
 	/*100*/	virtual void* ErrorNoHalt(char const*, ...) = 0;
 	/*101*/	virtual void* Msg(char const*, ...) = 0;
 	/*102*/	virtual void* PushPath(char const*) = 0;
 	/*103*/	virtual void* PopPath(void) = 0;
-	/*104*/	virtual void* GetPath(void) = 0;
+	/*104*/	virtual const char* GetPath(void) = 0;
 	/*105*/	virtual void* GetColor(int) = 0;
 	/*106*/	virtual void* PushColor(Color) = 0;
 	/*107*/	virtual void* GetStack(int, void*) = 0;

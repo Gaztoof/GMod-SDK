@@ -32,6 +32,9 @@ ImFont* menuFont;
 ImFont* boldMenuFont;
 ImFont* tabFont;
 ImFont* massiveFont;
+#ifdef _DEBUG
+ImFont* executorFont;
+#endif
 
 ImGuiStyle* style;
 IDirect3DTexture9* menuBg;
@@ -70,6 +73,9 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		boldMenuFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBoldBytes, sizeof(verdanaBoldBytes), 11);
 		massiveFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBoldBytes, sizeof(verdanaBoldBytes), 34);
 		tabFont = io.Fonts->AddFontFromMemoryTTF((void*)rawTabBytes, sizeof(rawTabBytes), 42);
+#ifdef _DEBUG
+		executorFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBytes, sizeof(verdanaBytes), 14);
+#endif
 
 		initialized = true;
 	}
@@ -82,6 +88,18 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	if (EngineClient->IsInGame())
 	{
+#ifdef _DEBUG
+		auto cmd = Globals::lastEndCmd;
+		if (cmd.command_number != 0 || true)
+		{
+			std::wstring userCmdDebug = L"UserCMD Data\nCommandNumber: " + std::to_wstring(cmd.command_number)
+				+ L"\nMove: " + std::to_wstring(cmd.forwardmove) + L", " + std::to_wstring(cmd.sidemove) + L", " + std::to_wstring(cmd.upmove)
+				+ L"\ntick_count: " + std::to_wstring(cmd.tick_count)
+				+ L"\nviewangles: " + std::to_wstring(cmd.viewangles.x) + L", " + std::to_wstring(cmd.viewangles.y) + L", " + std::to_wstring(cmd.viewangles.z);
+			DebugDrawTextW(Vector(10, 50, 0), userCmdDebug, ColorToRGBA(Color(255, 255, 255)), true);
+		}
+#endif // DEBUG
+
 		doEsp();
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
 		rainbowColor(Settings::Misc::crossHairColor, Settings::Misc::rainbowSpeed);
@@ -101,6 +119,38 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 			DrawLine(Vector(Globals::screenWidth / 2 - 2, Globals::screenHeight / 2 + 2, 0), Vector(Globals::screenWidth / 2 - Settings::Misc::hitmarkerSize, Globals::screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
 			DrawLine(Vector(Globals::screenWidth / 2 + 2, Globals::screenHeight / 2 + 2, 0), Vector(Globals::screenWidth / 2 + Settings::Misc::hitmarkerSize, Globals::screenHeight / 2 + Settings::Misc::hitmarkerSize, 0), 0xFFFFFFFF);
+		}
+		
+		if (false)
+		{
+			float tickrate = 100;
+			float strafes = 10;
+
+			Vector screenPos;
+			Vector screenPosLeftBar;
+			Vector screenPosRightBar;
+
+			Vector middleBar = localPlayer->GetAbsOrigin();
+			Vector leftBar = localPlayer->GetAbsOrigin();
+			Vector rightBar = localPlayer->GetAbsOrigin();
+
+			auto currVel = localPlayer->getVelocity();
+			currVel.z = 0;
+			float maxVel = sqrt(pow(30, 2) + pow(currVel.Length(), 2)); // max possible new velocity in this tick given a perfect strafe angle
+			float A = atan(30 / currVel.Length()) * (180 / PI); // difference of angle to the next tick's optimal strafe angle
+			float D = (0.75 * tickrate * A) / strafes;// optimal number of degrees per strafe given the desired number of strafes per jump, the tickrate of the server, and the current player velocity defined in v_1
+
+			auto eyeAng = localPlayer->EyeAngles();
+			eyeAng.y += D;
+			rightBar += (Vector(std::cos(degreesToRadians(0)) * std::cos(degreesToRadians(eyeAng.y)), std::cos(degreesToRadians(0)) * std::sin(degreesToRadians(eyeAng.y)), -std::sin(degreesToRadians(0))) * 100);
+			eyeAng.y -= (D*2);
+			leftBar += (Vector(std::cos(degreesToRadians(0)) * std::cos(degreesToRadians(eyeAng.y)), std::cos(degreesToRadians(0)) * std::sin(degreesToRadians(eyeAng.y)), -std::sin(degreesToRadians(0))) * 100);
+
+			if (WorldToScreen(middleBar, screenPos) && WorldToScreen(leftBar, screenPosLeftBar) && WorldToScreen(rightBar, screenPosRightBar))
+			{
+				DrawLine(screenPos, screenPosLeftBar, 0xFFFFFFFF);
+				DrawLine(screenPos, screenPosRightBar, 0xFFFFFFFF);
+			}
 		}
 	}
 	// https://www.unknowncheatsme/forum/3137288-post2.html Thanks to him :)

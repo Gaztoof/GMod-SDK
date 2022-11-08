@@ -4,6 +4,11 @@
 #include "../mathlib/mathlib.h"
 
 
+struct vmatrix_t
+{
+    vec_t		m[4][4];
+};
+
 class VMatrix
 {
 public:

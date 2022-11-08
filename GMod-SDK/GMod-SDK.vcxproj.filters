@@ -350,5 +350,17 @@
     <ClInclude Include="hooks\ProcessGMODServerToClient.h">
       <Filter>Header Files\hooks</Filter>
     </ClInclude>
+    <ClInclude Include="hooks\RunCommand.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hacks\Prediction.h">
+      <Filter>Header Files\hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="client\IPrediction.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="client\IGameMovement.h">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

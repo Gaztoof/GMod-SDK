@@ -110,6 +110,16 @@ public:
         return crc;
     }
 
+    // Thanks to copypaste from uc.me for the following:
+
+    uint8_t buttons_pressed[5]; // holds current buttons pressed and sends to server used for PlayerButtonDown and other hooks on server
+    int8_t scroll_wheel_speed;
+    bool world_clicking; // used for context menu aiming
+    Vector world_click_direction; // this too
+    bool is_typing; // does hand to ear animation
+    Vector motion_sensor_positions[20]; // kinect stuff
+    bool forced; // CUserCmd_IsForced check gmod wiki
+
 };
 
 #endif // USERCMD_H

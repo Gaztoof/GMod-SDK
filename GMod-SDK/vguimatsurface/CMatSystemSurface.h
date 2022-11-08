@@ -64,9 +64,9 @@ public:
 	/*48*/	virtual void* CreatePopup(unsigned int, bool, bool, bool, bool, bool) = 0;
 	/*49*/	virtual void* SwapBuffers(unsigned int) = 0;
 	/*50*/	virtual void* Invalidate(unsigned int) = 0;
-	/*51*/	virtual void* SetCursor(unsigned long) = 0;
-	/*52*/	virtual void* SetCursorAlwaysVisible(bool) = 0;
-	/*53*/	virtual void* IsCursorVisible(void) = 0;
+	/*51*/	virtual void SetCursor(unsigned long) = 0;
+	/*52*/	virtual void SetCursorAlwaysVisible(bool) = 0;
+	/*53*/	virtual bool IsCursorVisible(void) = 0;
 	/*58*/	virtual void* RestrictPaintToSinglePanel(unsigned int) = 0;
 	/*59*/	virtual void* SetModalPanel(unsigned int) = 0;
 	/*60*/	virtual void* GetModalPanel(void) = 0;

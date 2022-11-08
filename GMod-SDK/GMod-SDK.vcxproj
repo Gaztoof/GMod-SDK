@@ -192,6 +192,8 @@
     <ClInclude Include="client\CViewSetup.h" />
     <ClInclude Include="client\c_basecombatweapon.h" />
     <ClInclude Include="client\C_BasePlayer.h" />
+    <ClInclude Include="client\IGameMovement.h" />
+    <ClInclude Include="client\IPrediction.h" />
     <ClInclude Include="client\usercmd.h" />
     <ClInclude Include="engine\CEngineClient.h" />
     <ClInclude Include="engine\CGameEventManager.h" />
@@ -222,6 +224,7 @@
     <ClInclude Include="hacks\menu\MenuBackground.h" />
     <ClInclude Include="hacks\menu\MenuControls.h" />
     <ClInclude Include="hacks\Misc.h" />
+    <ClInclude Include="hacks\Prediction.h" />
     <ClInclude Include="hacks\ScriptDumper.h" />
     <ClInclude Include="hacks\Triggerbot.h" />
     <ClInclude Include="hacks\Utils.h" />
@@ -232,6 +235,7 @@
     <ClInclude Include="hooks\Present.h" />
     <ClInclude Include="hooks\ProcessGMODServerToClient.h" />
     <ClInclude Include="hooks\RenderView.h" />
+    <ClInclude Include="hooks\RunCommand.h" />
     <ClInclude Include="hooks\RunStringEx.h" />
     <ClInclude Include="lua_shared\CLuaConVars.h" />
     <ClInclude Include="lua_shared\CLuaInterface.h" />

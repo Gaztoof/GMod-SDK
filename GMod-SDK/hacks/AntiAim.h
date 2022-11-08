@@ -30,6 +30,9 @@ QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
         // V this perfectly explains https://i.imgur.com/8cED0pl.png
         cmd->forwardmove = cos(DEG2RAD(deltaYaw)) * oldForward + cos(DEG2RAD(deltaYaw + 90.f)) * oldSide;
         cmd->sidemove = sin(DEG2RAD(deltaYaw)) * oldForward + sin(DEG2RAD(deltaYaw + 90.f)) * oldSide;
+        if ((cmd->forwardmove < 0.001 && cmd->forwardmove > 0) || (cmd->forwardmove > -0.001 && cmd->forwardmove < 0)) cmd->forwardmove = 0;
+        if ((cmd->sidemove < 0.001 && cmd->sidemove > 0) || (cmd->sidemove > -0.001 && cmd->sidemove < 0)) cmd->sidemove = 0;
+         // ^ this'll make u undetected on a few servers
     }
     return oldAng;
 }

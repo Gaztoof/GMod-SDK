@@ -1,6 +1,6 @@
 #pragma once
 
-#define CheatVersion "1.1.9"
+#define CheatVersion "1.2.0"
 
 #include <map>
 #include <mutex>
@@ -34,7 +34,8 @@
 #include "vgui/VPanelWrapper.h"
 #include "vphysics/CPhysicsSurfaceProps.h"
 #include "vguimatsurface/CMatSystemSurface.h"
-
+#include "client/IPrediction.h"
+#include "client/IGameMovement.h"
 #include "hacks/ConVarSpoofing.h"
 
 #include <math.h>
@@ -50,10 +51,12 @@
 #define PresentPattern "\xFF\x15????\x8B\xF8\xEB\x1E"
 #define GetClassNamePattern "\xE8????\x4D\x8B\x47\x10"
 #define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
+#define PredictionSeedPattern "\x48\x85\xC9\x75\x0B\xC7\x05????\xFF\xFF\xFF\xFF\xC3\x8B\x41\x30"
 #define BSendPacketOffset 0x62
 #define ConColorMsgDec "?ConColorMsg@@YAXAEBVColor@@PEBDZZ"
 #define CClientStateOffset 0x3
 #define CClientStateSize 0x7
+#define HostNamePattern "\x48\x8D\x15????\x45\x33\xC0\x48\x8B\x01\xFF\x90????\xB8????\x48\x83\xC4\x28\xC3\xCC\xCC\xCC\xCC\xCC\xCC\xCC"
 #else
 #define ViewRenderOffset 0xA6
 #define GlobalVarsOffset 0x59
@@ -75,7 +78,6 @@ typedef bool(__thiscall* _FireEvent)(CGameEventManager*, IGameEvent*);
 typedef void(__thiscall* _PaintTraverse)(void*, VPanel*, bool, bool);
 typedef const char* (__thiscall* _GetClassName)(C_BasePlayer*);
 typedef void(__cdecl* MsgFn)(Color const& color, const char* msg, ...);
-
 
 CLuaShared* LuaShared;
 CLuaInterface* Lua;
@@ -101,6 +103,8 @@ VPanelWrapper* PanelWrapper;
 CPhysicsSurfaceProps* PhysicsSurfaceProps;
 CMatSystemSurface* MatSystemSurface;
 void* ClientState; // implement that?
+CPrediction* Prediction; // implement that?
+CGameMovement* GameMovement;
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
@@ -116,7 +120,6 @@ const void ConPrint(const char* text, Color col)
 	ConColorMsg(col, "\n");
 }
 
-std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
 
 SpoofedConVar* spoofedAllowCsLua;
 SpoofedConVar* spoofedCheats;
@@ -146,6 +149,7 @@ namespace Globals {
 	bool nothing;
 	bool Untrusted;
 	CUserCmd lastCmd;
+	CUserCmd lastEndCmd;
 	CUserCmd lastRealCmd;
 	CUserCmd lastNetworkedCmd;
 	bool choke;
@@ -154,7 +158,9 @@ namespace Globals {
 	SpoofedConVar* spoofedAllowCsLua;
 	SpoofedConVar* spoofedCheats;
 
+	std::atomic<vmatrix_t> viewMatr;
 	std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
+	int executeState = 0;
 
 	int screenWidth, screenHeight;
 
@@ -162,14 +168,21 @@ namespace Globals {
 	void* deathEvent;
 
 	bool* bSendpacket;
+	unsigned int* predictionRandomSeed;
+	char* hostName; // UTF-8 encoding
 }
 namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;
 	int menuKeyStyle = 1;
 	Color menuColor(0, 255, 0);
+	bool supportMulticore = true;
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
-	std::map<const char*, bool> luaEntList;
+	std::vector<C_BasePlayer*> selectedFriendList;
+
+	std::map<std::string, bool> luaEntList;
+	std::vector<std::string> selectedLuaEntList;
+
 	float lastHitmarkerTime = -1.f;
 	std::mutex friendListMutex;
 	std::mutex luaEntListMutex;
@@ -280,6 +293,15 @@ namespace Settings {
 		bool autoStrafe;
 		int autoStrafeStyle;
 
+		bool fastWalk;
+		bool edgeJump;
+
+		bool optiClamp;
+		float optiStrength;
+		bool optiStyle;
+		bool optiRandomization;
+		bool optiAutoStrafe;
+
 		float crosshairSize;
 		
 		bool thirdperson;
@@ -306,6 +328,7 @@ namespace Settings {
 		float hitmarkerSize = 10.f;
 
 		bool fakeLag;
+		float fakeLagTicks;
 		ButtonCode_t fakeLagKey = KEY_NONE;
 		int fakeLagKeyStyle = 1;
 
