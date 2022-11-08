@@ -80,12 +80,12 @@ typedef const char* (__thiscall* _GetClassName)(C_BasePlayer*);
 typedef void(__cdecl* MsgFn)(Color const& color, const char* msg, ...);
 
 CLuaShared* LuaShared;
+CLuaInterface* Lua;
 CClientEntityList* ClientEntityList;
 CHLClient* CHLclient;
 ClientModeShared* ClientMode;
 CGlobalVarsBase* GlobalVars;
 IEngineTrace* EngineTrace;
-CLuaInterface* LuaInterface;
 C_BasePlayer* localPlayer;
 CEngineClient *EngineClient;
 CViewRender* ViewRender;

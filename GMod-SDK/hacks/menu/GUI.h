@@ -620,9 +620,9 @@ namespace GUI
 
 					RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
 
-					if(LuaInterface)
-					RestoreVMTHook((PVOID**)LuaInterface, (PVOID)oRunStringEx, 111);
-
+					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCreateLuaInterfaceFn, 4);
+					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCloseLuaInterfaceFn, 5);
+					
 					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
 					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 17);
 
