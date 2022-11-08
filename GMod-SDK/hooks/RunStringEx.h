@@ -22,25 +22,34 @@ bool __fastcall hkRunStringEx(CLuaInterface* _this,
 	return oRunStringEx(_this, filename, path, script.has_value() ? script.value().c_str() : stringToRun, run, printErrors, dontPushErrors, noReturns);
 }
 
-void* luaClientStateInterface;
 
-typedef void* (__thiscall* _CloseLuaInterfaceFn)(void*, void*);
+typedef int (__thiscall* _CloseLuaInterfaceFn)(CLuaShared*, CLuaInterface*);
 _CloseLuaInterfaceFn oCloseLuaInterfaceFn;
-
-void* __fastcall hkCloseInterfaceLuaFn(void* self, void*, void* luaInterface) {
-    if (luaInterface == luaClientStateInterface) luaClientStateInterface = 0;
-    return oCloseLuaInterfaceFn(self, luaInterface);
+int __fastcall hkCloseInterfaceLuaFn(CLuaShared* _this,
+#ifndef _WIN64
+    void*, // __fastcall does literally nothing in x64, so that's why we make it inactive
+#endif
+    CLuaInterface* luaInterface) 
+{
+    if (luaInterface == Lua) Lua = nullptr;
+    return oCloseLuaInterfaceFn(_this, luaInterface);
 }
 
-typedef void* (__thiscall* _CreateLuaInterfaceFn)(void*, char, bool);
+
+typedef CLuaInterface* (__thiscall* _CreateLuaInterfaceFn)(CLuaShared*, LuaInterfaceType, bool);
 _CreateLuaInterfaceFn oCreateLuaInterfaceFn;
-void* __fastcall hkCreateLuaInterfaceFn(void* self, void*, char lstate, bool rnew) {
-    void* state = oCreateLuaInterfaceFn(self, lstate, rnew);
-    if (lstate != 0) return state;
+CLuaInterface* __fastcall hkCreateLuaInterfaceFn(CLuaShared* _this,
+#ifndef _WIN64
+    void*, // __fastcall does literally nothing in x64, so that's why we make it inactive
+#endif 
+    LuaInterfaceType luaState, bool renew) 
+{
+    auto luaInterface = oCreateLuaInterfaceFn(_this, luaState, renew);
+    if (luaState != LuaInterfaceType::LUA_CLIENT) return luaInterface;
 
-    luaClientStateInterface = state;
+    Lua = luaInterface;
 
-    oRunStringEx = VMTHook< _RunStringEx>((PVOID**)luaClientStateInterface, (PVOID)hkRunStringEx, 111);
+    oRunStringEx = VMTHook< _RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
 
-    return luaClientStateInterface;
+    return Lua;
 }

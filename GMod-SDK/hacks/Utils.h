@@ -13,8 +13,7 @@ bool WorldToScreen(Vector in, Vector& out)
 
 const char* GetLuaEntBase(C_BaseCombatWeapon* _this)
 {
-	CLuaInterface* Lua = LuaShared->GetLuaInterface(0); // ent.Base
-	if (!_this->UsesLua())
+	if (!Lua || !_this->UsesLua())
 		return "";
 	_this->PushEntity();
 	Lua->GetField(-1, "Base");
@@ -27,8 +26,7 @@ const char* GetLuaEntBase(C_BaseCombatWeapon* _this)
 
 double GetLuaWeaponDamage(C_BaseCombatWeapon* _this)
 {
-	CLuaInterface* Lua = LuaShared->GetLuaInterface(0); // ent.Base
-	if (!_this->UsesLua())
+	if (!Lua || !_this->UsesLua())
 		return 0.f;
 	double damage = 1.f;
 	int topop = 3;
@@ -51,8 +49,7 @@ double GetLuaWeaponDamage(C_BaseCombatWeapon* _this)
 
 const char* GetLuaEntName(C_BaseCombatWeapon* _this)
 {
-	CLuaInterface* Lua = LuaShared->GetLuaInterface(0); // ent.PrintName
-	if (!_this->UsesLua())
+	if (!Lua || !_this->UsesLua())
 		return "";
 	_this->PushEntity();
 	Lua->GetField(-1, "PrintName");
@@ -173,7 +170,6 @@ const char* GetClassName(C_BasePlayer* _this)
 }
 
 double LuaMathRand(double min, double max){
-	auto Lua = LuaShared->GetLuaInterface(0);
 	if (!Lua) return 0.;
 	Lua->PushSpecial(0); // SPECIAL_GLOB
 	Lua->GetField(-1, "math");
@@ -186,7 +182,6 @@ double LuaMathRand(double min, double max){
 	return retVal;
 }
 void LuaMathSetSeed(double seed){
-	auto Lua = LuaShared->GetLuaInterface(0);
 	if (!Lua) return;
 	Lua->PushSpecial(0); // SPECIAL_GLOB
 	Lua->GetField(-1, "math");
@@ -197,7 +192,6 @@ void LuaMathSetSeed(double seed){
 }
 double LuaCurTime()
 {
-	auto Lua = LuaShared->GetLuaInterface(0);
 	if (!Lua) return 0.;
 	Lua->PushSpecial(0); // SPECIAL_GLOB
 	Lua->GetField(-1, "CurTime");

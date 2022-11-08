@@ -53,7 +53,6 @@ void Main()
     //void* plim = (plim*)(GetRealFromRelative((char*), 0x1, 5) + BSendPacketOffset);
 
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
-
     ClientEntityList = (CClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
     CHLclient = (CHLClient*)GetInterface("client.dll", "VClient017");
 
@@ -94,9 +93,10 @@ void Main()
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
 
-    oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
     oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
-	
+    oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
+    Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
+
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 

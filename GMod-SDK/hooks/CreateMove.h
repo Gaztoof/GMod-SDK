@@ -22,9 +22,8 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	uintptr_t stackTop;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
-	LuaInterface = LuaShared->GetLuaInterface(0);
 
-	if (localPlayer && localPlayer->IsAlive() && LuaInterface && !Settings::currentlyInFreeCam)
+	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam)
 	{
 
 		Globals::lastRealCmd = *cmd;

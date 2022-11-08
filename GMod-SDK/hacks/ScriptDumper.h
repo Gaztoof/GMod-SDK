@@ -53,7 +53,6 @@ std::optional<std::string> SaveScript(std::string fileName, std::string fileCont
 		if (fileName == "RunString(Ex)")fileName = "runString.lua";
 		fs::path scripthookPath = "C:\\GaztoofScriptHook\\Original\\";
 		fs::path detourPath = "C:\\GaztoofScriptHook\\Detour\\";
-		CLuaInterface* Lua = LuaShared->GetLuaInterface((unsigned char)LuaSomething::LUA_CLIENT);
 		if (!Lua)return {};
 
 		if (EngineClient->GetNetChannelInfo() && EngineClient->GetNetChannelInfo()->GetAddress())

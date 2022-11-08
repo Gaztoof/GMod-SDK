@@ -9,7 +9,7 @@ enum LuaFindResult
 {
 	IHaveNoIdea
 };
-enum class LuaSomething
+enum class LuaInterfaceType
 {
 	LUA_CLIENT = 0,
 	LUA_SERVER = 1,
