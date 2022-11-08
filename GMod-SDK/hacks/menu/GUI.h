@@ -668,9 +668,13 @@ namespace GUI
 
 				ImGui::SameLine(6.f);
 				ImGui::GetStyle().Colors[ImGuiCol_FrameBg] = ImColor(24, 24, 24);
+#ifdef _DEBUG
 				ImGui::PushFont(executorFont);
+#endif
 				Menu::InsertMultiTextInput("##Script input", Settings::ScriptInput, IM_ARRAYSIZE(Settings::ScriptInput), 487.f, 415.f);
+#ifdef _DEBUG
 				ImGui::PopFont();
+#endif
 				bool executePressed = false;
 				Menu::InsertButtonLeft("Execute script", executePressed);
 				if (executePressed)

@@ -1,6 +1,6 @@
 #pragma once
 
-#define CheatVersion "1.2.0"
+#define CheatVersion "1.2.1"
 
 #include <map>
 #include <mutex>
