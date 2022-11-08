@@ -160,6 +160,7 @@ namespace Globals {
 
 	std::atomic<vmatrix_t> viewMatr;
 	std::atomic<std::pair<bool, LPCSTR>> waitingToBeExecuted;
+	int executeState = 0;
 
 	int screenWidth, screenHeight;
 

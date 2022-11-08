@@ -32,7 +32,7 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 	auto l = Globals::waitingToBeExecuted.load();
 	if(l.first && l.second)
 	{
-		oRunStringEx(LuaInterface, "gazfootmoment", "", l.second, true, true, true, true);
+		oRunStringEx(LuaShared->GetLuaInterface(Globals::executeState * 2), RandomString(16).c_str(), "", l.second, true, true, true, true);
 		Globals::waitingToBeExecuted.store(std::make_pair(false, nullptr));
 	}
 

@@ -145,7 +145,6 @@ void Main()
         {
             oRunStringEx = VMTHook< _RunStringEx>((PVOID**)LuaInterface, (PVOID)hkRunStringEx, 111);
             break;
-
         }
         Sleep(1);
     }

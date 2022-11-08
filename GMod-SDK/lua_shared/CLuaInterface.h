@@ -167,12 +167,12 @@ public:
 	/*96*/	virtual void* RunLuaModule(char const*) = 0;
 	/*97*/	virtual void* FindAndRunScript(char const*, bool, bool, char const*, bool) = 0;
 	/*98*/	virtual void* SetPathID(char const*) = 0;
-	/*99*/	virtual void* GetPathID(void) = 0;
+	/*99*/	virtual const char* GetPathID(void) = 0;
 	/*100*/	virtual void* ErrorNoHalt(char const*, ...) = 0;
 	/*101*/	virtual void* Msg(char const*, ...) = 0;
 	/*102*/	virtual void* PushPath(char const*) = 0;
 	/*103*/	virtual void* PopPath(void) = 0;
-	/*104*/	virtual void* GetPath(void) = 0;
+	/*104*/	virtual const char* GetPath(void) = 0;
 	/*105*/	virtual void* GetColor(int) = 0;
 	/*106*/	virtual void* PushColor(Color) = 0;
 	/*107*/	virtual void* GetStack(int, void*) = 0;

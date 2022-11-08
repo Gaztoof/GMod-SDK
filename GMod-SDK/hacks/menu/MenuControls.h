@@ -96,7 +96,7 @@ namespace Menu {
 	}
 
 	const void InsertButtonSameline(const char* label, bool& button) {
-		ImGui::SameLine(); ImGui::PushItemWidth(158.f); button = ImGui::Button(label, ImVec2(158.f, 0)); ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
+		ImGui::SameLine(); ImGui::PushItemWidth(158.f); button = ImGui::Button(label, ImVec2(158.f, 0)); ImGui::PopItemWidth();
 	}
 
 	const void InsertButtonMiddle(const char* label, bool& button) {

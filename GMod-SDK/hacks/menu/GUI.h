@@ -97,6 +97,10 @@ namespace GUI
 		"Silent strafe",
 		"Optimizer(WIP)",
 	};
+	const char* executorLuaState[]{
+		"Client",
+		"Menu",
+	};
 
 
 	void DrawVisuals()
@@ -679,6 +683,7 @@ namespace GUI
 				{
 					std::thread(LoadScriptFromFile).detach();
 				}
+				ImGui::SameLine(345.f); ImGui::PushItemWidth(158.f); ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.f); ImGui::Combo("Lua State", &Globals::executeState, executorLuaState, IM_ARRAYSIZE(executorLuaState)); ImGui::PopItemWidth();
 
 			}Menu::InsertEndGroupBoxLarge("Lua Executor Cover", "Lua Executor");
 		}
