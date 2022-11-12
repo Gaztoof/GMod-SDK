@@ -278,6 +278,7 @@ namespace Settings {
 
 	}
 	namespace Misc {
+		bool scriptDumper;
 
 		bool drawSpectators;
 

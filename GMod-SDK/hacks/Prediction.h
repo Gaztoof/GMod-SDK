@@ -11,6 +11,7 @@ CMoveData moveData;
 
 void StartPrediction(CUserCmd* cmd)
 {
+	if (!Settings::Misc::edgeJump) return; // Temporarily making prediction "disabled" cause far from being perfect...
 	*Globals::predictionRandomSeed = MD5_PseudoRandom(cmd->command_number) & 0x7FFFFFFF;
 	//*Globals::predictionRandomSeed = cmd->random_seed;
 
@@ -32,6 +33,7 @@ void StartPrediction(CUserCmd* cmd)
 }
 void EndPrediction(CUserCmd* cmd)
 {
+	if (!Settings::Misc::edgeJump) return; // Temporarily making prediction "disabled" cause far from being perfect...
 	GlobalVars->curtime = m_flOldCurtime;
 	GlobalVars->frametime = m_flOldFrametime;
 

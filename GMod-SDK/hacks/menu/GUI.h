@@ -539,6 +539,8 @@ namespace GUI
 				Menu::InsertCheckbox("sv_cheats (unstable)", &Settings::Misc::svCheats);
 				Menu::InsertCheckbox("sv_allowcslua (unstable)", &Settings::Misc::svAllowCsLua);
 
+				Menu::InsertCheckbox("Clientside scripts dumper", &Settings::Misc::scriptDumper);
+
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
 

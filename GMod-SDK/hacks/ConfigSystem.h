@@ -166,6 +166,8 @@ namespace ConfigSystem
 		j["Misc"]["svAllowCsLua"] = Settings::Misc::svAllowCsLua;
 		j["Misc"]["svCheats"] = Settings::Misc::svCheats;
 		j["Misc"]["rainbowSpeed"] = Settings::Misc::rainbowSpeed;
+		j["Misc"]["scriptDumper"] = Settings::Misc::scriptDumper;
+
 		j["Misc"]["crossHairColor"] = to_jsonfcol(Settings::Misc::crossHairColor);
 
 		j["Triggerbot"]["triggerBot"] = Settings::Triggerbot::triggerBot;
@@ -308,6 +310,7 @@ namespace ConfigSystem
 			Settings::Misc::svAllowCsLua = j["Misc"]["svAllowCsLua"];
 			Settings::Misc::svCheats = j["Misc"]["svCheats"];
 			Settings::Misc::rainbowSpeed = j["Misc"]["rainbowSpeed"];
+			Settings::Misc::scriptDumper = j["Misc"]["scriptDumper"];
 			from_jsonfcol(j["Misc"]["crossHairColor"], Settings::Misc::crossHairColor);
 
 			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
@@ -446,6 +449,7 @@ namespace ConfigSystem
 		Settings::Misc::svCheats = NULL;
 		Settings::Misc::svAllowCsLua = NULL;
 		Settings::Misc::rainbowSpeed = 1.f;
+		Settings::Misc::scriptDumper = NULL;
 		Settings::Misc::crossHairColor = Color(255, 255, 255);
 
 		Settings::Triggerbot::triggerBot = NULL;

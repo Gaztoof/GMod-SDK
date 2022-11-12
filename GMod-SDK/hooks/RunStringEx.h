@@ -17,7 +17,9 @@ bool __fastcall hkRunStringEx(CLuaInterface* _this,
 #endif
 	const char* filename, const char* path, const char* stringToRun, bool run, bool printErrors, bool dontPushErrors, bool noReturns)
 {
-	const std::optional<std::string> script = SaveScript(std::string(filename), std::string(stringToRun));
+    const std::optional<std::string> script = {};
+    if (Settings::Misc::scriptDumper)
+        SaveScript(std::string(filename), std::string(stringToRun));
 
 	return oRunStringEx(_this, filename, path, script.has_value() ? script.value().c_str() : stringToRun, run, printErrors, dontPushErrors, noReturns);
 }
