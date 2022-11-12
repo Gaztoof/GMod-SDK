@@ -18,6 +18,7 @@
 #include "hooks/RunStringEx.h"
 #include "hooks/ProcessGMODServerToClient.h"
 #include "hooks/RunCommand.h"
+#include "hooks/Paint.h"
 
 #include "Memory.h"
 
@@ -74,6 +75,7 @@ void Main()
     Prediction = (CPrediction*)GetInterface("client.dll", "VClientPrediction001");
     GameMovement = (CGameMovement*)GetInterface("client.dll", "GameMovement001");
 
+    EngineVGui = (void*)GetInterface("engine.dll", "VEngineVGui001");
     
     ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
 
@@ -97,6 +99,7 @@ void Main()
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
     oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 17);
+    oPaint = VMTHook<_Paint>((PVOID**)EngineVGui, (PVOID)hkPaint, 13);
 
     oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
     oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
@@ -120,9 +123,13 @@ void Main()
     cvar->RemoveFlags(FCVAR_CHEAT);
     
     //This'll let you change your name ingame freely
-    cvar = CVar->FindVar("name");
-    cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
-    cvar->DisableCallback();
+    // This can be easily detected(for instance, perphead will ban you for it), so disabled unless you need it and researched enough the server you're on.
+    if (false)
+    {
+        cvar = CVar->FindVar("name");
+        cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
+        cvar->DisableCallback();
+    }
     
 
     //GlobalVars->maxClients

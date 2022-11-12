@@ -231,6 +231,7 @@
     <ClInclude Include="hooks\CreateMove.h" />
     <ClInclude Include="hooks\DrawModelExecute.h" />
     <ClInclude Include="hooks\FrameStageNotify.h" />
+    <ClInclude Include="hooks\Paint.h" />
     <ClInclude Include="hooks\PaintTraverse.h" />
     <ClInclude Include="hooks\Present.h" />
     <ClInclude Include="hooks\ProcessGMODServerToClient.h" />

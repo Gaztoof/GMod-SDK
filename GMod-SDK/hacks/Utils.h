@@ -12,19 +12,16 @@
 }*/
 bool WorldToScreen(Vector in, Vector& out)
 {
-	if (Settings::supportMulticore)
-	{
-		auto matrix = Globals::viewMatr.load().m;
+	auto matrix = Globals::viewMatr.load().m;
 
-		float w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
-		if (w > 0.001f)
-		{
-			float fl1DBw = 1 / w;
-			out.x = (Globals::screenWidth / 2) + (0.5f * ((matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3]) * fl1DBw) * Globals::screenWidth + 0.5f);
-			out.y = (Globals::screenHeight / 2) - (0.5f * ((matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3]) * fl1DBw) * Globals::screenHeight + 0.5f);
-			return true;
-		}
-	}else return !IVDebugOverlay->ScreenPosition(in, out);
+	float w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
+	if (w > 0.001f)
+	{
+		float fl1DBw = 1 / w;
+		out.x = (Globals::screenWidth / 2) + (0.5f * ((matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3]) * fl1DBw) * Globals::screenWidth + 0.5f);
+		out.y = (Globals::screenHeight / 2) - (0.5f * ((matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3]) * fl1DBw) * Globals::screenHeight + 0.5f);
+		return true;
+	}
 	return false;
 }
 

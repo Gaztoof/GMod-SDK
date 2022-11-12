@@ -16,6 +16,7 @@
 #include "../../hooks/RunStringEx.h"
 #include "../../hooks/ProcessGMODServerToClient.h"
 #include "../../hooks/RunCommand.h"
+#include "../../hooks/Paint.h"
 
 extern _Present oPresent;
 #ifdef _DEBUG
@@ -521,7 +522,7 @@ namespace GUI
 					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
 				}
 				Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
-				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
+				Menu::InsertCheckbox("Edge Jump(crash when joining)", &Settings::Misc::edgeJump);
 
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
 				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);
@@ -559,7 +560,6 @@ namespace GUI
 				Menu::InsertText("Menu color");
 				Menu::InsertColorPicker("Menu color", &Settings::menuColor, false);
 				Menu::InsertCheckbox("Untrusted", &Globals::Untrusted);
-				Menu::InsertCheckbox("Multicore Support (perf but wobbly ESP)", &Settings::supportMulticore);
 				Menu::InsertSlider("Rainbow speed", &Settings::Misc::rainbowSpeed, 1.f, 30.f);
 
 				style->ItemSpacing = ImVec2(0, 0);
@@ -627,6 +627,7 @@ namespace GUI
 					
 					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
 					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 17);
+					RestoreVMTHook((PVOID**)EngineVGui, (PVOID)oPaint, 13);
 
 					*Globals::bSendpacket = true;
 					

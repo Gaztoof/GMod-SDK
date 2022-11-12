@@ -50,13 +50,16 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		//if ((cmd->buttons & IN_ATTACK) && (currWeapon && currWeapon->nextPrimaryAttack() <= GlobalVars->curtime) && (currWeapon->PrimaryAmmoCount() > 0))
 
 
-		bool antiAimKeyDown;
-		getKeyState(Settings::AntiAim::antiAimKey, Settings::AntiAim::antiAimKeyStyle, &antiAimKeyDown, henlo1, henlo2, henlo3);
-		if (antiAimKeyDown && !inCombat && Settings::AntiAim::enableAntiAim) {
-			AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
-			AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
-			if (!Globals::Untrusted)
-				cmd->viewangles.FixAngles();
+		if (Settings::AntiAim::enableAntiAim && !inCombat) {
+			bool antiAimKeyDown;
+			getKeyState(Settings::AntiAim::antiAimKey, Settings::AntiAim::antiAimKeyStyle, &antiAimKeyDown, henlo1, henlo2, henlo3);
+			if (antiAimKeyDown)
+			{
+				AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
+				AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
+				if (!Globals::Untrusted)
+					cmd->viewangles.FixAngles();
+			}
 		}
 
 		DoLegitAimbot(cmd);
@@ -79,24 +82,22 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
-	CNetChan* NetChan = EngineClient->GetNetChannelInfo();
-	static int m_nChokedPackets = 0;
-	bool fakeLagKeyDown = false;
-	getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
-
-	//Settings::Misc::fakeLagTicks = 24;
-	if (fakeLagKeyDown && Settings::Misc::fakeLag)
+	if (Settings::Misc::fakeLag)
 	{
-		if (m_nChokedPackets < (int)Settings::Misc::fakeLagTicks)
-		{
-			*Globals::bSendpacket = false;
-			++m_nChokedPackets;
-		}
-		else
-		{
-			*Globals::bSendpacket = true;
-			m_nChokedPackets = 0;
-		}
+		static int m_nChokedPackets = 0;
+		bool fakeLagKeyDown = false;
+		getKeyState(Settings::Misc::fakeLagKey, Settings::Misc::fakeLagKeyStyle, &fakeLagKeyDown, henlo1, henlo2, henlo3);
+		if (fakeLagKeyDown)
+			if (m_nChokedPackets < (int)Settings::Misc::fakeLagTicks)
+			{
+				*Globals::bSendpacket = false;
+				++m_nChokedPackets;
+			}
+			else
+			{
+				*Globals::bSendpacket = true;
+				m_nChokedPackets = 0;
+			}
 	}
 	if (*Globals::bSendpacket)
 	{

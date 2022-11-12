@@ -31,7 +31,7 @@ ClientFrameStage_t stage)
 
 	//Input->cameraoffset
 
-	if(localPlayer && localPlayer->IsAlive())
+	if(Settings::Visuals::noVisualRecoil && localPlayer && localPlayer->IsAlive())
 	{
 		//https://i.imgur.com/Y5hSyqS.png
 		if (Settings::Visuals::noVisualRecoil)
@@ -39,7 +39,7 @@ ClientFrameStage_t stage)
 	}
 
 	// i guess this enum's wrong as norecoil in renderstart didnt work at all
-	if (stage == ClientFrameStage_t::FRAME_RENDER_START)
+	if (false && stage == ClientFrameStage_t::FRAME_RENDER_START)
 	{
 
 		// do thirdperson
@@ -110,11 +110,11 @@ ClientFrameStage_t stage)
 
 	bool needsSetViewAngles = (Settings::Misc::thirdperson && thirdpKeyDown) || (Settings::Misc::freeCam && freecamKeyDown);
 
-	if(localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && needsSetViewAngles)
+	if(needsSetViewAngles && localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START)
 		localPlayer->SetLocalViewAngles(Globals::lastNetworkedCmd.viewangles);
 	if(oFrameStageNotify)
 	oFrameStageNotify(client, stage);
-	if (localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START && needsSetViewAngles)
+	if (needsSetViewAngles && localPlayer && localPlayer->IsAlive() && stage == ClientFrameStage_t::FRAME_RENDER_START)
 		localPlayer->SetLocalViewAngles(Globals::lastRealCmd.viewangles);
 	return;
 }

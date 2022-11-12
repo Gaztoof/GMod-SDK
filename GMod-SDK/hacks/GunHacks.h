@@ -133,6 +133,14 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 			{
 				spread = Lua->GetNumber(-1);
 			}
+			else {
+				Lua->Pop(1);
+				Lua->GetField(-1, "Cone");
+				if (Lua->IsType(-1, LuaObjectType::NUMBER))
+				{
+					spread = Lua->GetNumber(-1);
+				}
+			}
 		}
 		Lua->Pop(topop);
 	}

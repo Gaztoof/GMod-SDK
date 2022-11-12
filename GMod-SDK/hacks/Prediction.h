@@ -26,7 +26,8 @@ void StartPrediction(CUserCmd* cmd)
 	GameMovement->StartTrackPredictionErrors(localPlayer);
 
 	Prediction->SetupMove(localPlayer, cmd, nullptr, &moveData);
-	GameMovement->ProcessMovement(localPlayer, &moveData);
+	//GameMovement->ProcessMovement(localPlayer, &moveData);
+	GameMovement->FullWalkMove();
 	Prediction->FinishMove(localPlayer, cmd, &moveData);
 	//CMoveData
 	

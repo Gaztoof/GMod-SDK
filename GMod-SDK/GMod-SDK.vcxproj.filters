@@ -362,5 +362,8 @@
     <ClInclude Include="client\IGameMovement.h">
       <Filter>Header Files\client</Filter>
     </ClInclude>
+    <ClInclude Include="hooks\Paint.h">
+      <Filter>Header Files\hooks</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

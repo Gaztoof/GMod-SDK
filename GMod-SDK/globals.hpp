@@ -1,6 +1,6 @@
 #pragma once
 
-#define CheatVersion "1.2.1"
+#define CheatVersion "1.2.2"
 
 #include <map>
 #include <mutex>
@@ -105,6 +105,7 @@ CMatSystemSurface* MatSystemSurface;
 void* ClientState; // implement that?
 CPrediction* Prediction; // implement that?
 CGameMovement* GameMovement;
+void* EngineVGui;
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
@@ -175,7 +176,6 @@ namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;
 	int menuKeyStyle = 1;
 	Color menuColor(0, 255, 0);
-	bool supportMulticore = true;
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::vector<C_BasePlayer*> selectedFriendList;

@@ -17,10 +17,10 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 	* set your mouse to the screen's center which is real annoying cause you have to pause the game everytime you open the menu.
 	*/
 
-	vmatrix_t matrix;
+	/*vmatrix_t matrix;
 	memcpy(&matrix, &EngineClient->WorldToScreenMatrix().m, sizeof(vmatrix_t));
 	
-	Globals::viewMatr.store(matrix);
+	Globals::viewMatr.store(matrix);*/
 
 	InputSystem->EnableInput(!Globals::openMenu);
 	if (!strcmp(PanelWrapper->GetName(panel), "FocusOverlayPanel"))
