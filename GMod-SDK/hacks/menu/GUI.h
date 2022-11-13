@@ -626,7 +626,7 @@ namespace GUI
 					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCloseLuaInterfaceFn, 5);
 					
 					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
-					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 17);
+					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 19);
 					RestoreVMTHook((PVOID**)EngineVGui, (PVOID)oPaint, 13);
 
 					*Globals::bSendpacket = true;

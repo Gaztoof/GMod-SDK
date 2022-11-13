@@ -24,8 +24,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	uintptr_t stackTop;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
-	if(cmd->tick_count != 0)
-		*Globals::bSendpacket = true;
+	*Globals::bSendpacket = true;
 
 	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam && cmd->tick_count != 0)
 	{
@@ -77,8 +76,8 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 				cmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
 			}
 			EndPrediction(cmd);
+			BackupCMD(cmd, true);
 		}
-		BackupCMD(cmd, true);
 	}
 	if (Settings::currentlyInFreeCam)
 	{
