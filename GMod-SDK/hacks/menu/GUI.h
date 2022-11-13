@@ -263,7 +263,7 @@ namespace GUI
 				Menu::InsertCheckbox("Target teammates", &Settings::Aimbot::aimAtTeammates);
 				Menu::InsertCheckbox("Target friends", &Settings::Aimbot::aimAtFriends);
 				Menu::InsertCheckbox("Only target friends", &Settings::Aimbot::onlyAimAtFriends);
-				Menu::InsertCheckbox("Fast shoot", &Settings::Aimbot::pistolFastShoot);
+				Menu::InsertCheckbox("Spam shoot", &Settings::Aimbot::pistolFastShoot);
 
 				Menu::InsertSlider("Minimum damage", &Settings::Aimbot::aimbotMinDmg, 1, 100);
 

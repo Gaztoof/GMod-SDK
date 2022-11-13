@@ -24,9 +24,10 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	uintptr_t stackTop;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
-	*Globals::bSendpacket = true;
+	if(cmd->tick_count != 0)
+		*Globals::bSendpacket = true;
 
-	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam)
+	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam && cmd->tick_count != 0)
 	{
 
 		Globals::lastRealCmd = *cmd;

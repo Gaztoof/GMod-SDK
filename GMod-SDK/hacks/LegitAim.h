@@ -164,7 +164,9 @@ void DoLegitAimbot(CUserCmd* cmd)
 				static bool toggle = false;
 				toggle = !toggle;
 				if (toggle)
+				{
 					cmd->buttons |= IN_ATTACK;
+				}
 				else if (Settings::Aimbot::pistolFastShoot)cmd->buttons &= ~IN_ATTACK;
 			}
 		}
@@ -172,6 +174,8 @@ void DoLegitAimbot(CUserCmd* cmd)
 		if (cmd->buttons & IN_ATTACK)
 		{
 			cmd->viewangles = calc;
+			if(Settings::Aimbot::silentAim)
+				*Globals::bSendpacket = false;
 		}
 
 	} else smoothSteps = 0;

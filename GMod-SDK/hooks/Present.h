@@ -99,8 +99,6 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 			DebugDrawTextW(Vector(10, 50, 0), userCmdDebug, ColorToRGBA(Color(255, 255, 255)), true);
 		}
 #endif // DEBUG
-
-		doEsp();
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
 		rainbowColor(Settings::Misc::crossHairColor, Settings::Misc::rainbowSpeed);
 
@@ -167,6 +165,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	doEsp();
 	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImColor(9, 8, 9,255);
 
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
