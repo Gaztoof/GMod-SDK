@@ -51,12 +51,13 @@
 #define PresentPattern "\xFF\x15????\x8B\xF8\xEB\x1E"
 #define GetClassNamePattern "\xE8????\x4D\x8B\x47\x10"
 #define CL_MovePattern "\xE8????\xFF\x15????\xF2\x0F\x10\x0D????\x85\xFF"
-#define PredictionSeedPattern "\x48\x85\xC9\x75\x0B\xC7\x05????\xFF\xFF\xFF\xFF\xC3\x8B\x41\x30"
+#define PredictionSeedPattern "\x48\x8B\xD1\x8B\x0D????"
 #define BSendPacketOffset 0x62
 #define ConColorMsgDec "?ConColorMsg@@YAXAEBVColor@@PEBDZZ"
 #define CClientStateOffset 0x3
 #define CClientStateSize 0x7
 #define HostNamePattern "\x48\x8D\x15????\x45\x33\xC0\x48\x8B\x01\xFF\x90????\xB8????\x48\x83\xC4\x28\xC3\xCC\xCC\xCC\xCC\xCC\xCC\xCC"
+#define MoveHelperPattern "\x48\x89\x05????\xE9????\xCC\xCC\xCC\xCC\xCC\xCC\x48\x83\xEC\x28"
 #else
 #define ViewRenderOffset 0xA6
 #define GlobalVarsOffset 0x59
@@ -106,6 +107,7 @@ void* ClientState; // implement that?
 CPrediction* Prediction; // implement that?
 CGameMovement* GameMovement;
 void* EngineVGui;
+void* MoveHelper;
 
 _PaintTraverse oPaintTraverse;
 _FireEvent oFireEvent;
@@ -170,7 +172,7 @@ namespace Globals {
 
 	bool* bSendpacket;
 	unsigned int* predictionRandomSeed;
-	char* hostName; // UTF-8 encoding
+	char* hostName; // UTF-8 encoding C7 05 ? ? ? ? ? ? ? ? E8 ? ? ? ? 59 C3 CC CC CC CC CC CC CC CC CC CC 68 ? ? ? ?
 }
 namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;

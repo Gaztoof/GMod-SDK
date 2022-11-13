@@ -28,7 +28,7 @@ public:
 	float m_flConstraintWidth; //0x0090
 	float m_flConstraintSpeedFactor; //0x0094
 	Vector m_vecAbsOrigin; //0x0098
-	char pad_0001[8]; //0x00A0
+	//char pad_0001[8]; //0x00A0
 };
 
 class CGameMovement

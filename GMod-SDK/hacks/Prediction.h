@@ -21,20 +21,26 @@ void StartPrediction(CUserCmd* cmd)
 	GlobalVars->curtime = localPlayer->getTickBase() * GlobalVars->interval_per_tick;
 	GlobalVars->frametime = GlobalVars->interval_per_tick;
 
+	//localPlayer->PreThink();
+	//localPlayer->Think();
 
-	memset((void*)&moveData, 0, sizeof(moveData));
 	GameMovement->StartTrackPredictionErrors(localPlayer);
+	memset((void*)&moveData, 0, sizeof(moveData));
 
-	Prediction->SetupMove(localPlayer, cmd, nullptr, &moveData);
-	//GameMovement->ProcessMovement(localPlayer, &moveData);
-	GameMovement->FullWalkMove();
-	Prediction->FinishMove(localPlayer, cmd, &moveData);
-	//CMoveData
-	
+	if (cmd->weaponselect; auto wp=(C_BaseCombatWeapon*)ClientEntityList->GetClientEntity(cmd->weaponselect))
+	{
+		localPlayer->SelectItem(wp->GetName(), cmd->weaponsubtype);
+	}
+	// Did lots of research, I just don't get (yet) why bunny hop doesn't works with this...
+	Prediction->SetupMove(localPlayer, cmd, MoveHelper, &moveData);
+	GameMovement->ProcessMovement(localPlayer, &moveData);
+	//GameMovement->FullWalkMove();
+	Prediction->FinishMove(localPlayer, cmd, &moveData);	
 }
 void EndPrediction(CUserCmd* cmd)
 {
 	if (!Settings::Misc::edgeJump) return; // Temporarily making prediction "disabled" cause far from being perfect...
+	//localPlayer->PostThink();
 	GlobalVars->curtime = m_flOldCurtime;
 	GlobalVars->frametime = m_flOldFrametime;
 

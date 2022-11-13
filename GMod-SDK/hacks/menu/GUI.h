@@ -522,7 +522,7 @@ namespace GUI
 					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
 				}
 				Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
-				Menu::InsertCheckbox("Edge Jump(crash when joining)", &Settings::Misc::edgeJump);
+				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
 
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
 				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);

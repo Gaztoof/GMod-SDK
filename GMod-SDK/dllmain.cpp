@@ -42,8 +42,9 @@ void Main()
 
     ConfigSystem::LoadConfig("Default");
     Globals::bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
-    Globals::predictionRandomSeed = (unsigned int*)(GetRealFromRelative((char*)findPattern("client", PredictionSeedPattern, "predictionRandomSeed") + 0x5, 0x2, 0xA));
-    Globals::hostName= (char*)(GetRealFromRelative((char*)findPattern("client", HostNamePattern, "HostName"), 0x3, 7));
+    Globals::predictionRandomSeed = (unsigned int*)(GetRealFromRelative((char*)findPattern("client", PredictionSeedPattern, "predictionRandomSeed") + 0x3, 0x2, 6));
+    Globals::hostName = (char*)(GetRealFromRelative((char*)findPattern("client", HostNamePattern, "HostName"), 0x3, 7));
+    MoveHelper = (GetRealFromRelative((char*)findPattern("client", MoveHelperPattern, "MoveHelper"), 0x3, 7)); // https://i.imgur.com/p3C93PT.png
     DWORD originalProtection;
     VirtualProtect(Globals::bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
     
@@ -98,13 +99,13 @@ void Main()
 
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
-    oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 17);
+    oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 19);
     oPaint = VMTHook<_Paint>((PVOID**)EngineVGui, (PVOID)hkPaint, 13);
 
     oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
     oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
     Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
-
+    
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 
 
@@ -117,15 +118,14 @@ void Main()
 
     GameEventManager->AddListener((IGameEventListener2*)Globals::damageEvent, "player_hurt", false);
     GameEventManager->AddListener((IGameEventListener2*)Globals::deathEvent, "entity_killed", false);
-    
-    
-    ConVar* cvar = CVar->FindVar("mat_fullbright");
-    cvar->RemoveFlags(FCVAR_CHEAT);
-    
-    //This'll let you change your name ingame freely
+        
     // This can be easily detected(for instance, perphead will ban you for it), so disabled unless you need it and researched enough the server you're on.
     if (false)
     {
+        ConVar* cvar = CVar->FindVar("mat_fullbright");
+        cvar->RemoveFlags(FCVAR_CHEAT);
+
+        //This'll let you change your name ingame freely
         cvar = CVar->FindVar("name");
         cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
         cvar->DisableCallback();
@@ -144,7 +144,6 @@ void Main()
     Sleep(1100);
     MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
     Globals::openMenu = true;
-
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

@@ -17,7 +17,12 @@ ClientFrameStage_t stage)
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 
 	static ConVar* fullbrightCvar = CVar->FindVar("mat_fullbright");
-	if (fullbrightCvar && fullbrightCvar->intValue != Settings::Visuals::fullBright) fullbrightCvar->SetValue(Settings::Visuals::fullBright);
+	if (fullbrightCvar && fullbrightCvar->intValue != Settings::Visuals::fullBright) {
+		if (Settings::Visuals::fullBright)
+			fullbrightCvar->RemoveFlags(FCVAR_CHEAT);
+		else fullbrightCvar->AddFlags(FCVAR_CHEAT);
+		fullbrightCvar->SetValue(Settings::Visuals::fullBright);
+	}
 	if (Settings::Misc::svAllowCsLua && !spoofedAllowCsLua) {
 		spoofedAllowCsLua = new SpoofedConVar(CVar->FindVar("sv_allowcslua"));
 		spoofedAllowCsLua->m_pOriginalCVar->DisableCallback();

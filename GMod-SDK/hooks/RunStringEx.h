@@ -9,7 +9,7 @@
 
 
 typedef bool(__thiscall* _RunStringEx)(CLuaInterface*, const char*, const char*, const char*, bool, bool, bool, bool);
-_RunStringEx oRunStringEx;
+_RunStringEx oRunStringEx = nullptr;
 
 bool __fastcall hkRunStringEx(CLuaInterface* _this,
 #ifndef _WIN64
@@ -51,7 +51,7 @@ CLuaInterface* __fastcall hkCreateLuaInterfaceFn(CLuaShared* _this,
 
     Lua = luaInterface;
 
-    oRunStringEx = VMTHook< _RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
+    if(!oRunStringEx) oRunStringEx = VMTHook< _RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
 
     return Lua;
 }

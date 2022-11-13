@@ -31,49 +31,53 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 		Globals::lastRealCmd = *cmd;
 		DoMisc(cmd);
-		if (Settings::Misc::autoStrafeStyle == 2)
-			PrePredOptimizer(cmd);
-		PrePredEdgeJump(cmd);
-		StartPrediction(cmd);
-		BackupCMD(cmd, false);
-		if (Settings::Misc::autoStrafeStyle == 2)
-			PostPredOptimizer(cmd);
-		PostPredEdgeJump(cmd);
-
-		int flags = localPlayer->getFlags();
-
-		C_BaseCombatWeapon* currWeapon = localPlayer->GetActiveWeapon();
-
-		bool inCombat = (cmd->buttons & IN_ATTACK);
-
-
-		//if ((cmd->buttons & IN_ATTACK) && (currWeapon && currWeapon->nextPrimaryAttack() <= GlobalVars->curtime) && (currWeapon->PrimaryAmmoCount() > 0))
-
-
-		if (Settings::AntiAim::enableAntiAim && !inCombat) {
-			bool antiAimKeyDown;
-			getKeyState(Settings::AntiAim::antiAimKey, Settings::AntiAim::antiAimKeyStyle, &antiAimKeyDown, henlo1, henlo2, henlo3);
-			if (antiAimKeyDown)
-			{
-				AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
-				AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
-				if (!Globals::Untrusted)
-					cmd->viewangles.FixAngles();
-			}
-		}
-
-		DoLegitAimbot(cmd);
-
-		TriggerBot(cmd);
-		GunHacks(cmd, currWeapon);
-
-		if (currWeapon && currWeapon->SecondaryAmmoCount() > 0 && currWeapon->PrimaryAmmoCount() == 0)
+		if (cmd->tick_count != 0xFFFFF)
 		{
-			cmd->buttons |= IN_RELOAD;
-			cmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
+
+			if (Settings::Misc::autoStrafeStyle == 2)
+				PrePredOptimizer(cmd);
+			PrePredEdgeJump(cmd);
+			StartPrediction(cmd);
+			BackupCMD(cmd, false);
+			if (Settings::Misc::autoStrafeStyle == 2)
+				PostPredOptimizer(cmd);
+			PostPredEdgeJump(cmd);
+
+			int flags = localPlayer->getFlags();
+
+			C_BaseCombatWeapon* currWeapon = localPlayer->GetActiveWeapon();
+
+			bool inCombat = (cmd->buttons & IN_ATTACK);
+
+
+			//if ((cmd->buttons & IN_ATTACK) && (currWeapon && currWeapon->nextPrimaryAttack() <= GlobalVars->curtime) && (currWeapon->PrimaryAmmoCount() > 0))
+
+
+			if (Settings::AntiAim::enableAntiAim && !inCombat) {
+				bool antiAimKeyDown;
+				getKeyState(Settings::AntiAim::antiAimKey, Settings::AntiAim::antiAimKeyStyle, &antiAimKeyDown, henlo1, henlo2, henlo3);
+				if (antiAimKeyDown)
+				{
+					AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
+					AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
+					if (!Globals::Untrusted)
+						cmd->viewangles.FixAngles();
+				}
+			}
+
+			DoLegitAimbot(cmd);
+
+			TriggerBot(cmd);
+			GunHacks(cmd, currWeapon);
+
+			if (currWeapon && currWeapon->SecondaryAmmoCount() > 0 && currWeapon->PrimaryAmmoCount() == 0)
+			{
+				cmd->buttons |= IN_RELOAD;
+				cmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
+			}
+			EndPrediction(cmd);
 		}
 		BackupCMD(cmd, true);
-		EndPrediction(cmd);
 	}
 	if (Settings::currentlyInFreeCam)
 	{
