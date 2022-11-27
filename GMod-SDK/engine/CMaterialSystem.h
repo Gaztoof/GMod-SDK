@@ -34,6 +34,24 @@ typedef unsigned short MaterialHandle_t;
 #define TEXTURE_GROUP_RENDER_TARGET_SURFACE			"RenderTarget Surfaces"
 #define TEXTURE_GROUP_MORPH_TARGETS					"Morph Targets"
 
+class IMatRenderContext
+{
+public:
+	virtual void				BeginRender() = 0;
+	virtual void				EndRender() = 0;
+
+	virtual void				Flush(bool flushHardware = false) = 0;
+
+	virtual void				BindLocalCubemap(ITexture* pTexture) = 0;
+
+	// pass in an ITexture (that is build with "rendertarget" "1") or
+	// pass in NULL for the regular backbuffer.
+	virtual void				SetRenderTarget(ITexture* pTexture) = 0;
+	virtual ITexture* GetRenderTarget(void) = 0;
+
+	virtual void				GetRenderTargetDimensions(int& width, int& height) const = 0;
+};
+
 class CMaterialSystem
 {
 public:
@@ -125,5 +143,33 @@ public:
 	virtual void				SetAsyncTextureLoadCache(void* hFileCache) = 0;
 	virtual ITexture* FindTexture(char const* pTextureName, const char* pTextureGroupName, bool complain = true, int nAdditionalCreationFlags = 0) = 0;
 	virtual bool				IsTextureLoaded(char const* pTextureName) const = 0;
+	
+	virtual ITexture* CreateProceduralTexture(const char* pTextureName, const char* pTextureGroupName, int w, int h, void* fmt, int nFlags) = 0;
+	virtual void BeginRenderTargetAllocation() = 0;
+	virtual void EndRenderTargetAllocation() = 0;
+	ITexture* CreateRenderTargetTexture(int w, int h, void* sizeMode, void* format, void* depth);
+	ITexture* CreateNamedRenderTargetTextureEx(const char* pRTName, int w, int h, void* sizeMode, void* format, void* depth, unsigned int textureFlags, unsigned int renderTargetFlags);
+	ITexture* CreateNamedRenderTargetTexture(const char* pRTName, int w, int h, void* sizeMode, void* format, void* depth, bool bClampTexCoords, bool bAutoMipMap);
+	ITexture* CreateNamedRenderTargetTextureEx2(const char* pRTName, int w, int h, void* sizeMode, void* format, void* depth, unsigned int textureFlags, unsigned int renderTargetFlags = 0);
+	ITexture* CreateNamedMultiRenderTargetTexture(const char* pRTName, int w, int h, void* sizeMode, void* format, void* depth, unsigned int textureFlags, unsigned int renderTargetFlags);
+	// Every function untill next comment are not in the right order
+	virtual void UNKNOWN() = 0;
+	virtual int AllocateWhiteLightmap(IMaterial* pMaterial) = 0;
+	virtual void UpdateLightmap(int lightmapPageID, int lightmapSize[2], int offsetIntoLightmapPage[2], float* pFloatImage, float* pFloatImageBump1, float* pFloatImageBump2, float* pFloatImageBump3) = 0;
+	virtual int GetNumSortIDs() = 0;
+	virtual void GetSortInfo(void* sortInfoArray) = 0;
+	//virtual IMatRenderContext* GetRenderContext() = 0;
+	virtual void GetLightmapPageSize(int lightmap, int* width, int* height) const = 0;
+	virtual void ResetMaterialLightmapPageInfo() = 0;
+	virtual bool IsStereoSupported() = 0;
+	virtual bool IsStereoActiveThisFrame() const = 0;
+	virtual void NVStereoUpdate() = 0;
+	virtual void ClearBuffers(bool bClearColor, bool bClearDepth, bool bClearStencil = false) = 0;
+	virtual void SpinPresent(unsigned int nFrames) = 0;
+
+	IMatRenderContext* GetRenderContext()
+		{
+		return ((IMatRenderContext * (__thiscall *)(PVOID)) * (*(const void***)this + 102))(this);
+	}
 
 };

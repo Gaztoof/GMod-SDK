@@ -92,6 +92,10 @@ void Main()
     
     localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 
+    Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
+    if(Lua)
+        oRunStringEx = VMTHook< _RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
+
     oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
     oFrameStageNotify = VMTHook< _FrameStageNotify>((PVOID**)CHLclient, hkFrameStageNotify, 35);
     oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
@@ -104,7 +108,6 @@ void Main()
 
     oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
     oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
-    Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
     
     // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
 

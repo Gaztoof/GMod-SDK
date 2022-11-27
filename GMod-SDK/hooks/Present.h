@@ -88,17 +88,6 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	if (EngineClient->IsInGame())
 	{
-#ifdef _DEBUG
-		auto cmd = Globals::lastEndCmd;
-		if (cmd.command_number != 0 || true)
-		{
-			std::wstring userCmdDebug = L"UserCMD Data\nCommandNumber: " + std::to_wstring(cmd.command_number)
-				+ L"\nMove: " + std::to_wstring(cmd.forwardmove) + L", " + std::to_wstring(cmd.sidemove) + L", " + std::to_wstring(cmd.upmove)
-				+ L"\ntick_count: " + std::to_wstring(cmd.tick_count)
-				+ L"\nviewangles: " + std::to_wstring(cmd.viewangles.x) + L", " + std::to_wstring(cmd.viewangles.y) + L", " + std::to_wstring(cmd.viewangles.z);
-			DebugDrawTextW(Vector(10, 50, 0), userCmdDebug, ColorToRGBA(Color(255, 255, 255)), true);
-		}
-#endif // DEBUG
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
 		rainbowColor(Settings::Misc::crossHairColor, Settings::Misc::rainbowSpeed);
 
@@ -151,6 +140,19 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 			}
 		}
 	}
+
+	// https://www.unknowncheats.me/forum/3191157-post4.html Thanks to copypaste for this :)
+	ITexture* rt = nullptr;
+	auto context = MaterialSystem->GetRenderContext();
+	//IMatRenderContext* context = NULL;
+	if (context)
+	{
+		context->BeginRender();
+		rt = context->GetRenderTarget();
+		context->SetRenderTarget(nullptr);
+		context->EndRender();
+	}
+
 	// https://www.unknowncheatsme/forum/3137288-post2.html Thanks to him :)
 	// If you don't do that, the color of the menu will match to VGUI's.
 	DWORD colorwrite, srgbwrite;
@@ -160,12 +162,32 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
 	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
 
+	IDirect3DVertexDeclaration9* vertexDeclaration;
+	IDirect3DVertexShader9* vertexShader;
+	pDevice->GetVertexDeclaration(&vertexDeclaration);
+	pDevice->GetVertexShader(&vertexShader);
+
 	ImGui::GetIO().MouseDrawCursor = Globals::openMenu;
 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	doEsp();
+#ifdef _DEBUG
+		if (EngineClient->IsInGame())
+		{
+
+			auto cmd = Globals::lastEndCmd;
+			if (cmd.command_number != 0 || true)
+			{
+				std::wstring userCmdDebug = L"UserCMD Data\nCommandNumber: " + std::to_wstring(cmd.command_number)
+					+ L"\nMove: " + std::to_wstring(cmd.forwardmove) + L", " + std::to_wstring(cmd.sidemove) + L", " + std::to_wstring(cmd.upmove)
+					+ L"\ntick_count: " + std::to_wstring(cmd.tick_count)
+					+ L"\nviewangles: " + std::to_wstring(cmd.viewangles.x) + L", " + std::to_wstring(cmd.viewangles.y) + L", " + std::to_wstring(cmd.viewangles.z);
+				DebugDrawTextW(Vector(10, 50, 0), userCmdDebug, ColorToRGBA(Color(255, 255, 255)), true);
+			}
+		}
+#endif // DEBUG
 	ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImColor(9, 8, 9,255);
 
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
@@ -333,6 +355,17 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
+	pDevice->SetVertexDeclaration(vertexDeclaration);
+	pDevice->SetVertexShader(vertexShader);
+	if (rt)
+	{
+		if (context = MaterialSystem->GetRenderContext())
+		{
+			context->BeginRender();
+			context->SetRenderTarget(rt);
+			context->EndRender();
+		}
+	}
 
 	return oPresent(pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }
