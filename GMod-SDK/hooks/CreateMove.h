@@ -47,10 +47,16 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 
 			C_BaseCombatWeapon* currWeapon = localPlayer->GetActiveWeapon();
 
-			bool inCombat = (cmd->buttons & IN_ATTACK);
-
-
-			//if ((cmd->buttons & IN_ATTACK) && (currWeapon && currWeapon->nextPrimaryAttack() <= GlobalVars->curtime) && (currWeapon->PrimaryAmmoCount() > 0))
+			bool inCombat = false;
+			if (currWeapon && !currWeapon->UsesLua() && Settings::Misc::edgeJump) // if edgejump is enabled, prediction is, and basically that only works with pred
+			{
+				if ((cmd->buttons & IN_ATTACK) &&
+					(currWeapon->NextPrimaryAttack() <= GlobalVars->curtime) &&
+					(currWeapon->PrimaryAmmoCount() > 0))
+					inCombat = true;
+				else inCombat = false;
+			}
+			else inCombat = (cmd->buttons & IN_ATTACK);
 
 
 			if (Settings::AntiAim::enableAntiAim && !inCombat) {
@@ -85,6 +91,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
+	auto thisCmd = *cmd;
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	if (Settings::Misc::fakeLag)
 	{
@@ -103,9 +110,9 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 				m_nChokedPackets = 0;
 			}
 	}
-	if (*Globals::bSendpacket)
+	if (*Globals::bSendpacket && cmd->tick_count != 0)
 	{
-		Globals::lastNetworkedCmd = *cmd;
+		Globals::lastNetworkedCmd = thisCmd;
 	}
 	Globals::lastEndCmd = *cmd;
 	return false;

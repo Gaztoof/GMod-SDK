@@ -79,16 +79,16 @@ void BackJitter(CUserCmd* cmd)
 }
 void Inverse(CUserCmd* pCmd)
 {
-        pCmd->viewangles.y -= 180.f;
+    pCmd->viewangles.y -= 180.f;
 }
 void Sideways(CUserCmd* cmd)
 {
-        cmd->viewangles.y -= 90.f;
+    cmd->viewangles.y -= 90.f;
 }
 
 void AntiAimPitch(CUserCmd* cmd, int kind)
 {
-    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER ||cmd->buttons & (IN_USE | IN_ATTACK))
+    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER /* || cmd->buttons & (IN_USE | IN_ATTACK)*/)
         return;
 
     switch (kind)
@@ -109,7 +109,7 @@ void AntiAimPitch(CUserCmd* cmd, int kind)
 }
 void AntiAimYaw(CUserCmd* cmd, int kind)
 {
-    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER || cmd->buttons & (IN_USE | IN_ATTACK))
+    if (localPlayer->getMoveType() == MOVETYPE_NOCLIP || localPlayer->getMoveType() == MOVETYPE_LADDER /* || cmd->buttons & (IN_USE | IN_ATTACK)*/)
         return;
 
     switch (kind)

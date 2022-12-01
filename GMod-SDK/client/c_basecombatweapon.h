@@ -603,7 +603,7 @@ public:
 	int PrimaryAmmoCount() { 
 		if (!this) return 0; 
 #ifdef _WIN64
-		return *(int*)((uintptr_t)this + 0x1C38);
+		return *(int*)((uintptr_t)this + 0x1C40);
 #else
 		return *(int*)((uintptr_t)this + 0x1818); // m_iClip1
 #endif
@@ -611,7 +611,7 @@ public:
 	int SecondaryAmmoCount() {
 		if (!this) return 0;
 #ifdef _WIN64
-		return *(int*)((uintptr_t)this + 0x1C3C);
+		return *(int*)((uintptr_t)this + 0x1C44);
 #else
 		return *(int*)((uintptr_t)this + 0x181C); // m_iClip2
 #endif
@@ -619,7 +619,7 @@ public:
 	float NextPrimaryAttack() {
 		if (!this) return 0;
 #ifdef _WIN64
-		return *(float*)((uintptr_t)this + 0x1BEC);
+		return *(float*)((uintptr_t)this + 0x1BF4);
 #else
 		return *(float*)((uintptr_t)this + 0x17D4); // m_flNextPrimaryAttack
 #endif
@@ -627,7 +627,7 @@ public:
 	float NextSecondaryAttack() {
 		if (!this) return 0;
 #ifdef _WIN64
-		return *(float*)((uintptr_t)this + 0x1BF0);
+		return *(float*)((uintptr_t)this + 0x1BF8);
 #else
 		return *(float*)((uintptr_t)this + 0x17D4); // m_flNextSecondaryAttack
 #endif

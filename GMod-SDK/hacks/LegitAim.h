@@ -52,13 +52,21 @@ void DoLegitAimbot(CUserCmd* cmd)
 			if (Settings::Aimbot::onlyAimAtFriends && !isFriend)
 				continue;
 
-			matrix3x4_t bones[128];
-			if (!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime))
-				continue;
+#pragma message("THIS IS TO BE TESTED!!")
+			Vector entPos;
+			if (!_strcmpi(((model_t*)entity->GetClientRenderable()->GetModel())->name, "models/error.mdl"))
+			{
+				entPos = entity->EyePosition();
+			}
+			else {
+				matrix3x4_t bones[128];
+				if (!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime))
+					continue;
+				std::cout << ((model_t*)entity->GetClientRenderable()->GetModel())->name << std::endl;
+				auto bone = Studio_BoneIndexByName(ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel()), IntToBoneName(Settings::Aimbot::aimbotHitbox), &selectedHitBox);
 
-			auto bone = Studio_BoneIndexByName(ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel()), IntToBoneName(Settings::Aimbot::aimbotHitbox),&selectedHitBox);
-
-			Vector entPos = Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]); // 6 = hitbox https://i.imgur.com/0WZNkbC.jpg
+				entPos = Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]); // 6 = hitbox https://i.imgur.com/0WZNkbC.jpg
+			}
 			canHit = CanHit(entity, eyePos, entPos);
 			if (!canHit && Settings::Aimbot::aimbotAutoWall)
 				continue;

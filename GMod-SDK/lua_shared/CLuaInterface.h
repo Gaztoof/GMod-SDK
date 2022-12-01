@@ -97,7 +97,7 @@ public:
 	/*26*/	virtual void* GetCFunction(int) = 0;
 	/*27*/	virtual void* GetUserdata(int) = 0;
 	/*28*/	virtual void PushNil(void) = 0;
-	/*29*/	virtual void PushString(char const*, unsigned int) = 0;
+	/*29*/	virtual void PushString(char const*, unsigned int iLen = 0) = 0;
 	/*30*/	virtual void PushNumber(double) = 0;
 	/*31*/	virtual void PushBool(bool) = 0;
 	/*32*/	virtual void PushCFunction(int (*)(void*)) = 0;
