@@ -30,8 +30,8 @@ public:
     virtual void GetViewAngles(Vector& ang);//10
     virtual void SetViewAngles(Vector& ang);// 11
 
-    virtual void GetLocalViewAngles(Vector& ang);// 12
-    virtual void SetLocalViewAngles(Vector& ang);// 13
+    virtual void GetLocalViewAngles(QAngle& ang);// 12
+    virtual void SetLocalViewAngles(QAngle& ang);// 13
 
     virtual bool InPrediction(void) const;//14
     virtual bool IsFirstTimePredicted(void) const;// 15

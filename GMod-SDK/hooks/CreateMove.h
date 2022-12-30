@@ -19,36 +19,25 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 #endif
 	float flInputSampleTime, CUserCmd* cmd)
 {
-//	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	Globals::lastCmd = *cmd;
-	uintptr_t stackTop;
 
 	localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 	*Globals::bSendpacket = true;
-
-	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam && cmd->tick_count != 0)
+	if (localPlayer && localPlayer->IsAlive() && !Settings::currentlyInFreeCam  && cmd->tick_count != 0)
 	{
-
-		Globals::lastRealCmd = *cmd;
 		DoMisc(cmd);
+		Globals::lastRealCmd = *cmd;
 		if (cmd->tick_count != 0xFFFFF)
 		{
-
-			if (Settings::Misc::autoStrafeStyle == 2)
-				PrePredOptimizer(cmd);
-			PrePredEdgeJump(cmd);
+			PrePrediction(cmd);
 			StartPrediction(cmd);
 			BackupCMD(cmd, false);
-			if (Settings::Misc::autoStrafeStyle == 2)
-				PostPredOptimizer(cmd);
-			PostPredEdgeJump(cmd);
-
-			int flags = localPlayer->getFlags();
+			PostPrediction(cmd);
 
 			C_BaseCombatWeapon* currWeapon = localPlayer->GetActiveWeapon();
 
 			bool inCombat = false;
-			if (currWeapon && !currWeapon->UsesLua() && Settings::Misc::edgeJump) // if edgejump is enabled, prediction is, and basically that only works with pred
+			if (currWeapon && !currWeapon->UsesLua())
 			{
 				if ((cmd->buttons & IN_ATTACK) &&
 					(currWeapon->NextPrimaryAttack() <= GlobalVars->curtime) &&
@@ -58,7 +47,6 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 			}
 			else inCombat = (cmd->buttons & IN_ATTACK);
 
-
 			if (Settings::AntiAim::enableAntiAim && !inCombat) {
 				bool antiAimKeyDown;
 				getKeyState(Settings::AntiAim::antiAimKey, Settings::AntiAim::antiAimKeyStyle, &antiAimKeyDown, henlo1, henlo2, henlo3);
@@ -66,13 +54,10 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 				{
 					AntiAimPitch(cmd, Settings::AntiAim::currentAntiAimPitch);
 					AntiAimYaw(cmd, Settings::AntiAim::currentAntiAimYaw);
-					if (!Globals::Untrusted)
-						cmd->viewangles.FixAngles();
 				}
 			}
 
 			DoLegitAimbot(cmd);
-
 			TriggerBot(cmd);
 			GunHacks(cmd, currWeapon);
 
@@ -91,6 +76,8 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0.f;
 		cmd->viewangles = Globals::lastRealCmd.viewangles;
 	}
+	if (!Globals::Untrusted)
+		cmd->viewangles.FixAngles();
 	auto thisCmd = *cmd;
 	oCreateMove(ClientMode, flInputSampleTime, cmd);
 	if (Settings::Misc::fakeLag)
@@ -113,6 +100,7 @@ bool __fastcall hkCreateMove(ClientModeShared* ClientMode,
 	if (*Globals::bSendpacket && cmd->tick_count != 0)
 	{
 		Globals::lastNetworkedCmd = thisCmd;
+		localPlayer->GetClientRenderable()->SetupBones(Globals::lastMatrix, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime);
 	}
 	Globals::lastEndCmd = *cmd;
 	return false;

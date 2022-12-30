@@ -456,7 +456,7 @@ void inline SinCos(float radians, float* sine, float* cosine)
 		fstp DWORD PTR[edx]
 		fstp DWORD PTR[eax]
 	}
-#elif defined( PLATFORM_WINDOWS_PC64 )
+#elif defined( _WIN64 )
 	*sine = sin(radians);
 	*cosine = cos(radians);
 #elif defined( POSIX )
@@ -549,9 +549,6 @@ void MatrixAngles(const matrix3x4_t& matrix, float* angles); // !!!!
 void MatrixVectors(const matrix3x4_t& matrix, Vector* pForward, Vector* pRight, Vector* pUp);
 void VectorTransform(const float* in1, const matrix3x4_t& in2, float* out);
 void VectorITransform(const float* in1, const matrix3x4_t& in2, float* out);
-void VectorRotate(const float* in1, const matrix3x4_t& in2, float* out);
-void VectorRotate(const Vector& in1, const QAngle& in2, Vector& out);
-void VectorRotate(const Vector& in1, const Quaternion& in2, Vector& out);
 void VectorIRotate(const float* in1, const matrix3x4_t& in2, float* out);
 
 #ifndef VECTOR_NO_SLOW_OPERATIONS
@@ -571,6 +568,7 @@ bool MatricesAreEqual(const matrix3x4_t& src1, const matrix3x4_t& src2, float fl
 void MatrixGetColumn(const matrix3x4_t& in, int column, Vector& out);
 void MatrixSetColumn(const Vector& in, int column, matrix3x4_t& out);
 
+
 inline void MatrixGetTranslation(const matrix3x4_t& in, Vector& out)
 {
 	MatrixGetColumn(in, 3, out);
@@ -589,10 +587,10 @@ void ConcatRotations(const matrix3x4_t& in1, const matrix3x4_t& in2, matrix3x4_t
 void ConcatTransforms(const matrix3x4_t& in1, const matrix3x4_t& in2, matrix3x4_t& out);
 
 // For identical interface w/ VMatrix
-inline void MatrixMultiply(const matrix3x4_t& in1, const matrix3x4_t& in2, matrix3x4_t& out)
+/*inline void MatrixMultiply(const matrix3x4_t& in1, const matrix3x4_t& in2, matrix3x4_t& out)
 {
 	ConcatTransforms(in1, in2, out);
-}
+}*/
 
 void QuaternionSlerp(const Quaternion& p, const Quaternion& q, float t, Quaternion& qt);
 void QuaternionSlerpNoAlign(const Quaternion& p, const Quaternion& q, float t, Quaternion& qt);
@@ -822,8 +820,110 @@ inline int ClampArrayBounds(int n, unsigned maxindex)
 void AngleVectors(const QAngle& angles, Vector* forward);
 void AngleVectors(const QAngle& angles, Vector* forward, Vector* right, Vector* up);
 void AngleVectorsTranspose(const QAngle& angles, Vector* forward, Vector* right, Vector* up);
-void AngleMatrix(const QAngle& angles, matrix3x4_t& mat);
-void AngleMatrix(const QAngle& angles, const Vector& position, matrix3x4_t& mat);
+inline void AngleMatrix(const QAngle& angles, matrix3x4_t& matrix)
+{
+	float sr, sp, sy, cr, cp, cy;
+
+	sy = sin(DEG2RAD(angles[1]));
+	cy = cos(DEG2RAD(angles[1]));
+
+	sp = sin(DEG2RAD(angles[0]));
+	cp = cos(DEG2RAD(angles[0]));
+
+	sr = sin(DEG2RAD(angles[2]));
+	cr = cos(DEG2RAD(angles[2]));
+
+	//matrix = (YAW * PITCH) * ROLL
+	matrix[0][0] = cp * cy;
+	matrix[1][0] = cp * sy;
+	matrix[2][0] = -sp;
+
+	float crcy = cr * cy;
+	float crsy = cr * sy;
+	float srcy = sr * cy;
+	float srsy = sr * sy;
+
+	matrix[0][1] = sp * srcy - crsy;
+	matrix[1][1] = sp * srsy + crcy;
+	matrix[2][1] = sr * cp;
+
+	matrix[0][2] = (sp * crcy + srsy);
+	matrix[1][2] = (sp * crsy - srcy);
+	matrix[2][2] = cr * cp;
+
+	matrix[0][3] = 0.0f;
+	matrix[1][3] = 0.0f;
+	matrix[2][3] = 0.0f;
+}
+inline void AngleMatrix(const QAngle& angles, const Vector& position, matrix3x4_t& matrix)
+{
+	float sr, sp, sy, cr, cp, cy;
+	SinCos(DEG2RAD(angles[YAW]), &sy, &cy);
+	SinCos(DEG2RAD(angles[PITCH]), &sp, &cp);
+	SinCos(DEG2RAD(angles[ROLL]), &sr, &cr);
+
+	// matrix = (YAW * PITCH) * ROLL
+	matrix[0][0] = cp * cy;
+	matrix[1][0] = cp * sy;
+	matrix[2][0] = -sp;
+
+	float crcy = cr * cy;
+	float crsy = cr * sy;
+	float srcy = sr * cy;
+	float srsy = sr * sy;
+	matrix[0][1] = sp * srcy - crsy;
+	matrix[1][1] = sp * srsy + crcy;
+	matrix[2][1] = sr * cp;
+
+	matrix[0][2] = (sp * crcy + srsy);
+	matrix[1][2] = (sp * crsy - srcy);
+	matrix[2][2] = cr * cp;
+
+	matrix[0][3] = 0.0f;
+	matrix[1][3] = 0.0f;
+	matrix[2][3] = 0.0f;
+	matrix[0][3] = position.x;
+	matrix[1][3] = position.y;
+	matrix[2][3] = position.z;
+
+}; 
+inline void VectorRotate(const float* in1, const matrix3x4_t& in2, float* out)
+{
+	out[0] = DotProduct(in1, in2[0]);
+	out[1] = DotProduct(in1, in2[1]);
+	out[2] = DotProduct(in1, in2[2]);
+}
+
+inline void VectorRotate(const Vector& in1, const matrix3x4_t& in2, Vector& out)
+{
+	VectorRotate(&in1.x, in2, &out.x);
+}
+
+inline void VectorRotate(const Vector& in1, const QAngle& in2, Vector& out)
+{
+	matrix3x4_t matRotate;
+	AngleMatrix(in2, matRotate);
+	VectorRotate(in1, matRotate, out);
+}
+
+inline void MatrixMultiply(const matrix3x4_t& in1, const matrix3x4_t& in2, matrix3x4_t& out1)
+{
+	matrix3x4_t out;
+	out[0][0] = in1[0][0] * in2[0][0] + in1[0][0] * in2[0][1] + in1[0][0] * in2[0][2];
+	out[0][1] = in1[0][1] * in2[1][0] + in1[0][1] * in2[1][1] + in1[0][1] * in2[1][2];
+	out[0][2] = in1[0][2] * in2[2][0] + in1[0][2] * in2[2][1] + in1[0][2] * in2[2][2];
+	out[0][3] = 0.0f;
+
+	out[1][0] = in1[1][0] * in2[0][0] + in1[1][0] * in2[0][1] + in1[1][0] * in2[0][2];
+	out[1][1] = in1[1][1] * in2[1][0] + in1[1][1] * in2[1][1] + in1[1][1] * in2[1][2];
+	out[1][2] = in1[1][2] * in2[2][0] + in1[1][2] * in2[2][1] + in1[1][2] * in2[2][2];
+	out[1][3] = 0.0f;
+
+	out[2][0] = in1[2][0] * in2[0][0] + in1[2][0] * in2[0][1] + in1[2][0] * in2[0][2];
+	out[2][1] = in1[2][1] * in2[1][0] + in1[2][1] * in2[1][1] + in1[2][1] * in2[1][2];
+	out[2][2] = in1[2][2] * in2[2][0] + in1[2][2] * in2[2][1] + in1[2][2] * in2[2][2];
+	out[2][3] = 0.0f;
+}
 void AngleMatrix(const RadianEuler& angles, matrix3x4_t& mat);
 void AngleMatrix(RadianEuler const& angles, const Vector& position, matrix3x4_t& mat);
 void AngleIMatrix(const QAngle& angles, matrix3x4_t& mat);
@@ -836,6 +936,7 @@ void VectorVectors(const Vector& forward, Vector& right, Vector& up);
 void SetIdentityMatrix(matrix3x4_t& mat);
 void SetScaleMatrix(float x, float y, float z, matrix3x4_t& dst);
 void MatrixBuildRotationAboutAxis(const Vector& vAxisOfRot, float angleDegrees, matrix3x4_t& dst);
+
 
 inline void SetScaleMatrix(float flScale, matrix3x4_t& dst)
 {
@@ -862,10 +963,10 @@ inline void MatrixPosition(const matrix3x4_t& matrix, Vector& position)
 	MatrixGetColumn(matrix, 3, position);
 }
 
-inline void VectorRotate(const Vector& in1, const matrix3x4_t& in2, Vector& out)
+/*inline void VectorRotate(const Vector& in1, const matrix3x4_t& in2, Vector& out)
 {
 	VectorRotate(&in1.x, in2, &out.x);
-}
+}*/
 
 inline void VectorIRotate(const Vector& in1, const matrix3x4_t& in2, Vector& out)
 {
@@ -2169,6 +2270,4 @@ inline bool AlmostEqual(const Vector& a, const Vector& b, int maxUlps = 10)
 		AlmostEqual(a.y, b.y, maxUlps) &&
 		AlmostEqual(a.z, b.z, maxUlps);
 }
-
-
 #endif	// MATH_BASE_H

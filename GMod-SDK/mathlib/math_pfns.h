@@ -106,6 +106,8 @@ private:
 #define CPLANE_SIGNBITS			17
 #define CPLANE_PAD0				18
 #define CPLANE_PAD1				19*/
+
+
 const float PI = 3.141592654f;
 inline constexpr float DEG2RAD(float fDegrees) { return fDegrees * (PI / 180.0f); }
 inline constexpr float RAD2DEG(float fRadians) { return fRadians * (180.0f / PI); }

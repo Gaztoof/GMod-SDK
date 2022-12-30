@@ -17,6 +17,15 @@ void RestoreVMTHook(PVOID** src, PVOID dst, int index)
     VMT[index] = dst;
     VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
 }
+std::vector<hookData> vmtHooks;
+void RestoreVMTHooks()
+{
+    for (int i = 0; i < vmtHooks.size(); i++)
+    {
+        auto currData = vmtHooks[i];
+        RestoreVMTHook(currData.src, currData.dst, currData.index);
+    }
+}
 
  // credits to osiris for the following
 static auto generateBadCharTable(std::string_view pattern) noexcept

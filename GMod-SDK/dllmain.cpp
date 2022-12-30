@@ -39,8 +39,8 @@ void Main()
     ConColorMsg = (MsgFn)GetProcAddress(GetModuleHandleW(L"tier0.dll"), ConColorMsgDec);
 
     ConPrint("Successfully injected!", Color(0, 255, 0));
-
     ConfigSystem::LoadConfig("Default");
+
     Globals::bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
     Globals::predictionRandomSeed = (unsigned int*)(GetRealFromRelative((char*)findPattern("client", PredictionSeedPattern, "predictionRandomSeed") + 0x3, 0x2, 6));
     Globals::hostName = (char*)(GetRealFromRelative((char*)findPattern("client", HostNamePattern, "HostName"), 0x3, 7));
@@ -49,21 +49,12 @@ void Main()
     VirtualProtect(Globals::bSendpacket, sizeof(bool), PAGE_EXECUTE_READWRITE, &originalProtection);
     
     EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
-
-    // x64: thats directly the vtable pointer // CEngineClient::IsPaused points to clientstate https://i.imgur.com/4aWvQbs.png
-    ClientState = GetRealFromRelative((*(char***)(EngineClient))[84], CClientStateOffset, CClientStateSize, false) ;
-
-    //void* plim = (plim*)(GetRealFromRelative((char*), 0x1, 5) + BSendPacketOffset);
-
     LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
     ClientEntityList = (CClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
     CHLclient = (CHLClient*)GetInterface("client.dll", "VClient017");
-
     MaterialSystem = (CMaterialSystem*)GetInterface("materialsystem.dll", "VMaterialSystem080");
-
     InputSystem = (CInputSystem*)GetInterface("inputsystem.dll", "InputSystemVersion001");
     CVar = (CCvar*)GetInterface("vstdlib.dll", "VEngineCvar007");
-
     ModelRender = (CModelRender*)GetInterface("engine.dll", "VEngineModel016");
     RenderView = (CVRenderView*)GetInterface("engine.dll", "VEngineRenderView014");
     EngineTrace = (IEngineTrace*)GetInterface("engine.dll", "EngineTraceClient003");
@@ -72,53 +63,39 @@ void Main()
     MatSystemSurface = (CMatSystemSurface*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
     PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
     PhysicsSurfaceProps = (CPhysicsSurfaceProps*)GetInterface("vphysics.dll", "VPhysicsSurfaceProps001");
-
     Prediction = (CPrediction*)GetInterface("client.dll", "VClientPrediction001");
     GameMovement = (CGameMovement*)GetInterface("client.dll", "GameMovement001");
-
-    EngineVGui = (void*)GetInterface("engine.dll", "VEngineVGui001");
-    
-    ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
-
+    EngineVGui = (void*)GetInterface("engine.dll", "VEngineVGui001"); // Eventually implement that?
     ModelInfo = (CModelInfo*)GetInterface("engine.dll", "VModelInfoClient006");
 
-
+    // x64: thats directly the vtable pointer // CEngineClient::IsPaused points to clientstate https://i.imgur.com/4aWvQbs.png
+    ClientState = GetRealFromRelative((*(char***)(EngineClient))[84], CClientStateOffset, CClientStateSize, false);
+    ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset); // CHLClient::Shutdown points to _view https://i.imgur.com/3Ad96gY.png
     ClientMode = GetVMT<ClientModeShared>((uintptr_t)CHLclient, 10, ClientModeOffset); // HudProcessInput points to g_pClientMode, and we retrieve it.  https://i.imgur.com/h0qYd5q.png I got the information from the .dylib -> https://i.imgur.com/kBaS7Vq.png
     GlobalVars = GetVMT<CGlobalVarsBase>((uintptr_t)CHLclient, 0, GlobalVarsOffset); // CHLClient::Init points to gpGlobals https://i.imgur.com/aIwpS45.png
     Input = GetVMT<CInput>((uintptr_t)CHLclient, 20, InputOffset); // CHLClient::CreateMove points to input https://i.imgur.com/TnEcetn.png
-
-
     UniformRandomStream = GetVMT<CUniformRandomStream>((uintptr_t)GetProcAddress(GetModuleHandleA("vstdlib.dll"), "RandomSeed"), RandomSeedOffset); // RandomSeed points to s_pUniformStream https://i.imgur.com/bddk0QK.png
     
     localPlayer = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 
-    Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
-    if(Lua)
+    if(Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT))
         oRunStringEx = VMTHook< _RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
+    oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
+    oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
 
     oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
     oFrameStageNotify = VMTHook< _FrameStageNotify>((PVOID**)CHLclient, hkFrameStageNotify, 35);
     oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
     oPaintTraverse = VMTHook< _PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
-
     oDrawModelExecute = VMTHook< _DrawModelExecute>((PVOID**)ModelRender, (PVOID)hkDrawModelExecute, 20);
     oProcessGMOD_ServerToClient = VMTHook< _ProcessGMOD_ServerToClient>((PVOID**)ClientState, (PVOID)hkProcessGMOD_ServerToClient, 64);
     oRunCommand = VMTHook< _RunCommand>((PVOID**)Prediction, (PVOID)hkRunCommand, 19);
     oPaint = VMTHook<_Paint>((PVOID**)EngineVGui, (PVOID)hkPaint, 13);
 
-    oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
-    oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
-    
-    // /!\\ ^ When adding hooks, make sure you add them to GUI.h's Unload button too!
-
-
     present = GetRealFromRelative((char*)findPattern(PresentModule, PresentPattern, "Present"), 0x2, 6, false);
 
-    //EngineClient->ClientCmd_Unrestricted("gmod_mcore_test 0"); // Not needed anymore
-    
-    Globals::damageEvent = (void*)new DamageEvent();
-    Globals::deathEvent = (void*)new DeathEvent();
-
+    Globals::damageEvent = new DamageEvent();
+    Globals::deathEvent = new DeathEvent();
     GameEventManager->AddListener((IGameEventListener2*)Globals::damageEvent, "player_hurt", false);
     GameEventManager->AddListener((IGameEventListener2*)Globals::deathEvent, "entity_killed", false);
         
@@ -146,7 +123,7 @@ void Main()
     MatSystemSurface->PlaySound("HL1/fvox/bell.wav");
     Sleep(1100);
     MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
-    Globals::openMenu = true;
+    //Globals::openMenu = true;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

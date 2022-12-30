@@ -61,7 +61,8 @@ namespace ConfigSystem
 		j["Chams"]["npcChams"] = to_jsonchams(Settings::Chams::npcChamsSettings);
 		j["Chams"]["armChams"] = to_jsonchams(Settings::Chams::armChamsSettings);
 		j["Chams"]["localPlayerChams"] = to_jsonchams(Settings::Chams::localPlayerChamsSettings);
-
+		j["Chams"]["netLocalChamsSettings"] = to_jsonchams(Settings::Chams::netLocalChamsSettings);
+		
 		j["ESP"]["infosEmplacement"] = Settings::ESP::infosEmplacement;
 		j["ESP"]["espDormant"] = Settings::ESP::espDormant;
 		j["ESP"]["espBoundingBox"] = Settings::ESP::espBoundingBox;
@@ -205,7 +206,8 @@ namespace ConfigSystem
 			Settings::Chams::npcChamsSettings = from_jsonchams(j["Chams"]["npcChams"]);
 			Settings::Chams::armChamsSettings = from_jsonchams(j["Chams"]["armChams"]);
 			Settings::Chams::localPlayerChamsSettings = from_jsonchams(j["Chams"]["localPlayerChams"]);
-
+			Settings::Chams::netLocalChamsSettings = from_jsonchams(j["Chams"]["netLocalChamsSettings"]);
+			
 			Settings::ESP::infosEmplacement = j["ESP"]["infosEmplacement"];
 			Settings::ESP::espDormant = j["ESP"]["espDormant"];
 			Settings::ESP::espBoundingBox = j["ESP"]["espBoundingBox"];
@@ -342,7 +344,8 @@ namespace ConfigSystem
 		Settings::Chams::npcChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
 		Settings::Chams::armChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
 		Settings::Chams::localPlayerChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-
+		Settings::Chams::netLocalChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
+		
 		Settings::ESP::infosEmplacement = NULL;
 		Settings::ESP::espDormant = NULL;
 		Settings::ESP::espBoundingBox = NULL;
@@ -365,8 +368,8 @@ namespace ConfigSystem
 		Settings::ESP::onlyFriends = NULL;
 
 		Settings::Visuals::fovEnabled = false;
-		Settings::Visuals::fov = 90.f;
-		Settings::Visuals::viewModelFOV = 90.f;
+		Settings::Visuals::fov = -1.f;
+		Settings::Visuals::viewModelFOV = -1.f;
 		Settings::Visuals::noVisualRecoil = NULL;
 		Settings::Visuals::worldColor = Color(255, 255, 255);
 		Settings::Visuals::changeWorldColor = NULL;
@@ -417,7 +420,7 @@ namespace ConfigSystem
 		Settings::Misc::optiStyle = NULL;
 		Settings::Misc::optiRandomization = NULL;
 		Settings::Misc::optiAutoStrafe = NULL;
-		Settings::Misc::crosshairSize = 1.f;
+		Settings::Misc::crosshairSize = 5.f;
 		Settings::Misc::thirdperson = NULL;
 		Settings::Misc::thirdpersonKey = KEY_NONE;
 		Settings::Misc::thirdpersonKeyStyle = 1;

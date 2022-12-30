@@ -8,8 +8,16 @@
 #include <limits>
 #include <array>
 #include <string>
+#include <vector>
 
 void BytePatch(PVOID source, BYTE newValue);
+
+struct hookData {
+    PVOID** src;
+    PVOID dst;
+    int index;
+};
+extern std::vector<hookData> vmtHooks;
 
 template<typename T>
 T VMTHook(PVOID** src, PVOID dst, int index)
@@ -21,9 +29,12 @@ T VMTHook(PVOID** src, PVOID dst, int index)
     VirtualProtect(&VMT[index], sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
     VMT[index] = dst;
     VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
+    hookData currData = { src, ret, index };
+    vmtHooks.push_back(currData);
     return (T)ret;
 };
 void RestoreVMTHook(PVOID** src, PVOID dst, int index);
+void RestoreVMTHooks();
 
 const char* findPattern(const char* moduleName, std::string_view pattern, std::string patternName) noexcept;
 

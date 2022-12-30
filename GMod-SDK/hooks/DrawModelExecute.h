@@ -6,7 +6,7 @@
 #include "../tier0/Vector.h"
 #include "../engine/vmatrix.h"
 
-typedef void(__thiscall* _DrawModelExecute)(CModelRender*, const DrawModelState_t&, const ModelRenderInfo_t&, matrix3x4_t*);
+typedef void(__thiscall* _DrawModelExecute)(CModelRender*, const DrawModelState_t&, const ModelRenderInfo_t*, matrix3x4_t*);
 _DrawModelExecute oDrawModelExecute;
 
 
@@ -15,12 +15,12 @@ void __fastcall hkDrawModelExecute(CModelRender* modelrender,
 #ifndef _WIN64
 	void*, // __fastcall does literally nothing in x64, so that's why we make it inactive
 #endif 
-const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld = NULL)
+const DrawModelState_t& state, ModelRenderInfo_t* pInfo, matrix3x4_t* pCustomBoneToWorld = NULL)
 {
-	if (pInfo.entity_index)
+	if (pInfo->entity_index)
 	{
-		C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(pInfo.entity_index);
-		if(!entity || !entity->IsAlive() || (!entity->IsPlayer() && !entity->IsRagdoll() && !entity->IsBaseCombatCharacter() && !entity->IsWeapon() && !entity->IsARagdoll() && (!strstr(pInfo.pModel->name, "models/weapons/") || !Settings::Misc::removeHands)))
+		C_BasePlayer* entity = (C_BasePlayer*)ClientEntityList->GetClientEntity(pInfo->entity_index);
+		if(!entity || !entity->IsAlive() || (!entity->IsPlayer() && !entity->IsRagdoll() && !entity->IsBaseCombatCharacter() && !entity->IsWeapon() && !entity->IsARagdoll() && (!strstr(pInfo->pModel->name, "models/weapons/") || !Settings::Misc::removeHands)))
 			return oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
 		chamsSetting setting;
 
@@ -60,7 +60,7 @@ const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBon
 			rainbowColor(Settings::Chams::weaponChamsSettings.visibleColor, Settings::Misc::rainbowSpeed);
 			setting = Settings::Chams::weaponChamsSettings;
 		}
-		else if (!entity->IsWeapon() && strstr(pInfo.pModel->name, "models/weapons/") && Settings::Misc::removeHands)
+		else if (!entity->IsWeapon() && strstr(pInfo->pModel->name, "models/weapons/") && Settings::Misc::removeHands)
 		{
 			return;
 		}
@@ -72,6 +72,21 @@ const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBon
 		DebugWhite->AddRef(); // that's so the game loads it, if 0 stuff on the map uses this texture, the game will simply unload it
 
 		bool didDraw = false;
+		if (entity == localPlayer && Settings::Chams::netLocalChamsSettings.visibleMaterial && Globals::lastNetworkedCmd.command_number) // ghetto asf...
+		{
+			if (Settings::Chams::netLocalChamsSettings.visibleMaterial == 1)
+				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, false);
+			else if (Settings::Chams::netLocalChamsSettings.visibleMaterial == 2)
+				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, true);
+
+			RenderView->SetBlend(Settings::Chams::netLocalChamsSettings.visibleColor.fCol[3]);
+			RenderView->SetColorModulation(Settings::Chams::netLocalChamsSettings.hiddenColor.fCol);
+			modelrender->ForcedMaterialOverride(DebugWhite); //entity->SetMaterialOverridePointer(DebugWhite); <- this works too
+
+
+			oDrawModelExecute(modelrender, state, pInfo, Globals::lastMatrix);
+		}
+
 		if (setting.hiddenMaterial)
 		{
 			didDraw = true;
@@ -82,6 +97,7 @@ const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBon
 			else if(setting.hiddenMaterial == 2)
 				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, true);
 
+			RenderView->SetBlend(setting.visibleColor.fCol[3]);
 			RenderView->SetColorModulation(setting.hiddenColor.fCol);
 			modelrender->ForcedMaterialOverride(DebugWhite); //entity->SetMaterialOverridePointer(DebugWhite); <- this works too
 			oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
@@ -96,6 +112,7 @@ const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBon
 			else if (setting.visibleMaterial == 2)
 				DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, true);
 
+			RenderView->SetBlend(setting.visibleColor.fCol[3]);
 			RenderView->SetColorModulation(setting.visibleColor.fCol);
 			modelrender->ForcedMaterialOverride(DebugWhite); //entity->SetMaterialOverridePointer(DebugWhite); <- this works too but i prefer forcedmaterialoverride /shrug
 			oDrawModelExecute(modelrender, state, pInfo, pCustomBoneToWorld);
@@ -104,6 +121,7 @@ const DrawModelState_t& state, ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBon
 		DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, false);
 		DebugWhite->SetMaterialVarFlag(MATERIAL_VAR_SELFILLUM, false);
 
+		RenderView->SetBlend(1.f);
 		RenderView->SetColorModulation(Color(255, 255, 255).fCol);
 		modelrender->ForcedMaterialOverride(nullptr);
 		if (!didDraw)

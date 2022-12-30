@@ -25,7 +25,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		return true;
 	}
 
-	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
+	return CallWindowProcA(oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
 ImFont* menuFont;
@@ -86,6 +86,37 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		Globals::openMenu = !Globals::openMenu;
 	lastState = tempState;
 
+	// https://www.unknowncheats.me/forum/3191157-post4.html Thanks to copypaste for this :)
+	ITexture* rt = nullptr;
+	auto context = MaterialSystem->GetRenderContext();
+	//IMatRenderContext* context = NULL;
+	if (context)
+	{
+		context->BeginRender();
+		rt = context->GetRenderTarget();
+		context->SetRenderTarget(nullptr);
+		context->EndRender();
+	}
+
+	// https://www.unknowncheatsme/forum/3137288-post2.html Thanks to him :)
+	// If you don't do that, the color of the menu will match to VGUI's.
+	DWORD colorwrite, srgbwrite;
+	pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &colorwrite);
+	pDevice->GetRenderState(D3DRS_SRGBWRITEENABLE, &srgbwrite);
+
+	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
+	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
+
+	IDirect3DVertexDeclaration9* vertexDeclaration;
+	IDirect3DVertexShader9* vertexShader;
+	pDevice->GetVertexDeclaration(&vertexDeclaration);
+	pDevice->GetVertexShader(&vertexShader);
+
+	ImGui::GetIO().MouseDrawCursor = Globals::openMenu;
+
+	ImGui_ImplDX9_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 	if (EngineClient->IsInGame())
 	{
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
@@ -141,37 +172,6 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		}
 	}
 
-	// https://www.unknowncheats.me/forum/3191157-post4.html Thanks to copypaste for this :)
-	ITexture* rt = nullptr;
-	auto context = MaterialSystem->GetRenderContext();
-	//IMatRenderContext* context = NULL;
-	if (context)
-	{
-		context->BeginRender();
-		rt = context->GetRenderTarget();
-		context->SetRenderTarget(nullptr);
-		context->EndRender();
-	}
-
-	// https://www.unknowncheatsme/forum/3137288-post2.html Thanks to him :)
-	// If you don't do that, the color of the menu will match to VGUI's.
-	DWORD colorwrite, srgbwrite;
-	pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &colorwrite);
-	pDevice->GetRenderState(D3DRS_SRGBWRITEENABLE, &srgbwrite);
-
-	pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
-	pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
-
-	IDirect3DVertexDeclaration9* vertexDeclaration;
-	IDirect3DVertexShader9* vertexShader;
-	pDevice->GetVertexDeclaration(&vertexDeclaration);
-	pDevice->GetVertexShader(&vertexShader);
-
-	ImGui::GetIO().MouseDrawCursor = Globals::openMenu;
-
-	ImGui_ImplDX9_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 	doEsp();
 #ifdef _DEBUG
 		if (EngineClient->IsInGame())

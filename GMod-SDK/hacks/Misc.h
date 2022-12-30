@@ -155,6 +155,7 @@ void SpectatorList()
     }
     ImGui::End();
 }
+int flagsPrePred = 0;
 void QuickStop(CUserCmd* cmd)
 {
 	if (!Settings::Misc::quickStop || cmd->buttons & (IN_FORWARD | IN_BACK | IN_MOVELEFT | IN_MOVERIGHT) || !(localPlayer->getFlags() & FL_ONGROUND))
@@ -319,17 +320,16 @@ void BunnyHopOptimizer(CUserCmd* cmd)
 void BunnyHop(CUserCmd* cmd)
 {
     int flags = localPlayer->getFlags();
-    if (Settings::Misc::fastWalk && flags & FL_ONGROUND && (cmd->forwardmove != 0.f || cmd->sidemove == 0.f)) // Fastwalk
+    if (false && Settings::Misc::fastWalk && flags & FL_ONGROUND && (cmd->forwardmove != 0.f && cmd->sidemove == 0.f)) // Fastwalk
     {
-        if(cmd->command_number % 2 == 0)
+        if (cmd->command_number % 2 == 0)
             cmd->sidemove = -5000.f;
         else cmd->sidemove = 5000.f;
     }
-
     if (InputSystem->IsButtonDown(KEY_SPACE) && !MatSystemSurface->IsCursorVisible() && localPlayer->getMoveType() != MOVETYPE_NOCLIP) {
         if (Settings::Misc::bunnyHop)
         {
-            if (!(flags & FL_ONGROUND))
+            if (!(flagsPrePred & FL_ONGROUND))
                 cmd->buttons &= ~IN_JUMP;
             else
                 cmd->buttons |= IN_JUMP;
@@ -375,13 +375,12 @@ void BunnyHop(CUserCmd* cmd)
 }
 
 
-int flagsBackup = 0;
 void PrePredOptimizer(CUserCmd* cmd)
 {
     if (localPlayer->getMoveType() == MOVETYPE_LADDER || localPlayer->getMoveType() == MOVETYPE_NOCLIP)
         return;
 
-    flagsBackup = localPlayer->getFlags();
+    flagsPrePred = localPlayer->getFlags();
 
     if (!(InputSystem->IsButtonDown(KEY_SPACE) || cmd->buttons & IN_JUMP) || localPlayer->getFlags() & FL_ONGROUND)
         return;
@@ -394,12 +393,12 @@ void PostPredOptimizer(CUserCmd* cmd)
     if (localPlayer->getMoveType() == MOVETYPE_LADDER || localPlayer->getMoveType() == MOVETYPE_NOCLIP)
         return;
 
-    if (!(flagsBackup & FL_ONGROUND) && localPlayer->getFlags() & FL_ONGROUND)
+    if (!(flagsPrePred & FL_ONGROUND) && localPlayer->getFlags() & FL_ONGROUND)
     {
         cmd->buttons &= ~IN_DUCK;
         cmd->buttons |= IN_JUMP;
     }
-    else if(!(localPlayer->getFlags() & FL_ONGROUND)/* && !(flagsBackup & FL_ONGROUND)*/)
+    else if(!(localPlayer->getFlags() & FL_ONGROUND)/* && !(flagsPrePred & FL_ONGROUND)*/)
         cmd->buttons |= IN_DUCK;
 
     //if ((cmd->sidemove > 0.f && cmd->mousedx > 0.f) || (cmd->sidemove < 0.f && cmd->mousedx < 0.f))
@@ -416,18 +415,33 @@ void PostPredOptimizer(CUserCmd* cmd)
     }
 }
 
-void PrePredEdgeJump(CUserCmd* cmd)
+void PrePrediction(CUserCmd* cmd)
 {
-    flagsBackup = localPlayer->getFlags();
+    if (Settings::Misc::autoStrafeStyle == 2)
+        PrePredOptimizer(cmd);
+
+    flagsPrePred = localPlayer->getFlags();
 }
-void PostPredEdgeJump(CUserCmd* cmd)
+void PostPrediction(CUserCmd* cmd)
 {
+    if (Settings::Misc::autoStrafeStyle == 2)
+        PostPredOptimizer(cmd);
+
     if (!Settings::Misc::edgeJump) return;
     int flags = localPlayer->getFlags();
     if (localPlayer->getMoveType() == MOVETYPE_LADDER || localPlayer->getMoveType() == MOVETYPE_NOCLIP)
         return;
-    if (flagsBackup & FL_ONGROUND && !(localPlayer->getFlags() & FL_ONGROUND))
+    if (flagsPrePred & FL_ONGROUND && !(flags & FL_ONGROUND))
         cmd->buttons |= IN_JUMP;
+
+    if ( cmd->buttons & IN_JUMP) // Crouchboost
+    {
+        if(!(flagsPrePred & FL_ONGROUND))
+            cmd->buttons |= IN_DUCK;
+
+        if (!(flagsPrePred & FL_ONGROUND) && flags & FL_ONGROUND && cmd->buttons & IN_DUCK)
+            cmd->buttons &= ~IN_DUCK;
+    }
 }
 
 void DoMisc(CUserCmd* cmd)

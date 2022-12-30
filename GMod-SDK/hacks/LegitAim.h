@@ -52,6 +52,17 @@ void DoLegitAimbot(CUserCmd* cmd)
 			if (Settings::Aimbot::onlyAimAtFriends && !isFriend)
 				continue;
 
+			// This is an exemple of something you can do for a custom server.
+			/*entity->PushEntity();
+				Lua->GetField(-1, "GetNWInt");
+				Lua->Push(-2);
+
+				Lua->PushString("Buildmode");
+				Lua->Call(2, 1);
+				int buildMode = Lua->GetNumber(-1);
+				Lua->Pop(2);
+			if (buildMode) continue;*/
+
 #pragma message("THIS IS TO BE TESTED!!")
 			Vector entPos;
 			if (!_strcmpi(((model_t*)entity->GetClientRenderable()->GetModel())->name, "models/error.mdl"))

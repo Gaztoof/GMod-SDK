@@ -31,7 +31,6 @@ void StartPrediction(CUserCmd* cmd)
 	{
 		localPlayer->SelectItem(wp->GetName(), cmd->weaponsubtype);
 	}
-	// Did lots of research, I just don't get (yet) why bunny hop doesn't works with this...
 	Prediction->SetupMove(localPlayer, cmd, MoveHelper, &moveData);
 	GameMovement->ProcessMovement(localPlayer, &moveData);
 	//GameMovement->FullWalkMove();

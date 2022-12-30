@@ -161,16 +161,17 @@ namespace GUI
 				style->ItemSpacing = ImVec2(4, 2);
 				style->WindowPadding = ImVec2(4, 4);
 
-				Menu::InsertComboColor("Visible Enemy Material", &Settings::Chams::playerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.visibleColor, false);
-				Menu::InsertComboColor("Hidden Enemy Material", &Settings::Chams::playerChamsSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.hiddenColor, false);
-				Menu::InsertComboColor("Visible Teammate Material", &Settings::Chams::teamMateSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::teamMateSettings.visibleColor, false);
-				Menu::InsertComboColor("Hidden Teammate Material", &Settings::Chams::teamMateSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::teamMateSettings.hiddenColor, false);
+				Menu::InsertComboColor("Visible Enemy Material", &Settings::Chams::playerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Hidden Enemy Material", &Settings::Chams::playerChamsSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.hiddenColor, true);
+				Menu::InsertComboColor("Visible Teammate Material", &Settings::Chams::teamMateSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::teamMateSettings.visibleColor, true);
+				Menu::InsertComboColor("Hidden Teammate Material", &Settings::Chams::teamMateSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::teamMateSettings.hiddenColor, true);
 
-				Menu::InsertComboColor("Local player Material", &Settings::Chams::localPlayerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::localPlayerChamsSettings.visibleColor, false);
+				Menu::InsertComboColor("Local player Material", &Settings::Chams::localPlayerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::localPlayerChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Networked Local Material", &Settings::Chams::netLocalChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::netLocalChamsSettings.visibleColor, true);
 
-				Menu::InsertComboColor("Ragdoll Material", &Settings::Chams::ragdollChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::ragdollChamsSettings.visibleColor, false);
-				Menu::InsertComboColor("NPC Material", &Settings::Chams::npcChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) , &Settings::Chams::npcChamsSettings.visibleColor, false);
-				Menu::InsertComboColor("Weapon Material", &Settings::Chams::weaponChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::weaponChamsSettings.visibleColor, false);
+				Menu::InsertComboColor("Ragdoll Material", &Settings::Chams::ragdollChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::ragdollChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("NPC Material", &Settings::Chams::npcChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) , &Settings::Chams::npcChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Weapon Material", &Settings::Chams::weaponChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::weaponChamsSettings.visibleColor, true);
 
 
 				style->ItemSpacing = ImVec2(0, 0);
@@ -521,7 +522,7 @@ namespace GUI
 					Menu::InsertCheckbox("Clamp optimizer angle", &Settings::Misc::optiClamp);
 					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
 				}
-				Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
+				//Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
 				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
 
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
@@ -615,20 +616,7 @@ namespace GUI
 					if (spoofedCheats)
 						spoofedCheats->~SpoofedConVar();
 
-					RestoreVMTHook((PVOID**)ClientMode, (PVOID)oCreateMove, 21);
-					RestoreVMTHook((PVOID**)CHLclient, oFrameStageNotify, 35);
-					RestoreVMTHook((PVOID**)ViewRender, (PVOID)oRenderView, 6);
-					RestoreVMTHook((PVOID**)PanelWrapper, (PVOID)oPaintTraverse, 41);
-
-					RestoreVMTHook((PVOID**)ModelRender, (PVOID)oDrawModelExecute, 20);
-
-					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCreateLuaInterfaceFn, 4);
-					RestoreVMTHook((PVOID**)LuaShared, (PVOID)oCloseLuaInterfaceFn, 5);
-					
-					RestoreVMTHook((PVOID**)ClientState, (PVOID)oProcessGMOD_ServerToClient, 111);
-					RestoreVMTHook((PVOID**)Prediction, (PVOID)oRunCommand, 19);
-					RestoreVMTHook((PVOID**)EngineVGui, (PVOID)oPaint, 13);
-
+					RestoreVMTHooks();
 					*Globals::bSendpacket = true;
 					
 #ifdef _WIN64
@@ -646,7 +634,6 @@ namespace GUI
 					FreeConsole();
 #endif
 					ConPrint("Successfully unloaded!", Color(0, 255, 0));
-
 				}
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);

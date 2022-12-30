@@ -155,6 +155,7 @@ namespace Globals {
 	CUserCmd lastEndCmd;
 	CUserCmd lastRealCmd;
 	CUserCmd lastNetworkedCmd;
+	matrix3x4_t lastMatrix[128];
 	bool choke;
 	VPanel* lastPanelIdentifier;
 
@@ -204,6 +205,7 @@ namespace Settings {
 		chamsSetting armChamsSettings;
 
 		chamsSetting localPlayerChamsSettings;
+		chamsSetting netLocalChamsSettings;
 
 	}
 	namespace ESP {

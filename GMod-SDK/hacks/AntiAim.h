@@ -3,8 +3,6 @@
 #include <Windows.h>
 #include "../globals.hpp"
 
-constexpr float lisp = 11796120.f; // max value of short * 360
-
 QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
     static float oldForward;
     static float oldSide;
@@ -30,8 +28,8 @@ QAngle &BackupCMD(CUserCmd* cmd, bool run = false) {
         // V this perfectly explains https://i.imgur.com/8cED0pl.png
         cmd->forwardmove = cos(DEG2RAD(deltaYaw)) * oldForward + cos(DEG2RAD(deltaYaw + 90.f)) * oldSide;
         cmd->sidemove = sin(DEG2RAD(deltaYaw)) * oldForward + sin(DEG2RAD(deltaYaw + 90.f)) * oldSide;
-        if ((cmd->forwardmove < 0.001 && cmd->forwardmove > 0) || (cmd->forwardmove > -0.001 && cmd->forwardmove < 0)) cmd->forwardmove = 0;
-        if ((cmd->sidemove < 0.001 && cmd->sidemove > 0) || (cmd->sidemove > -0.001 && cmd->sidemove < 0)) cmd->sidemove = 0;
+        if ((cmd->forwardmove < 1 && cmd->forwardmove > 0) || (cmd->forwardmove > -1 && cmd->forwardmove < 0)) cmd->forwardmove = 0;
+        if ((cmd->sidemove < 1 && cmd->sidemove > 0) || (cmd->sidemove > -1 && cmd->sidemove < 0)) cmd->sidemove = 0;
          // ^ this'll make u undetected on a few servers
     }
     return oldAng;
