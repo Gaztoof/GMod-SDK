@@ -51,7 +51,7 @@ CLuaInterface* __fastcall hkCreateLuaInterfaceFn(CLuaShared* _this,
 
     Lua = luaInterface;
 
-    if(!oRunStringEx) oRunStringEx = VMTHook< _RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
+    if(!oRunStringEx) oRunStringEx = VMTHook<_RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111, true);
 
     return Lua;
 }

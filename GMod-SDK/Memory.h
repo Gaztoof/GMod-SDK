@@ -20,7 +20,7 @@ struct hookData {
 extern std::vector<hookData> vmtHooks;
 
 template<typename T>
-T VMTHook(PVOID** src, PVOID dst, int index)
+T VMTHook(PVOID** src, PVOID dst, int index, bool noRestore = false)
 {
     // I could do tramp hooking instead of VMT hooking, but I came across a few problems while implementing my tramp, and VMT just makes it easier.
     PVOID* VMT = *src;
@@ -29,8 +29,11 @@ T VMTHook(PVOID** src, PVOID dst, int index)
     VirtualProtect(&VMT[index], sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
     VMT[index] = dst;
     VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
-    hookData currData = { src, ret, index };
-    vmtHooks.push_back(currData);
+    if (!noRestore)
+    {
+        hookData currData = { src, ret, index };
+        vmtHooks.push_back(currData);
+    }
     return (T)ret;
 };
 void RestoreVMTHook(PVOID** src, PVOID dst, int index);

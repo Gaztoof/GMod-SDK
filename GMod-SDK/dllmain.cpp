@@ -39,8 +39,7 @@ void Main()
     ConColorMsg = (MsgFn)GetProcAddress(GetModuleHandleW(L"tier0.dll"), ConColorMsgDec);
 
     ConPrint("Successfully injected!", Color(0, 255, 0));
-    ConfigSystem::LoadConfig("Default");
-
+    ConfigSystem::HandleConfig("Default", ConfigSystem::configHandle::Load);
     Globals::bSendpacket = (bool*)(GetRealFromRelative((char*)findPattern("engine", CL_MovePattern, "CL_MOVE"), 0x1, 5) + BSendPacketOffset);
     Globals::predictionRandomSeed = (unsigned int*)(GetRealFromRelative((char*)findPattern("client", PredictionSeedPattern, "predictionRandomSeed") + 0x3, 0x2, 6));
     Globals::hostName = (char*)(GetRealFromRelative((char*)findPattern("client", HostNamePattern, "HostName"), 0x3, 7));
@@ -123,7 +122,7 @@ void Main()
     MatSystemSurface->PlaySound("HL1/fvox/bell.wav");
     Sleep(1100);
     MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
-    //Globals::openMenu = true;
+    Globals::openMenu = true;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)

@@ -580,16 +580,16 @@ namespace GUI
 				bool loadPressed = false;
 				Menu::InsertButtonMiddle("Load", loadPressed);
 				if (loadPressed)
-					ConfigSystem::LoadConfig(configsNames[selectedConfig]);
+					ConfigSystem::HandleConfig(configsNames[selectedConfig], ConfigSystem::configHandle::Load);
 				bool savePressed = false;
 				Menu::InsertButtonMiddle("Save", savePressed);
 				if (savePressed)
-					ConfigSystem::SaveConfig(configsNames[selectedConfig]);
+					ConfigSystem::HandleConfig(configsNames[selectedConfig], ConfigSystem::configHandle::Save);
 
 				bool resetPressed = false;
 				Menu::InsertButtonMiddle("Reset", resetPressed);
 				if (resetPressed)
-					ConfigSystem::ResetConfig();
+					ConfigSystem::HandleConfig("", ConfigSystem::configHandle::Reset);
 
 
 				style->ItemSpacing = ImVec2(0, 0);

@@ -83,7 +83,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 				continue;
 			if (!Settings::Aimbot::aimAtFriends && Settings::friendList.find(entity) != Settings::friendList.find(entity))
 				continue;
-
+			Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
 
 			float distance = FLT_MAX;
 			float fovDistance = FLT_MAX;

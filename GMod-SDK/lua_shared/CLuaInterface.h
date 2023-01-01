@@ -64,13 +64,20 @@ enum class LuaObjectType
 
 	COUNT
 };
+enum
+{
+	SPECIAL_GLOB,       // Global table
+	SPECIAL_ENV,        // Environment table
+	SPECIAL_REG,        // Registry table
+};
+
 // https://github.com/Facepunch/gmod-module-base/blob/master/include/GarrysMod/Lua/LuaBase.h
 class CLuaInterface
 {
 public:
 	/*0*/	virtual void* Top(void) = 0;
 	/*1*/	virtual void* Push(int iStackPos) = 0;
-	/*2*/	virtual void* Pop(int iStackPos) = 0;
+	/*2*/	virtual void* Pop(int iAmt = 1) = 0;
 	/*3*/	virtual void* GetTable(int iStackPos) = 0;
 	/*4*/	virtual void* const GetField(int iStackPos, char const*) = 0;
 	/*5*/	virtual void SetField(int iStackPos, char const*) = 0;
@@ -91,11 +98,11 @@ public:
 	/*20*/	virtual void* ArgError(int, char const*) = 0;
 	/*21*/	virtual void* RawGet(int iStackPos) = 0;
 	/*22*/	virtual void* RawSet(int iStackPost) = 0;
-	/*23*/	virtual const char* GetString(int, unsigned int*) = 0;
-	/*24*/	virtual double GetNumber(int) = 0;
-	/*25*/	virtual bool GetBool(int) = 0;
-	/*26*/	virtual void* GetCFunction(int) = 0;
-	/*27*/	virtual void* GetUserdata(int) = 0;
+	/*23*/	virtual const char* GetString(int iStackPos = -1, unsigned int*iOutLen = NULL) = 0;
+	/*24*/	virtual double GetNumber(int iStackPos = -1) = 0;
+	/*25*/	virtual bool GetBool(int iStackPos = -1) = 0;
+	/*26*/	virtual void* GetCFunction(int iStackPos = -1) = 0;
+	/*27*/	virtual void* GetUserdata(int iStackPos = -1) = 0;
 	/*28*/	virtual void PushNil(void) = 0;
 	/*29*/	virtual void PushString(char const*, unsigned int iLen = 0) = 0;
 	/*30*/	virtual void PushNumber(double) = 0;

@@ -18,12 +18,13 @@ namespace ConfigSystem
 		j["c"] = color.rainbow;
 		return j;
 	}
-	void from_jsonfcol(const json j, Color& color) {
+	Color from_jsonfcol(const json j, Color& color) {
 		color.fCol[0] = j["r"];
 		color.fCol[1] = j["g"];
 		color.fCol[2] = j["b"];
 		color.fCol[3] = j["a"];
 		color.rainbow = j["c"];
+		return color;
 	}
 
 	json to_jsonchams(const chamsSetting& setting) {
@@ -42,420 +43,223 @@ namespace ConfigSystem
 		setting.visibleMaterial = j["visibleMaterial"];
 		return setting;
 	}
-
-	void SaveConfig(const char* configName)
+	enum configHandle {
+		Save,
+		Load,
+		Reset
+	};
+	template <class T>
+	constexpr T HandleConfigItem(json& j, configHandle handle, T* setting, T defaultValue)
 	{
-		CreateDirectory(L"C:\\GMOD-SDK-Settings", NULL);
+		switch (handle)
+		{
+		case configHandle::Save:
+			j = *(T*)setting;
+			break;
+		case configHandle::Load:
+			*(T*)setting = j;
+			break;
+		case configHandle::Reset:
+			*setting = defaultValue;
+			break;
 
-		json j;
-
-		j["Globals"]["menuKey"] = Settings::menuKey;
-		j["Globals"]["menuKeyStyle"] = Settings::menuKeyStyle;
-		j["Globals"]["menuColor"] = to_jsonfcol(Settings::menuColor);
-		j["Globals"]["untrusted"] = Globals::Untrusted;
-
-		j["Chams"]["playerChams"] = to_jsonchams(Settings::Chams::playerChamsSettings);
-		j["Chams"]["teamMate"] = to_jsonchams(Settings::Chams::teamMateSettings);
-		j["Chams"]["ragdollChams"] = to_jsonchams(Settings::Chams::ragdollChamsSettings);
-		j["Chams"]["weaponChams"] = to_jsonchams(Settings::Chams::weaponChamsSettings);
-		j["Chams"]["npcChams"] = to_jsonchams(Settings::Chams::npcChamsSettings);
-		j["Chams"]["armChams"] = to_jsonchams(Settings::Chams::armChamsSettings);
-		j["Chams"]["localPlayerChams"] = to_jsonchams(Settings::Chams::localPlayerChamsSettings);
-		j["Chams"]["netLocalChamsSettings"] = to_jsonchams(Settings::Chams::netLocalChamsSettings);
-		
-		j["ESP"]["infosEmplacement"] = Settings::ESP::infosEmplacement;
-		j["ESP"]["espDormant"] = Settings::ESP::espDormant;
-		j["ESP"]["espBoundingBox"] = Settings::ESP::espBoundingBox;
-		j["ESP"]["espBoundingBoxColor"] = to_jsonfcol(Settings::ESP::espBoundingBoxColor);
-		j["ESP"]["espHealthBar"] = Settings::ESP::espHealthBar;
-		j["ESP"]["espName"] = Settings::ESP::espName;
-		j["ESP"]["weaponText"] = Settings::ESP::weaponText;
-		j["ESP"]["weaponAmmo"] = Settings::ESP::weaponAmmo;
-		j["ESP"]["espDistance"] = Settings::ESP::espDistance;
-		j["ESP"]["skeletonEsp"] = Settings::ESP::skeletonEsp;
-		j["ESP"]["skeletonDetails"] = Settings::ESP::skeletonDetails;
-		j["ESP"]["skeletonEspColor"] = to_jsonfcol(Settings::ESP::skeletonEspColor);
-		j["ESP"]["espShapeInt"] = Settings::ESP::espShapeInt;
-		j["ESP"]["entEsp"] = Settings::ESP::entEsp;
-		j["ESP"]["onlyFriends"] = Settings::ESP::onlyFriends;
-		j["ESP"]["espDistanceColor"] = to_jsonfcol(Settings::ESP::espDistanceColor);
-		j["ESP"]["espAmmoColor"] = to_jsonfcol(Settings::ESP::espAmmoColor);
-		j["ESP"]["espWeaponColor"] = to_jsonfcol(Settings::ESP::espWeaponColor);
-		j["ESP"]["espNameColor"] = to_jsonfcol(Settings::ESP::espNameColor);
-		j["ESP"]["espHealthColor"] = to_jsonfcol(Settings::ESP::espHealthColor);
-
-		j["Visuals"]["fovEnabled"] = Settings::Visuals::fovEnabled;
-		j["Visuals"]["fov"] = Settings::Visuals::fov;
-		j["Visuals"]["viewModelFOV"] = Settings::Visuals::viewModelFOV;
-		j["Visuals"]["noVisualRecoil"] = Settings::Visuals::noVisualRecoil;
-		j["Visuals"]["worldColor"] = to_jsonfcol(Settings::Visuals::worldColor);
-		j["Visuals"]["changeWorldColor"] = Settings::Visuals::changeWorldColor;
-		j["Visuals"]["disableSkyBox"] = Settings::Visuals::disableSkyBox;
-		j["Visuals"]["fullBright"] = Settings::Visuals::fullBright;
-
-		j["AntiAim"]["currentAntiAimPitch"] = Settings::AntiAim::currentAntiAimPitch;
-		j["AntiAim"]["currentAntiAimYaw"] = Settings::AntiAim::currentAntiAimYaw;
-		j["AntiAim"]["enableAntiAim"] = Settings::AntiAim::enableAntiAim;
-		j["AntiAim"]["antiAimKey"] = Settings::AntiAim::antiAimKey;
-		j["AntiAim"]["antiAimKeyStyle"] = Settings::AntiAim::antiAimKeyStyle;
-		j["AntiAim"]["fakePitch"] = Settings::AntiAim::fakePitch;
-
-		j["Aimbot"]["aimbotFOV"] = Settings::Aimbot::aimbotFOV;
-		j["Aimbot"]["silentAim"] = Settings::Aimbot::silentAim;
-		j["Aimbot"]["lockOnTarget"] = Settings::Aimbot::lockOnTarget;
-		j["Aimbot"]["aimbotKey"] = Settings::Aimbot::aimbotKey;
-		j["Aimbot"]["aimbotKeyStyle"] = Settings::Aimbot::aimbotKeyStyle;
-		j["Aimbot"]["enableAimbot"] = Settings::Aimbot::enableAimbot;
-		j["Aimbot"]["aimbotHitbox"] = Settings::Aimbot::aimbotHitbox;
-		j["Aimbot"]["aimbotAutoWall"] = Settings::Aimbot::aimbotAutoWall;
-		j["Aimbot"]["aimbotAutoFire"] = Settings::Aimbot::aimbotAutoFire;
-		j["Aimbot"]["aimbotMinDmg"] = Settings::Aimbot::aimbotMinDmg;
-		j["Aimbot"]["aimbotFovEnabled"] = Settings::Aimbot::aimbotFovEnabled;
-		j["Aimbot"]["drawAimbotFov"] = Settings::Aimbot::drawAimbotFov;
-		j["Aimbot"]["aimbotSelection"] = Settings::Aimbot::aimbotSelection;
-		j["Aimbot"]["drawAimbotHeadlines"] = Settings::Aimbot::drawAimbotHeadlines;
-		j["Aimbot"]["aimAtTeammates"] = Settings::Aimbot::aimAtTeammates;
-		j["Aimbot"]["aimAtFriends"] = Settings::Aimbot::aimAtFriends;
-		j["Aimbot"]["onlyAimAtFriends"] = Settings::Aimbot::onlyAimAtFriends;
-		j["Aimbot"]["pistolFastShoot"] = Settings::Aimbot::pistolFastShoot;
-		j["Aimbot"]["smoothing"] = Settings::Aimbot::smoothing;
-		j["Aimbot"]["smoothSteps"] = Settings::Aimbot::smoothSteps;
-		j["Aimbot"]["fovColor"] = to_jsonfcol(Settings::Aimbot::fovColor);
-
-		j["Misc"]["drawSpectators"] = Settings::Misc::drawSpectators;
-		j["Misc"]["drawCrosshair"] = Settings::Misc::drawCrosshair;
-		j["Misc"]["quickStop"] = Settings::Misc::quickStop;
-		j["Misc"]["killMessage"] = Settings::Misc::killMessage;
-		j["Misc"]["killMessageOOC"] = Settings::Misc::killMessageOOC;
-		j["Misc"]["bunnyHop"] = Settings::Misc::bunnyHop;
-		j["Misc"]["autoStrafe"] = Settings::Misc::autoStrafe;
-		j["Misc"]["autoStrafeStyle"] = Settings::Misc::autoStrafeStyle;
-		j["Misc"]["fastWalk"] = Settings::Misc::fastWalk;
-		j["Misc"]["edgeJump"] = Settings::Misc::edgeJump;
-		j["Misc"]["optiClamp"] = Settings::Misc::optiClamp;
-		j["Misc"]["optiStrength"] = Settings::Misc::optiStrength;
-		j["Misc"]["optiStyle"] = Settings::Misc::optiStyle;
-		j["Misc"]["optiRandomization"] = Settings::Misc::optiRandomization;
-		j["Misc"]["optiAutoStrafe"] = Settings::Misc::optiAutoStrafe;
-		j["Misc"]["crosshairSize"] = Settings::Misc::crosshairSize;
-		j["Misc"]["thirdperson"] = Settings::Misc::thirdperson;
-		j["Misc"]["thirdpersonKey"] = Settings::Misc::thirdpersonKey;
-		j["Misc"]["thirdpersonKeyStyle"] = Settings::Misc::thirdpersonKeyStyle;
-		j["Misc"]["thirdpersonDistance"] = Settings::Misc::thirdpersonDistance;
-		j["Misc"]["removeHands"] = Settings::Misc::removeHands;
-		j["Misc"]["flashlightSpam"] = Settings::Misc::flashlightSpam;
-		j["Misc"]["useSpam"] = Settings::Misc::useSpam;
-		j["Misc"]["noRecoil"] = Settings::Misc::noRecoil;
-		j["Misc"]["noSpread"] = Settings::Misc::noSpread;
-		j["Misc"]["freeCam"] = Settings::Misc::freeCam;
-		j["Misc"]["freeCamKey"] = Settings::Misc::freeCamKey;
-		j["Misc"]["freeCamKeyStyle"] = Settings::Misc::freeCamKeyStyle;
-		j["Misc"]["freeCamSpeed"] = Settings::Misc::freeCamSpeed;
-		j["Misc"]["hitmarkerSoundEnabled"] = Settings::Misc::hitmarkerSoundEnabled;
-		j["Misc"]["hitmarkerSound"] = Settings::Misc::hitmarkerSound;
-		j["Misc"]["hitmarker"] = Settings::Misc::hitmarker;
-		j["Misc"]["hitmarkerSize"] = Settings::Misc::hitmarkerSize;
-		j["Misc"]["fakeLag"] = Settings::Misc::fakeLag;
-		j["Misc"]["fakeLagTicks"] = Settings::Misc::fakeLagTicks;
-		j["Misc"]["fakeLagKey"] = Settings::Misc::fakeLagKey;
-		j["Misc"]["fakeLagKeyStyle"] = Settings::Misc::fakeLagKeyStyle;
-		j["Misc"]["zoom"] = Settings::Misc::zoom;
-		j["Misc"]["zoomKey"] = Settings::Misc::zoomKey;
-		j["Misc"]["zoomKeyStyle"] = Settings::Misc::zoomKeyStyle;
-		j["Misc"]["zoomFOV"] = Settings::Misc::zoomFOV;
-		j["Misc"]["svAllowCsLua"] = Settings::Misc::svAllowCsLua;
-		j["Misc"]["svCheats"] = Settings::Misc::svCheats;
-		j["Misc"]["rainbowSpeed"] = Settings::Misc::rainbowSpeed;
-		j["Misc"]["scriptDumper"] = Settings::Misc::scriptDumper;
-
-		j["Misc"]["crossHairColor"] = to_jsonfcol(Settings::Misc::crossHairColor);
-
-		j["Triggerbot"]["triggerBot"] = Settings::Triggerbot::triggerBot;
-		j["Triggerbot"]["triggerBotHead"] = Settings::Triggerbot::triggerBotHead;
-		j["Triggerbot"]["triggerBotChest"] = Settings::Triggerbot::triggerBotChest;
-		j["Triggerbot"]["triggerBotStomach"] = Settings::Triggerbot::triggerBotStomach;
-		j["Triggerbot"]["triggerbotFastShoot"] = Settings::Triggerbot::triggerbotFastShoot;
-		std::ofstream o(std::string("C:\\GMOD-SDK-Settings\\") + configName);
-		if (o.bad())return;
-		o << std::setw(4) << j << std::endl;
-
+		}
+		return *setting;
+	}
+	void HandleConfigC(json& j, configHandle handle, Color& setting, Color defaultValue)
+	{
+		switch (handle)
+		{
+		case configHandle::Save:
+			j = to_jsonfcol(setting);
+			break;
+		case configHandle::Load:
+			from_jsonfcol(j, setting);
+			break;
+		case configHandle::Reset:
+			setting = defaultValue;
+			break;
+		}
+	}
+	void HandleConfigCS(json& j, configHandle handle, chamsSetting* setting, chamsSetting defaultValue)
+	{
+		switch (handle)
+		{
+		case configHandle::Save:
+			j = to_jsonchams(*setting);
+			break;
+		case configHandle::Load:
+			*setting = from_jsonchams(j);
+			break;
+		case configHandle::Reset:
+			*setting = defaultValue;
+			break;
+		}
 	}
 
-	void LoadConfig(const char* configName)
+	void _HandleConfig(const char* configName, configHandle handle)
 	{
 		CreateDirectory(L"C:\\GMOD-SDK-Settings", NULL);
-
 		json j;
-		std::ifstream i((std::string("C:\\GMOD-SDK-Settings\\") + configName));
-		if (!i.good()) {
-			SaveConfig(configName);
-			return LoadConfig(configName);
+		if (handle == configHandle::Load)
+		{
+			std::ifstream i((std::string("C:\\GMOD-SDK-Settings\\") + configName));
+			if (!i.good()) {
+				_HandleConfig(configName, configHandle::Save);
+				return _HandleConfig(configName, configHandle::Load);
+			}
+			i >> j;
 		}
-		i >> j;
 
 		try {
-			Settings::menuKey = j["Globals"]["menuKey"];
-			Settings::menuKeyStyle = j["Globals"]["menuKeyStyle"];
-			from_jsonfcol(j["Globals"]["menuColor"], Settings::menuColor);
-			Globals::Untrusted = j["Globals"]["untrusted"];
+			HandleConfigItem(j["Globals"]["menuKey"], handle, &Settings::menuKey, KEY_INSERT);
+			HandleConfigItem(j["Globals"]["menuKeyStyle"], handle, &Settings::menuKeyStyle, 1);
+			HandleConfigC(j["Globals"]["menuColor"], handle, Settings::menuColor, Color(0, 255, 0));
+			HandleConfigItem(j["Globals"]["untrusted"], handle, &Globals::Untrusted, false);
 
-			Settings::Chams::playerChamsSettings = from_jsonchams(j["Chams"]["playerChams"]);
-			Settings::Chams::teamMateSettings = from_jsonchams(j["Chams"]["teamMate"]);
-			Settings::Chams::ragdollChamsSettings = from_jsonchams(j["Chams"]["ragdollChams"]);
-			Settings::Chams::weaponChamsSettings = from_jsonchams(j["Chams"]["weaponChams"]);
-			Settings::Chams::npcChamsSettings = from_jsonchams(j["Chams"]["npcChams"]);
-			Settings::Chams::armChamsSettings = from_jsonchams(j["Chams"]["armChams"]);
-			Settings::Chams::localPlayerChamsSettings = from_jsonchams(j["Chams"]["localPlayerChams"]);
-			Settings::Chams::netLocalChamsSettings = from_jsonchams(j["Chams"]["netLocalChamsSettings"]);
-			
-			Settings::ESP::infosEmplacement = j["ESP"]["infosEmplacement"];
-			Settings::ESP::espDormant = j["ESP"]["espDormant"];
-			Settings::ESP::espBoundingBox = j["ESP"]["espBoundingBox"];
-			from_jsonfcol(j["ESP"]["espBoundingBoxColor"], Settings::ESP::espBoundingBoxColor);
-			Settings::ESP::espHealthBar = j["ESP"]["espHealthBar"];
-			Settings::ESP::espName = j["ESP"]["espName"];
-			Settings::ESP::weaponText = j["ESP"]["weaponText"];
-			Settings::ESP::weaponAmmo = j["ESP"]["weaponAmmo"];
-			Settings::ESP::espDistance = j["ESP"]["espDistance"];
-			Settings::ESP::skeletonEsp = j["ESP"]["skeletonEsp"];
-			Settings::ESP::skeletonDetails = j["ESP"]["skeletonDetails"];
-			from_jsonfcol(j["ESP"]["skeletonEspColor"], Settings::ESP::skeletonEspColor);
-			from_jsonfcol(j["ESP"]["espDistanceColor"], Settings::ESP::espDistanceColor);
-			from_jsonfcol(j["ESP"]["espAmmoColor"], Settings::ESP::espAmmoColor);
-			from_jsonfcol(j["ESP"]["espWeaponColor"], Settings::ESP::espWeaponColor);
-			from_jsonfcol(j["ESP"]["espNameColor"], Settings::ESP::espNameColor);
-			from_jsonfcol(j["ESP"]["espHealthColor"], Settings::ESP::espHealthColor);
-			Settings::ESP::espShapeInt = j["ESP"]["espShapeInt"];
-			Settings::ESP::entEsp = j["ESP"]["entEsp"];
-			Settings::ESP::onlyFriends = j["ESP"]["onlyFriends"];
+			HandleConfigCS(j["Chams"]["playerChams"], handle, &Settings::Chams::playerChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["teamMateSettings"], handle, &Settings::Chams::teamMateSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["ragdollChamsSettings"], handle, &Settings::Chams::ragdollChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["weaponChamsSettings"], handle, &Settings::Chams::weaponChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["npcChamsSettings"], handle, &Settings::Chams::npcChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["armChamsSettings"], handle, &Settings::Chams::armChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["localPlayerChamsSettings"], handle, &Settings::Chams::localPlayerChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
+			HandleConfigCS(j["Chams"]["netLocalChamsSettings"], handle, &Settings::Chams::netLocalChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
 
-			Settings::Visuals::fovEnabled = j["Visuals"]["fovEnabled"];
-			Settings::Visuals::fov = j["Visuals"]["fov"];
-			Settings::Visuals::viewModelFOV = j["Visuals"]["viewModelFOV"];
-			Settings::Visuals::noVisualRecoil = j["Visuals"]["noVisualRecoil"];
-			from_jsonfcol(j["Visuals"]["worldColor"], Settings::Visuals::worldColor);
-			Settings::Visuals::changeWorldColor = j["Visuals"]["changeWorldColor"];
-			Settings::Visuals::disableSkyBox = j["Visuals"]["disableSkyBox"];
-			Settings::Visuals::fullBright = j["Visuals"]["fullBright"];
-			Settings::AntiAim::currentAntiAimPitch = j["AntiAim"]["currentAntiAimPitch"];
-			Settings::AntiAim::currentAntiAimYaw = j["AntiAim"]["currentAntiAimYaw"];
-			Settings::AntiAim::enableAntiAim = j["AntiAim"]["enableAntiAim"];
-			Settings::AntiAim::antiAimKey = j["AntiAim"]["antiAimKey"];
-			Settings::AntiAim::antiAimKeyStyle = j["AntiAim"]["antiAimKeyStyle"];
-			Settings::AntiAim::fakePitch = j["AntiAim"]["fakePitch"];
-			 
-			Settings::Aimbot::aimbotFOV = j["Aimbot"]["aimbotFOV"];
-			Settings::Aimbot::silentAim = j["Aimbot"]["silentAim"];
-			Settings::Aimbot::lockOnTarget = j["Aimbot"]["lockOnTarget"];
-			Settings::Aimbot::aimbotKey = j["Aimbot"]["aimbotKey"];
-			Settings::Aimbot::aimbotKeyStyle = j["Aimbot"]["aimbotKeyStyle"];
-			Settings::Aimbot::enableAimbot = j["Aimbot"]["enableAimbot"];
-			Settings::Aimbot::aimbotHitbox = j["Aimbot"]["aimbotHitbox"];
-			Settings::Aimbot::aimbotAutoWall = j["Aimbot"]["aimbotAutoWall"];
-			Settings::Aimbot::aimbotAutoFire = j["Aimbot"]["aimbotAutoFire"];
-			Settings::Aimbot::aimbotMinDmg = j["Aimbot"]["aimbotMinDmg"];
-			Settings::Aimbot::aimbotFovEnabled = j["Aimbot"]["aimbotFovEnabled"];
-			Settings::Aimbot::drawAimbotFov = j["Aimbot"]["drawAimbotFov"];
-			Settings::Aimbot::aimbotSelection = j["Aimbot"]["aimbotSelection"];
-			Settings::Aimbot::drawAimbotHeadlines = j["Aimbot"]["drawAimbotHeadlines"];
-			Settings::Aimbot::aimAtTeammates = j["Aimbot"]["aimAtTeammates"];
-			Settings::Aimbot::aimAtFriends = j["Aimbot"]["aimAtFriends"];
-			Settings::Aimbot::onlyAimAtFriends = j["Aimbot"]["onlyAimAtFriends"];
-			Settings::Aimbot::pistolFastShoot = j["Aimbot"]["pistolFastShoot"];
-			Settings::Aimbot::smoothing = j["Aimbot"]["smoothing"];
-			Settings::Aimbot::smoothSteps = j["Aimbot"]["smoothSteps"];
-			from_jsonfcol( j["Aimbot"]["fovColor"], Settings::Aimbot::fovColor);
+			HandleConfigItem(j["ESP"]["infosEmplacement"], handle, &Settings::ESP::infosEmplacement, NULL);
+			HandleConfigItem(j["ESP"]["espDormant"], handle, &Settings::ESP::espDormant, false);
+			HandleConfigItem(j["ESP"]["espBoundingBox"], handle, &Settings::ESP::espBoundingBox, false);
+			HandleConfigC(j["ESP"]["espBoundingBoxColor"], handle, Settings::ESP::espBoundingBoxColor, Color(255, 255, 255));
+			HandleConfigItem(j["ESP"]["espHealthBar"], handle, &Settings::ESP::espHealthBar, false);
+			HandleConfigItem(j["ESP"]["espName"], handle, &Settings::ESP::espName, false);
+			HandleConfigItem(j["ESP"]["weaponText"], handle, &Settings::ESP::weaponText, false);
+			HandleConfigItem(j["ESP"]["weaponAmmo"], handle, &Settings::ESP::weaponAmmo, false);
+			HandleConfigItem(j["ESP"]["espDistance"], handle, &Settings::ESP::espDistance, false);
+			HandleConfigItem(j["ESP"]["skeletonEsp"], handle, &Settings::ESP::skeletonEsp, false);
+			HandleConfigItem(j["ESP"]["skeletonDetails"], handle, &Settings::ESP::skeletonDetails, false);
+			HandleConfigC(j["ESP"]["skeletonEspColor"], handle, Settings::ESP::skeletonEspColor, Color(255, 255, 255));
+			HandleConfigC(j["ESP"]["espDistanceColor"], handle, Settings::ESP::espDistanceColor, Color(255, 255, 255));
+			HandleConfigC(j["ESP"]["espAmmoColor"], handle, Settings::ESP::espAmmoColor, Color(255, 255, 255));
+			HandleConfigC(j["ESP"]["espWeaponColor"], handle, Settings::ESP::espWeaponColor, Color(255, 255, 255));
+			HandleConfigC(j["ESP"]["espNameColor"], handle, Settings::ESP::espNameColor, Color(255, 255, 255));
+			HandleConfigC(j["ESP"]["espHealthColor"], handle, Settings::ESP::espHealthColor, Color(255, 255, 255));
+			HandleConfigItem(j["ESP"]["espShapeInt"], handle, &Settings::ESP::espShapeInt, NULL);
+			HandleConfigItem(j["ESP"]["entEsp"], handle, &Settings::ESP::entEsp, false);
+			HandleConfigItem(j["ESP"]["onlyFriends"], handle, &Settings::ESP::onlyFriends, false);
 
-			Settings::Misc::drawSpectators = j["Misc"]["drawSpectators"];
-			Settings::Misc::drawCrosshair = j["Misc"]["drawCrosshair"];
-			Settings::Misc::quickStop = j["Misc"]["quickStop"];
-			Settings::Misc::killMessage = j["Misc"]["killMessage"];
-			Settings::Misc::killMessageOOC = j["Misc"]["killMessageOOC"];
-			Settings::Misc::bunnyHop = j["Misc"]["bunnyHop"];
-			Settings::Misc::autoStrafe = j["Misc"]["autoStrafe"];
-			Settings::Misc::autoStrafeStyle = j["Misc"]["autoStrafeStyle"];
-			Settings::Misc::fastWalk = j["Misc"]["fastWalk"];
-			Settings::Misc::edgeJump = j["Misc"]["edgeJump"];
-			Settings::Misc::optiClamp = j["Misc"]["optiClamp"];
-			Settings::Misc::optiStrength = j["Misc"]["optiStrength"];
-			Settings::Misc::optiStyle = j["Misc"]["optiStyle"];
-			Settings::Misc::optiRandomization = j["Misc"]["optiRandomization"];
-			Settings::Misc::optiAutoStrafe = j["Misc"]["optiAutoStrafe"];
-			Settings::Misc::crosshairSize = j["Misc"]["crosshairSize"];
-			Settings::Misc::thirdperson = j["Misc"]["thirdperson"];
-			Settings::Misc::thirdpersonKey = j["Misc"]["thirdpersonKey"];
-			Settings::Misc::thirdpersonKeyStyle = j["Misc"]["thirdpersonKeyStyle"];
-			Settings::Misc::thirdpersonDistance = j["Misc"]["thirdpersonDistance"];
-			Settings::Misc::removeHands = j["Misc"]["removeHands"];
-			Settings::Misc::flashlightSpam = j["Misc"]["flashlightSpam"];
-			Settings::Misc::useSpam = j["Misc"]["useSpam"];
-			Settings::Misc::noRecoil = j["Misc"]["noRecoil"];
-			Settings::Misc::noSpread = j["Misc"]["noSpread"];
-			Settings::Misc::freeCam = j["Misc"]["freeCam"];
-			Settings::Misc::freeCamKey = j["Misc"]["freeCamKey"];
-			Settings::Misc::freeCamKeyStyle = j["Misc"]["freeCamKeyStyle"];
-			Settings::Misc::freeCamSpeed = j["Misc"]["freeCamSpeed"];
-			Settings::Misc::hitmarkerSoundEnabled = j["Misc"]["hitmarkerSoundEnabled"];
-			Settings::Misc::hitmarkerSound = j["Misc"]["hitmarkerSound"];
-			Settings::Misc::hitmarker = j["Misc"]["hitmarker"];
-			Settings::Misc::hitmarkerSize = j["Misc"]["hitmarkerSize"];
-			Settings::Misc::fakeLag = j["Misc"]["fakeLag"];
-			Settings::Misc::fakeLagTicks = j["Misc"]["fakeLagTicks"];
-			Settings::Misc::fakeLagKey = j["Misc"]["fakeLagKey"];
-			Settings::Misc::fakeLagKeyStyle = j["Misc"]["fakeLagKeyStyle"];
-			Settings::Misc::zoom = j["Misc"]["zoom"];
-			Settings::Misc::zoomKey = j["Misc"]["zoomKey"];
-			Settings::Misc::zoomKeyStyle = j["Misc"]["zoomKeyStyle"];
-			Settings::Misc::zoomFOV = j["Misc"]["zoomFOV"];
-			Settings::Misc::svAllowCsLua = j["Misc"]["svAllowCsLua"];
-			Settings::Misc::svCheats = j["Misc"]["svCheats"];
-			Settings::Misc::rainbowSpeed = j["Misc"]["rainbowSpeed"];
-			Settings::Misc::scriptDumper = j["Misc"]["scriptDumper"];
-			from_jsonfcol(j["Misc"]["crossHairColor"], Settings::Misc::crossHairColor);
+			HandleConfigItem(j["Visuals"]["fovEnabled"], handle, &Settings::Visuals::fovEnabled, false);
+			HandleConfigItem(j["Visuals"]["fov"], handle, &Settings::Visuals::fov, -1.f);
+			HandleConfigItem(j["Visuals"]["viewModelFOV"], handle, &Settings::Visuals::viewModelFOV, -1.f);
+			HandleConfigItem(j["Visuals"]["noVisualRecoil"], handle, &Settings::Visuals::noVisualRecoil, false);
+			HandleConfigC(j["Visuals"]["worldColor"], handle, Settings::Visuals::worldColor, Color(255, 255, 255));
+			HandleConfigItem(j["Visuals"]["changeWorldColor"], handle, &Settings::Visuals::changeWorldColor, false);
+			HandleConfigItem(j["Visuals"]["disableSkyBox"], handle, &Settings::Visuals::disableSkyBox, false);
+			HandleConfigItem(j["Visuals"]["fullBright"], handle, &Settings::Visuals::fullBright, false);
 
-			Settings::Triggerbot::triggerBot = j["Triggerbot"]["triggerBot"];
-			Settings::Triggerbot::triggerBotHead = j["Triggerbot"]["triggerBotHead"];
-			Settings::Triggerbot::triggerBotChest = j["Triggerbot"]["triggerBotChest"];
-			Settings::Triggerbot::triggerBotStomach = j["Triggerbot"]["triggerBotStomach"];
-			Settings::Triggerbot::triggerbotFastShoot = j["Triggerbot"]["triggerbotFastShoot"];
+			HandleConfigItem(j["AntiAim"]["currentAntiAimPitch"], handle, &Settings::AntiAim::currentAntiAimPitch, NULL);
+			HandleConfigItem(j["AntiAim"]["currentAntiAimYaw"], handle, &Settings::AntiAim::currentAntiAimYaw, NULL);
+			HandleConfigItem(j["AntiAim"]["enableAntiAim"], handle, &Settings::AntiAim::enableAntiAim, false);
+			HandleConfigItem(j["AntiAim"]["antiAimKey"], handle, &Settings::AntiAim::antiAimKey, KEY_NONE);
+			HandleConfigItem(j["AntiAim"]["antiAimKeyStyle"], handle, &Settings::AntiAim::antiAimKeyStyle, 1);
+			HandleConfigItem(j["AntiAim"]["fakePitch"], handle, &Settings::AntiAim::fakePitch, 0.f);
+
+			HandleConfigItem(j["Aimbot"]["aimbotFOV"], handle, &Settings::Aimbot::aimbotFOV, 5.f);
+			HandleConfigItem(j["Aimbot"]["silentAim"], handle, &Settings::Aimbot::silentAim, false);
+			HandleConfigItem(j["Aimbot"]["lockOnTarget"], handle, &Settings::Aimbot::lockOnTarget, false);
+			HandleConfigItem(j["Aimbot"]["aimbotKey"], handle, &Settings::Aimbot::aimbotKey, KEY_NONE);
+			HandleConfigItem(j["Aimbot"]["aimbotKeyStyle"], handle, &Settings::Aimbot::aimbotKeyStyle, NULL);
+			HandleConfigItem(j["Aimbot"]["enableAimbot"], handle, &Settings::Aimbot::enableAimbot, false);
+			HandleConfigItem(j["Aimbot"]["aimbotHitbox"], handle, &Settings::Aimbot::aimbotHitbox, NULL);
+			HandleConfigItem(j["Aimbot"]["aimbotAutoWall"], handle, &Settings::Aimbot::aimbotAutoWall, false);
+			HandleConfigItem(j["Aimbot"]["aimbotAutoFire"], handle, &Settings::Aimbot::aimbotAutoFire, false);
+			HandleConfigItem(j["Aimbot"]["aimbotMinDmg"], handle, &Settings::Aimbot::aimbotMinDmg, 1.f);
+			HandleConfigItem(j["Aimbot"]["aimbotFovEnabled"], handle, &Settings::Aimbot::aimbotFovEnabled, false);
+			HandleConfigItem(j["Aimbot"]["drawAimbotFov"], handle, &Settings::Aimbot::drawAimbotFov, false);
+			HandleConfigItem(j["Aimbot"]["aimbotSelection"], handle, &Settings::Aimbot::aimbotSelection, NULL);
+			HandleConfigItem(j["Aimbot"]["drawAimbotHeadlines"], handle, &Settings::Aimbot::drawAimbotHeadlines, false);
+			HandleConfigItem(j["Aimbot"]["aimAtTeammates"], handle, &Settings::Aimbot::aimAtTeammates, false);
+			HandleConfigItem(j["Aimbot"]["aimAtFriends"], handle, &Settings::Aimbot::aimAtFriends, false);
+			HandleConfigItem(j["Aimbot"]["onlyAimAtFriends"], handle, &Settings::Aimbot::onlyAimAtFriends, false);
+			HandleConfigItem(j["Aimbot"]["pistolFastShoot"], handle, &Settings::Aimbot::pistolFastShoot, false);
+			HandleConfigItem(j["Aimbot"]["smoothing"], handle, &Settings::Aimbot::smoothing, false);
+			HandleConfigItem(j["Aimbot"]["smoothSteps"], handle, &Settings::Aimbot::smoothSteps, 1.f);
+			HandleConfigC(j["Aimbot"]["fovColor"], handle, Settings::Aimbot::fovColor, Color(255, 255, 255));
+
+			HandleConfigItem(j["Misc"]["drawSpectators"], handle, &Settings::Misc::drawSpectators, false);
+			HandleConfigItem(j["Misc"]["drawCrosshair"], handle, &Settings::Misc::drawCrosshair, false);
+			HandleConfigItem(j["Misc"]["quickStop"], handle, &Settings::Misc::quickStop, false);
+			HandleConfigItem(j["Misc"]["killMessage"], handle, &Settings::Misc::killMessage, false);
+			HandleConfigItem(j["Misc"]["killMessageOOC"], handle, &Settings::Misc::killMessageOOC, false);
+			HandleConfigItem(j["Misc"]["bunnyHop"], handle, &Settings::Misc::bunnyHop, false);
+			HandleConfigItem(j["Misc"]["autoStrafe"], handle, &Settings::Misc::autoStrafe, false);
+			HandleConfigItem(j["Misc"]["autoStrafeStyle"], handle, &Settings::Misc::autoStrafeStyle, NULL);
+			HandleConfigItem(j["Misc"]["fastWalk"], handle, &Settings::Misc::fastWalk, false);
+			HandleConfigItem(j["Misc"]["edgeJump"], handle, &Settings::Misc::edgeJump, false);
+			HandleConfigItem(j["Misc"]["optiClamp"], handle, &Settings::Misc::optiClamp, false);
+			HandleConfigItem(j["Misc"]["optiStrength"], handle, &Settings::Misc::optiStrength, 100.f);
+			HandleConfigItem(j["Misc"]["optiStyle"], handle, &Settings::Misc::optiStyle, false);
+			HandleConfigItem(j["Misc"]["optiRandomization"], handle, &Settings::Misc::optiRandomization, false);
+			HandleConfigItem(j["Misc"]["optiAutoStrafe"], handle, &Settings::Misc::optiAutoStrafe, false);
+			HandleConfigItem(j["Misc"]["crosshairSize"], handle, &Settings::Misc::crosshairSize, 5.f);
+			HandleConfigItem(j["Misc"]["thirdperson"], handle, &Settings::Misc::thirdperson, false);
+			HandleConfigItem(j["Misc"]["thirdpersonKey"], handle, &Settings::Misc::thirdpersonKey, KEY_NONE);
+			HandleConfigItem(j["Misc"]["thirdpersonKeyStyle"], handle, &Settings::Misc::thirdpersonKeyStyle, 1);
+			HandleConfigItem(j["Misc"]["thirdpersonDistance"], handle, &Settings::Misc::thirdpersonDistance, 20.f);
+			HandleConfigItem(j["Misc"]["removeHands"], handle, &Settings::Misc::removeHands, false);
+			HandleConfigItem(j["Misc"]["flashlightSpam"], handle, &Settings::Misc::flashlightSpam, false);
+			HandleConfigItem(j["Misc"]["useSpam"], handle, &Settings::Misc::useSpam, false);
+			HandleConfigItem(j["Misc"]["noRecoil"], handle, &Settings::Misc::noRecoil, false);
+			HandleConfigItem(j["Misc"]["noSpread"], handle, &Settings::Misc::noSpread, false);
+			HandleConfigItem(j["Misc"]["freeCam"], handle, &Settings::Misc::freeCam, false);
+			HandleConfigItem(j["Misc"]["freeCamKey"], handle, &Settings::Misc::freeCamKey, KEY_NONE);
+			HandleConfigItem(j["Misc"]["freeCamKeyStyle"], handle, &Settings::Misc::freeCamKeyStyle, 1);
+			HandleConfigItem(j["Misc"]["freeCamSpeed"], handle, &Settings::Misc::freeCamSpeed, 1.f);
+			HandleConfigItem(j["Misc"]["hitmarkerSoundEnabled"], handle, &Settings::Misc::hitmarkerSoundEnabled, false);
+			HandleConfigItem(j["Misc"]["hitmarkerSound"], handle, &Settings::Misc::hitmarkerSound, NULL);
+			HandleConfigItem(j["Misc"]["hitmarker"], handle, &Settings::Misc::hitmarker, false);
+			HandleConfigItem(j["Misc"]["hitmarkerSize"], handle, &Settings::Misc::hitmarkerSize, 10.f);
+			HandleConfigItem(j["Misc"]["fakeLag"], handle, &Settings::Misc::fakeLag, false);
+			HandleConfigItem(j["Misc"]["fakeLagTicks"], handle, &Settings::Misc::fakeLagTicks, 1.f);
+			HandleConfigItem(j["Misc"]["fakeLagKey"], handle, &Settings::Misc::fakeLagKey, KEY_NONE);
+			HandleConfigItem(j["Misc"]["fakeLagKeyStyle"], handle, &Settings::Misc::fakeLagKeyStyle, 1);
+			HandleConfigItem(j["Misc"]["zoom"], handle, &Settings::Misc::zoom, false);
+			HandleConfigItem(j["Misc"]["zoomKey"], handle, &Settings::Misc::zoomKey, KEY_NONE);
+			HandleConfigItem(j["Misc"]["zoomKeyStyle"], handle, &Settings::Misc::zoomKeyStyle, 1);
+			HandleConfigItem(j["Misc"]["zoomFOV"], handle, &Settings::Misc::zoomFOV, 90.f);
+			HandleConfigItem(j["Misc"]["svCheats"], handle, &Settings::Misc::svCheats, false);
+			HandleConfigItem(j["Misc"]["svAllowCsLua"], handle, &Settings::Misc::svAllowCsLua, false);
+			HandleConfigItem(j["Misc"]["rainbowSpeed"], handle, &Settings::Misc::rainbowSpeed, 1.f);
+			HandleConfigItem(j["Misc"]["scriptDumper"], handle, &Settings::Misc::scriptDumper, false);
+			HandleConfigC(j["Misc"]["crossHairColor"], handle, Settings::Misc::crossHairColor, Color(255, 255, 255));
+
+			HandleConfigItem(j["Triggerbot"]["triggerBot"], handle, &Settings::Triggerbot::triggerBot, false);
+			HandleConfigItem(j["Triggerbot"]["triggerBotHead"], handle, &Settings::Triggerbot::triggerBotHead, false);
+			HandleConfigItem(j["Triggerbot"]["triggerBotChest"], handle, &Settings::Triggerbot::triggerBotChest, false);
+			HandleConfigItem(j["Triggerbot"]["triggerBotStomach"], handle, &Settings::Triggerbot::triggerBotStomach, false);
+			HandleConfigItem(j["Triggerbot"]["triggerbotFastShoot"], handle, &Settings::Triggerbot::triggerbotFastShoot, false);
 		}
-		catch(...)
+		catch (...)
 		{
-			SaveConfig(configName);
-			return LoadConfig(configName);
+			_HandleConfig(configName, configHandle::Save);
+			return _HandleConfig(configName, configHandle::Load);
 		}
-		std::ofstream o(std::string("settings\\") + configName);
-		if (o.bad())return;
-		o << std::setw(4) << j << std::endl;
-
+		if (handle == configHandle::Save)
+		{
+			std::ofstream o(std::string("C:\\GMOD-SDK-Settings\\") + configName);
+			if (o.bad())return;
+			o << std::setw(4) << j << std::endl;
+		}
 	}
-	void ResetConfig()
-	{
-		// I use NULL because it's 0, and can be a bool at the same time.
-		Settings::menuKey = KEY_INSERT;
-		Settings::menuKeyStyle = 1;
-		Settings::menuColor = Color(0,255,0);
-		Globals::Untrusted = NULL;
 
-		Settings::Chams::playerChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::teamMateSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::ragdollChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::weaponChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::npcChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::armChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::localPlayerChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		Settings::Chams::netLocalChamsSettings = chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0);
-		
-		Settings::ESP::infosEmplacement = NULL;
-		Settings::ESP::espDormant = NULL;
-		Settings::ESP::espBoundingBox = NULL;
-		Settings::ESP::espBoundingBoxColor = Color(255, 255, 255);
-		Settings::ESP::espHealthBar = NULL;
-		Settings::ESP::espName = NULL;
-		Settings::ESP::weaponText = NULL;
-		Settings::ESP::weaponAmmo = NULL;
-		Settings::ESP::espDistance = NULL;
-		Settings::ESP::skeletonEsp = NULL;
-		Settings::ESP::skeletonDetails = NULL;
-		Settings::ESP::skeletonEspColor = Color(255, 255, 255);
-		Settings::ESP::espDistanceColor = Color(255, 255, 255);
-		Settings::ESP::espAmmoColor = Color(255, 255, 255);
-		Settings::ESP::espWeaponColor = Color(255, 255, 255);
-		Settings::ESP::espNameColor = Color(255, 255, 255);
-		Settings::ESP::espHealthColor = Color(255, 255, 255);
-		Settings::ESP::espShapeInt = NULL;
-		Settings::ESP::entEsp = NULL;
-		Settings::ESP::onlyFriends = NULL;
-
-		Settings::Visuals::fovEnabled = false;
-		Settings::Visuals::fov = -1.f;
-		Settings::Visuals::viewModelFOV = -1.f;
-		Settings::Visuals::noVisualRecoil = NULL;
-		Settings::Visuals::worldColor = Color(255, 255, 255);
-		Settings::Visuals::changeWorldColor = NULL;
-		Settings::Visuals::disableSkyBox = NULL;
-		Settings::Visuals::fullBright = NULL;
-
-		Settings::AntiAim::currentAntiAimPitch = NULL;
-		Settings::AntiAim::currentAntiAimYaw = NULL;
-		Settings::AntiAim::enableAntiAim = NULL;
-		Settings::AntiAim::antiAimKey = KEY_NONE;
-		Settings::AntiAim::antiAimKeyStyle = 1;
-		Settings::AntiAim::fakePitch = NULL;
-
-		Settings::Aimbot::aimbotFOV = 5.f;
-		Settings::Aimbot::silentAim = NULL;
-		Settings::Aimbot::lockOnTarget = NULL;
-		Settings::Aimbot::aimbotKeyStyle = KEY_NONE;
-		Settings::Aimbot::aimbotKeyStyle = NULL;
-		Settings::Aimbot::enableAimbot = NULL;
-		Settings::Aimbot::aimbotHitbox = NULL;
-		Settings::Aimbot::aimbotAutoWall = NULL;
-		Settings::Aimbot::aimbotAutoFire = NULL;
-		Settings::Aimbot::aimbotMinDmg = 1.f;
-		Settings::Aimbot::aimbotFovEnabled = NULL;
-		Settings::Aimbot::drawAimbotFov = NULL;
-		Settings::Aimbot::aimbotSelection = NULL;
-		Settings::Aimbot::drawAimbotHeadlines = NULL;
-		Settings::Aimbot::aimAtTeammates = NULL;
-		Settings::Aimbot::aimAtFriends = NULL;
-		Settings::Aimbot::onlyAimAtFriends = NULL;
-		Settings::Aimbot::pistolFastShoot = NULL;
-		Settings::Aimbot::smoothing = NULL;
-		Settings::Aimbot::smoothSteps = 1;
-		Settings::Aimbot::fovColor = Color(255,255,255);
-
-		Settings::Misc::drawSpectators = NULL;
-		Settings::Misc::drawCrosshair = NULL;
-		Settings::Misc::quickStop = NULL;
-		Settings::Misc::killMessage = NULL;
-		Settings::Misc::killMessageOOC = NULL;
-		Settings::Misc::bunnyHop = NULL;
-		Settings::Misc::autoStrafe = NULL;
-		Settings::Misc::autoStrafeStyle = NULL;
-		Settings::Misc::fastWalk = NULL;
-		Settings::Misc::edgeJump = NULL;
-		Settings::Misc::optiClamp = NULL;
-		Settings::Misc::optiStrength = 100.f;
-		Settings::Misc::optiStyle = NULL;
-		Settings::Misc::optiRandomization = NULL;
-		Settings::Misc::optiAutoStrafe = NULL;
-		Settings::Misc::crosshairSize = 5.f;
-		Settings::Misc::thirdperson = NULL;
-		Settings::Misc::thirdpersonKey = KEY_NONE;
-		Settings::Misc::thirdpersonKeyStyle = 1;
-		Settings::Misc::thirdpersonDistance = 20.f;
-		Settings::Misc::removeHands = NULL;
-		Settings::Misc::flashlightSpam = NULL;
-		Settings::Misc::useSpam = NULL;
-		Settings::Misc::noRecoil = NULL;
-		Settings::Misc::noSpread = NULL;
-		Settings::Misc::freeCam = NULL;
-		Settings::Misc::freeCamKey = KEY_NONE;
-		Settings::Misc::freeCamKeyStyle = 1;
-		Settings::Misc::freeCamSpeed = 1.f;
-		Settings::Misc::hitmarkerSoundEnabled = NULL;
-		Settings::Misc::hitmarkerSound = NULL;
-		Settings::Misc::hitmarker = NULL;
-		Settings::Misc::hitmarkerSize = 10.f;
-		Settings::Misc::fakeLag = NULL;
-		Settings::Misc::fakeLagTicks = 1;
-		Settings::Misc::fakeLagKey = KEY_NONE;
-		Settings::Misc::fakeLagKeyStyle = 1;
-		Settings::Misc::zoom = NULL;
-		Settings::Misc::zoomKey = KEY_NONE;
-		Settings::Misc::zoomKeyStyle = 1;
-		Settings::Misc::zoomFOV = 90.f;
-		Settings::Misc::svCheats = NULL;
-		Settings::Misc::svAllowCsLua = NULL;
-		Settings::Misc::rainbowSpeed = 1.f;
-		Settings::Misc::scriptDumper = NULL;
-		Settings::Misc::crossHairColor = Color(255, 255, 255);
-
-		Settings::Triggerbot::triggerBot = NULL;
-		Settings::Triggerbot::triggerBotHead = NULL;
-		Settings::Triggerbot::triggerBotChest = NULL;
-		Settings::Triggerbot::triggerBotStomach = NULL;
-		Settings::Triggerbot::triggerbotFastShoot = NULL;
+	// Why make this in two separate functions? Because oyu cannot use __try in functions that require object unwinding...
+	void HandleConfig(const char* configName, configHandle handle) {
+		__try {
+			_HandleConfig(configName, handle);
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			_HandleConfig(configName, configHandle::Save);
+			return _HandleConfig(configName, configHandle::Load);
+		}
 	}
 }

@@ -20,10 +20,24 @@ IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPAR
 WNDPROC oWndProc;
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
+	static bool lastState = false;
+	if (wParam == InputSystem->ButtonCodeToVirtualKey(Settings::menuKey))
+	{
+		if (uMsg == WM_KEYDOWN && lastState == false) {
+			lastState = true;
+			Globals::openMenu = !Globals::openMenu;
+		}
+		else if (uMsg == WM_KEYUP)
+		{
+			lastState = false;
+		}
+	}
+
 	if (Globals::openMenu) {
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 		return true;
 	}
+	//bool tempState = GetAsyncKeyState(InputSystem->ButtonCodeToVirtualKey(Settings::menuKey));
 
 	return CallWindowProcA(oWndProc, hWnd, uMsg, wParam, lParam);
 }
@@ -79,12 +93,6 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		initialized = true;
 	}
-	bool tempState = GetAsyncKeyState(InputSystem->ButtonCodeToVirtualKey(Settings::menuKey));
-	
-	static bool lastState = false;
-	if (tempState != lastState && tempState)
-		Globals::openMenu = !Globals::openMenu;
-	lastState = tempState;
 
 	// https://www.unknowncheats.me/forum/3191157-post4.html Thanks to copypaste for this :)
 	ITexture* rt = nullptr;
