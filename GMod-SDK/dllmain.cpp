@@ -97,7 +97,13 @@ void Main()
     Globals::deathEvent = new DeathEvent();
     GameEventManager->AddListener((IGameEventListener2*)Globals::damageEvent, "player_hurt", false);
     GameEventManager->AddListener((IGameEventListener2*)Globals::deathEvent, "entity_killed", false);
-        
+
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawAimbot, "A", true, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawVisuals, "C", false, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawMisc, "D", false, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawFilters, "F", false, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawLua, "LUA", false, false, true });
+
     // This can be easily detected(for instance, perphead will ban you for it), so disabled unless you need it and researched enough the server you're on.
     if (false)
     {

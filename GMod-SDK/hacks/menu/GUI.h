@@ -25,6 +25,16 @@ extern ImFont* executorFont;
 
 namespace GUI
 {
+	typedef void(*Draw)();
+	struct GUICategory
+	{
+		Draw m_pCategoryHandler;
+		const char* m_szCategoryName;
+		bool m_bIsOpen;
+		bool m_bHasIcon;
+		bool m_bIsVisible;
+	};
+
 	const char* items[] = {
 		("Players"),
 		("Ragdolls"),
@@ -103,6 +113,7 @@ namespace GUI
 		"Menu",
 	};
 
+	std::vector<GUICategory> categories;
 
 	void DrawVisuals()
 	{
