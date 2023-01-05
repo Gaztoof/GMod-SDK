@@ -51,7 +51,7 @@ public:
             std::cout << outputString.c_str() << std::endl;
             ImGuiToast toast(ImGuiToastType_None, 3000); // <-- content can also be passed here as above
             toast.set_title("Damage-Event");
-			toast.set_content(outputString.c_str())
+            toast.set_content(outputString.c_str());
             ImGui::InsertNotification(toast);
         }
 
