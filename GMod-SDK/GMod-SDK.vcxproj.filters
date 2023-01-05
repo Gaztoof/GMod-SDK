@@ -365,5 +365,14 @@
     <ClInclude Include="hooks\Paint.h">
       <Filter>Header Files\hooks</Filter>
     </ClInclude>
+    <ClInclude Include="ImGui\imgui-notify\fa_solid_900.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui-notify\font_awesome_5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui-notify\imgui_notify.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

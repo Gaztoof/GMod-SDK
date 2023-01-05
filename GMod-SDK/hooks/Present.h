@@ -4,6 +4,7 @@
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_dx9.h"
 #include "../ImGui/imgui_impl_win32.h"
+#include "../ImGui/imgui-notify/imgui_notify.h"
 #include "../globals.hpp"
 #include "../hacks/menu/GUI.h"
 #include "../hacks/menu/drawing.h"
@@ -81,7 +82,11 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		style = &ImGui::GetStyle();
 		ImGuiIO& io = ImGui::GetIO();
+		ImFontConfig font_cfg;
+		font_cfg.FontDataOwnedByAtlas = false;
 
+		io.Fonts->AddFontFromMemoryTTF((void*)verdanaBytes, sizeof(verdanaBytes), 11.f, &font_cfg);
+		ImGui::MergeIconsWithLatestFont(11.f, false);
 		io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 		menuFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBytes, sizeof(verdanaBytes), 11);
 		boldMenuFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBoldBytes, sizeof(verdanaBoldBytes), 11);
@@ -125,6 +130,13 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.f); // Round borders
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(43.f / 255.f, 43.f / 255.f, 43.f / 255.f, 100.f / 255.f)); // Background color
+	ImGui::RenderNotifications(); // <-- Here we render all notifications
+	ImGui::PopStyleVar(1); // Don't forget to Pop()
+	ImGui::PopStyleColor(1);
+
 	if (EngineClient->IsInGame())
 	{
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
