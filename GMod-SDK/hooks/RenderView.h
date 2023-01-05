@@ -26,8 +26,8 @@ CViewSetup& view, int nClearFlags, int whatToDraw)
 	//view.angles = Globals::lastCmd.viewangles;
 	if(Settings::Visuals::viewModelFOV == -1.f)
 		Settings::Visuals::viewModelFOV = view.fovViewmodel;
-
-	view.fovViewmodel = Settings::Visuals::viewModelFOV;
+	if (Settings::Visuals::viewModelFovEnabled)
+		view.fovViewmodel = Settings::Visuals::viewModelFOV;
 	
 	static Vector camPos = Vector(0,0,0);
 

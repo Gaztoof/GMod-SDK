@@ -236,7 +236,8 @@ namespace Settings {
 	namespace Visuals {
 		float fov = 130.f;
 		bool fovEnabled = false;
-		float viewModelFOV = 130.f;
+		float viewModelFOV = 90.f;
+		bool viewModelFovEnabled = false;
 		bool noVisualRecoil;
 		Color worldColor(17.f, 33.f, 71.f, 255.f);
 		bool changeWorldColor;

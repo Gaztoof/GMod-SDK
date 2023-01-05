@@ -206,6 +206,8 @@ namespace GUI
 
 				Menu::InsertCheckbox("Enabled FOV", &Settings::Visuals::fovEnabled);
 				Menu::InsertSlider("FOV", &Settings::Visuals::fov, 30, 150);
+
+				Menu::InsertCheckbox("Enabled ViewModel FOV", &Settings::Visuals::viewModelFovEnabled);
 				Menu::InsertSlider("ViewModel FOV", &Settings::Visuals::viewModelFOV, 30, 150);
 
 				Menu::InsertCheckbox("Zoom", &Settings::Misc::zoom);
