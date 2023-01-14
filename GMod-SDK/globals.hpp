@@ -118,7 +118,7 @@ MsgFn ConColorMsg;
 const void ConPrint(const char* text, Color col)
 {
 	Color color(153,204,255);
-	ConColorMsg(color, "[GaztoofScriptHook] ");
+	ConColorMsg(color, "[GMOD-SDK] ");
 	ConColorMsg(col, text);
 	ConColorMsg(col, "\n");
 }
@@ -174,6 +174,9 @@ namespace Globals {
 	bool* bSendpacket;
 	unsigned int* predictionRandomSeed;
 	char* hostName; // UTF-8 encoding C7 05 ? ? ? ? ? ? ? ? E8 ? ? ? ? 59 C3 CC CC CC CC CC CC CC CC CC CC 68 ? ? ? ?
+
+	HWND window;
+	WNDPROC oWndProc;
 }
 namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;

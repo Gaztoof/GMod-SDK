@@ -4,7 +4,7 @@
 #include <fstream>
 #include <thread>
 
-#include "tier0/Vector.h"
+#include "Memory.h"
 
 #include "Interface.h"
 #include "globals.hpp"
@@ -20,7 +20,6 @@
 #include "hooks/RunCommand.h"
 #include "hooks/Paint.h"
 
-#include "Memory.h"
 
 #include "hacks/ConVarSpoofing.h"
 #include "engine/inetmessage.h"

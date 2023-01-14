@@ -22,6 +22,8 @@ void DoLegitAimbot(CUserCmd* cmd)
 	int selectedHitBox = 0;
 
 	Vector eyePos = localPlayer->EyePosition();
+	Vector finalPos;
+	bool isErrorModel = false;
 	bool canHit = false;
 	if (!Settings::Aimbot::lockOnTarget || !Settings::Aimbot::finalTarget || !Settings::Aimbot::finalTarget->IsAlive() || Settings::Aimbot::finalTarget->IsDormant()) // isNotLock or if final is bad, or dead
 	{
@@ -62,14 +64,21 @@ void DoLegitAimbot(CUserCmd* cmd)
 				int buildMode = Lua->GetNumber(-1);
 				Lua->Pop(2);
 			if (buildMode) continue;*/
-
 #pragma message("THIS IS TO BE TESTED!!")
 			Vector entPos;
-			if (!_strcmpi(((model_t*)entity->GetClientRenderable()->GetModel())->name, "models/error.mdl"))
+			auto model = ((model_t*)entity->GetClientRenderable()->GetModel());
+			if (model && !_strcmpi(ModelInfo->GetStudiomodel(model)->name, "error.mdl"))
 			{
 				entPos = entity->EyePosition();
+				isErrorModel = true;
 			}
 			else {
+				// https://i.imgur.com/0WZNkbC.jpg
+				// https://i.imgur.com/rRxWCUN.jpeg
+				// 6 head
+				// 3 torso
+
+				isErrorModel = false;
 				matrix3x4_t bones[128];
 				if (!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime))
 					continue;
@@ -127,6 +136,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 					continue;
 			}
 
+			finalPos = entPos;
 			finalDistance = distance;
 			Settings::Aimbot::finalTarget = entity;
 		}
@@ -134,20 +144,8 @@ void DoLegitAimbot(CUserCmd* cmd)
 
 	if (Settings::Aimbot::finalTarget && Settings::Aimbot::finalTarget->IsAlive())
 	{
-		matrix3x4_t b[128];
-		if (!Settings::Aimbot::finalTarget->GetClientRenderable()->SetupBones(b, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime))
-			return;
-
-		Studio_BoneIndexByName(ModelInfo->GetStudiomodel((const model_t*)Settings::Aimbot::finalTarget->GetClientRenderable()->GetModel()), IntToBoneName(Settings::Aimbot::aimbotHitbox), &selectedHitBox);
-
-		// https://i.imgur.com/0WZNkbC.jpg
-		// https://i.imgur.com/rRxWCUN.jpeg
-		// 6 head
-		// 3 torso
-		Vector targetPos = Vector(b[selectedHitBox][0][3], b[selectedHitBox][1][3], b[selectedHitBox][2][3]);
-		//targetPos += (finalTarget->getVelocity() / 15);
-		QAngle calc = targetPos.AngleTo(eyePos);
-		canHit = CanHit(Settings::Aimbot::finalTarget, eyePos, targetPos);
+		QAngle calc = finalPos.AngleTo(eyePos);
+		canHit = CanHit(Settings::Aimbot::finalTarget, eyePos, finalPos);
 
 		bool shouldFire = true;
 		if (lastTarget != Settings::Aimbot::finalTarget)

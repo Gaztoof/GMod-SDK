@@ -17,7 +17,8 @@ void doEsp()
 		bool isEntity = false;
 		std::string entName = GetClassName(entity);
 
-		if (Settings::ESP::entEsp && entity->UsesLua())
+		// that memory check is bcus sometimes, the entity is wrong and so the vtable has null functions and thats how we know
+		if (Settings::ESP::entEsp && *(uintptr_t*)((char*)entity + 231*sizeof(uintptr_t)) && entity->UsesLua())
 		{
 			Settings::luaEntListMutex.lock();
 			isEntity = std::find(Settings::selectedLuaEntList.begin(), Settings::selectedLuaEntList.end(), entName) != Settings::selectedLuaEntList.end();
