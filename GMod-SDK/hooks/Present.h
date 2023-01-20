@@ -18,7 +18,6 @@
 #endif
 IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-WNDPROC oWndProc;
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	static bool lastState = false;
@@ -38,9 +37,8 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 		return true;
 	}
-	//bool tempState = GetAsyncKeyState(InputSystem->ButtonCodeToVirtualKey(Settings::menuKey));
 
-	return CallWindowProcA(oWndProc, hWnd, uMsg, wParam, lParam);
+	return CallWindowProcA(Globals::oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
 ImFont* menuFont;
@@ -64,8 +62,8 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		ImGui::CreateContext();
 
-		HWND window = FindWindowA("Valve001", nullptr);
-		oWndProc = (WNDPROC)SetWindowLongPtrA(window, GWL_WNDPROC, (LONG_PTR)WndProc);
+		Globals::window = FindWindowA("Valve001", nullptr);
+		Globals::oWndProc = (WNDPROC)SetWindowLongPtrA(Globals::window, GWL_WNDPROC, (LONG_PTR)WndProc);
 
 		IDirect3DSwapChain9* pChain = nullptr;
 		D3DPRESENT_PARAMETERS pp = {};
@@ -75,7 +73,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		if (pChain)
 			pChain->GetPresentParameters(&pp);
 
-		ImGui_ImplWin32_Init(window);
+		ImGui_ImplWin32_Init(Globals::window);
 		ImGui_ImplDX9_Init(pDevice);
 
 		D3DXCreateTextureFromFileInMemoryEx( pDevice, menuBackground, sizeof(menuBackground), 4096, 4096, D3DX_DEFAULT, NULL, pp.BackBufferFormat, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, NULL, NULL, &menuBg);

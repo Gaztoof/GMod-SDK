@@ -551,8 +551,8 @@ namespace GUI
 				Menu::InsertSlider("Free-cam speed", &Settings::Misc::freeCamSpeed, 1.f, 5.f);
 
 
-				Menu::InsertCheckbox("sv_cheats (unstable)", &Settings::Misc::svCheats);
-				Menu::InsertCheckbox("sv_allowcslua (unstable)", &Settings::Misc::svAllowCsLua);
+				//Menu::InsertCheckbox("sv_cheats (unstable)", &Settings::Misc::svCheats);
+				//Menu::InsertCheckbox("sv_allowcslua (unstable)", &Settings::Misc::svAllowCsLua);
 
 				Menu::InsertCheckbox("Clientside scripts dumper", &Settings::Misc::scriptDumper);
 
@@ -621,6 +621,8 @@ namespace GUI
 				Menu::InsertButtonMiddle("Unload", unloadPressed);
 				if (unloadPressed)
 				{
+					SetWindowLongPtrA(Globals::window, GWLP_WNDPROC, (LONG_PTR)Globals::oWndProc);
+
 					GameEventManager->RemoveListener((IGameEventListener2*)Globals::damageEvent);
 					GameEventManager->RemoveListener((IGameEventListener2*)Globals::deathEvent);
 

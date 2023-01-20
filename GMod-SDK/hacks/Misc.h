@@ -442,7 +442,7 @@ void PostPrediction(CUserCmd* cmd)
     if (flagsPrePred & FL_ONGROUND && !(flags & FL_ONGROUND))
         cmd->buttons |= IN_JUMP;
 
-    if ( cmd->buttons & IN_JUMP) // Crouchboost
+    if ( false && cmd->buttons & IN_JUMP) // Crouchboost
     {
         if(!(flagsPrePred & FL_ONGROUND))
             cmd->buttons |= IN_DUCK;
