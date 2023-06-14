@@ -416,7 +416,7 @@ public:
 	/*341*/	virtual void* Weapon_CanSwitchTo(void*) = 0;
 	/*342*/	virtual C_BaseCombatWeapon* GetActiveWeapon(void)const = 0;
 	/*343*/	virtual void* SharedSpawn(void) = 0;
-	/*344*/	virtual int GetSteamID(void*) = 0;
+	/*344*/	virtual bool GetSteamID(void*) = 0; // requires csteamid ptr as arg
 	/*345*/	virtual float GetPlayerMaxSpeed(void) = 0;
 	/*346*/	virtual void* CalcView(Vector&,QAngle&,float&,float&,float&) = 0;
 	/*347*/	virtual void* CalcViewModelView(Vector const&,QAngle const&) = 0;
