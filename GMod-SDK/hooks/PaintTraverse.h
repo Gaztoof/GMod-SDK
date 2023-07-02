@@ -22,20 +22,28 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this,
 	
 	Globals::viewMatr.store(matrix);*/
 
-	InputSystem->EnableInput(!Globals::openMenu);
+	// there's no real need to run anything outside of this check
+	// it's not needed to disable input or check for pending lua like 10 times per frame
 	if (!strcmp(PanelWrapper->GetName(panel), "FocusOverlayPanel"))
 	{
 		Globals::lastPanelIdentifier = panel;
 		PanelWrapper->SetKeyBoardInputEnabled(panel, Globals::openMenu);
 		PanelWrapper->SetMouseInputEnabled(panel, Globals::openMenu);
-	}
-	auto l = Globals::waitingToBeExecuted.load();
-	if(l.first && l.second && oRunStringEx)
-	{
-		oRunStringEx(LuaShared->GetLuaInterface(Globals::executeState * 2), RandomString(16).c_str(), "", l.second, true, true, true, true);
-		Globals::waitingToBeExecuted.store(std::make_pair(false, nullptr));
+		InputSystem->EnableInput(!Globals::openMenu);
+
+		auto l = Globals::waitingToBeExecuted.load();
+		if (l.first && l.second && oRunStringEx)
+		{
+			auto Lua = LuaShared->GetLuaInterface(Globals::executeState * 2);
+			if (!oRunStringEx(Lua, RandomString(16).c_str(), "", l.second, true, false, false, false)) {
+				const char* error = Lua->GetString(-1);
+				static Color red(255, 0, 0);
+				ConPrint(error, red);
+				Lua->Pop();
+			}
+			Globals::waitingToBeExecuted.store(std::make_pair(false, nullptr));
+		}
 	}
 
 	oPaintTraverse(_this, panel, force_repaint, allow_force);
-
 }
