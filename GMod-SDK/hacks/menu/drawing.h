@@ -74,6 +74,7 @@ void DrawLineOutlined(Vector from, Vector to, ULONG color) {
 
 	pLine->End();
 }
+
 void DrawLine(Vector from, Vector to, ULONG color) {
 	D3DXVECTOR2 lines[2] = {
 		D3DXVECTOR2(from.x, from.y),
@@ -104,6 +105,7 @@ void DrawCircle(Vector pos, float r, int vertices, ULONG color) {
 	}
 	pLine->Draw(Line, Count, color);
 }
+
 void DrawRect(Vector pos, float height, float width, ULONG color) {
 	D2D1_RECT_F rect = { pos.x - 3.f, pos.y - height + 13.f, pos.x + width + 3.f, pos.y + height };
 	DrawLine(Vector(pos.x, pos.y, 0), Vector(pos.x + width, pos.y, 0), color);
@@ -111,6 +113,7 @@ void DrawRect(Vector pos, float height, float width, ULONG color) {
 	DrawLine(Vector(pos.x + width, pos.y, 0), Vector(pos.x + width, pos.y + height, 0), color);
 	DrawLine(Vector(pos.x, pos.y + height, 0), Vector(pos.x + width + 1.f, pos.y + height, 0), color);
 }
+
 void DrawFilledRect(Vector pos, float height, float width, ULONG color) {
 	D3DTLVERTEX qV[4] = {
 		{ pos.x, pos.y + height, 0.f, 1.f, color },
@@ -125,6 +128,7 @@ void DrawFilledRect(Vector pos, float height, float width, ULONG color) {
 	pDevice->SetTexture(0, nullptr);
 	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, qV, sizeof(D3DTLVERTEX));
 }
+
 void DrawEsp2D(Vector targetPos, Vector targetTop, ULONG color) {
 
 	float height = targetTop.y - targetPos.y;
@@ -143,6 +147,7 @@ void DrawEsp2D(Vector targetPos, Vector targetTop, ULONG color) {
 	DrawLineOutlined(tl, bl, color);
 	DrawLineOutlined(tr, br, color);
 }
+
 void RotateVec(QAngle ang, Vector& in, int height3D)
 {
 	float Sin = sin(DEG2RAD(ang.y));
@@ -157,8 +162,7 @@ void RotateVec(QAngle ang, Vector& in, int height3D)
 	in.y = (vecCl.x * Sin + vecCl.y * Cos);
 
 	// To anyone reading this, I didn't do trigonometry in years, so i'm struggling real hard to make it work in XYZ directions...
-	// Help welcome
-	
+	// Help welcome	
 }
 
 void DrawEspBox3D(Vector max, Vector min, Vector orig, QAngle ang, D3DCOLOR color)
@@ -237,7 +241,5 @@ void DrawEspBox3D(Vector max, Vector min, Vector orig, QAngle ang, D3DCOLOR colo
 		DrawLine(b4_2, b1_2, color);
 
 	}
-
-
 
 }
