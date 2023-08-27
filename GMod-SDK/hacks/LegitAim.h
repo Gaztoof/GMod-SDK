@@ -115,7 +115,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 				if (!WorldToScreen(entPos, screenPos))
 					continue;
 				screenPos.z = 0;
-				distance = Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0).DistTo(screenPos);
+				distance = Vector(Globals::screenWidthCenter, Globals::screenHeightCenter, 0).DistTo(screenPos);
 				fovDistance = distance;
 				if (distance > finalDistance)
 					continue;
@@ -130,7 +130,7 @@ void DoLegitAimbot(CUserCmd* cmd)
 					if (!WorldToScreen(entPos, screenPos))
 						continue;
 					screenPos.z = 0;
-					fovDistance = Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0).DistTo(screenPos);
+					fovDistance = Vector(Globals::screenWidthCenter, Globals::screenHeightCenter, 0).DistTo(screenPos);
 				}
 				if (fovDistance > Settings::Aimbot::aimbotFOV)
 					continue;
@@ -160,12 +160,11 @@ void DoLegitAimbot(CUserCmd* cmd)
 				shouldFire = true;
 			else {
 				shouldFire = false;
-
-				auto delta = calc - cmd->viewangles;
-				auto smoothed = cmd->viewangles + (delta * (1.f / Settings::Aimbot::smoothSteps));
-
-				calc = smoothed;
 			}
+			auto delta = calc - cmd->viewangles;
+			auto smoothed = cmd->viewangles + (delta * (1.f / Settings::Aimbot::smoothSteps));
+
+			calc = smoothed;
 		}
 
 		// it is better to use smoothing without silent aim.
