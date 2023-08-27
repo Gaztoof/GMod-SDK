@@ -2,7 +2,7 @@
 
 #include "../globals.hpp"
 #include <fstream>
-#include "../json.h"
+#include "../json.hpp"
 #include <iomanip>
 #pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ )
 
@@ -114,7 +114,7 @@ namespace ConfigSystem
 		try {
 			HandleConfigItem(j["Globals"]["menuKey"], handle, &Settings::menuKey, KEY_INSERT);
 			HandleConfigItem(j["Globals"]["menuKeyStyle"], handle, &Settings::menuKeyStyle, 1);
-			HandleConfigC(j["Globals"]["menuColor"], handle, Settings::menuColor, Color(0, 255, 0));
+			HandleConfigC(j["Globals"]["menuColor"], handle, Settings::menuColor, Color(142, 181, 53));
 			HandleConfigItem(j["Globals"]["untrusted"], handle, &Globals::Untrusted, false);
 
 			HandleConfigCS(j["Chams"]["playerChams"], handle, &Settings::Chams::playerChamsSettings, chamsSetting(Color(255, 255, 255), Color(255, 255, 255), 0, 0));
@@ -148,8 +148,9 @@ namespace ConfigSystem
 			HandleConfigItem(j["ESP"]["onlyFriends"], handle, &Settings::ESP::onlyFriends, false);
 
 			HandleConfigItem(j["Visuals"]["fovEnabled"], handle, &Settings::Visuals::fovEnabled, false);
-			HandleConfigItem(j["Visuals"]["fov"], handle, &Settings::Visuals::fov, -1.f);
-			HandleConfigItem(j["Visuals"]["viewModelFOV"], handle, &Settings::Visuals::viewModelFOV, -1.f);
+			HandleConfigItem(j["Visuals"]["fov"], handle, &Settings::Visuals::fov, 120.f);
+			HandleConfigItem(j["Visuals"]["viewModelFovEnabled"], handle, &Settings::Visuals::viewModelFovEnabled, false);
+			HandleConfigItem(j["Visuals"]["viewModelFov"], handle, &Settings::Visuals::viewModelFov, 90.f);
 			HandleConfigItem(j["Visuals"]["noVisualRecoil"], handle, &Settings::Visuals::noVisualRecoil, false);
 			HandleConfigC(j["Visuals"]["worldColor"], handle, Settings::Visuals::worldColor, Color(255, 255, 255));
 			HandleConfigItem(j["Visuals"]["changeWorldColor"], handle, &Settings::Visuals::changeWorldColor, false);
@@ -232,10 +233,10 @@ namespace ConfigSystem
 			HandleConfigItem(j["Misc"]["scriptDumper"], handle, &Settings::Misc::scriptDumper, false);
 			HandleConfigC(j["Misc"]["crossHairColor"], handle, Settings::Misc::crossHairColor, Color(255, 255, 255));
 
-			HandleConfigItem(j["Triggerbot"]["triggerBot"], handle, &Settings::Triggerbot::triggerBot, false);
-			HandleConfigItem(j["Triggerbot"]["triggerBotHead"], handle, &Settings::Triggerbot::triggerBotHead, false);
-			HandleConfigItem(j["Triggerbot"]["triggerBotChest"], handle, &Settings::Triggerbot::triggerBotChest, false);
-			HandleConfigItem(j["Triggerbot"]["triggerBotStomach"], handle, &Settings::Triggerbot::triggerBotStomach, false);
+			HandleConfigItem(j["Triggerbot"]["triggerbot"], handle, &Settings::Triggerbot::triggerbot, false);
+			HandleConfigItem(j["Triggerbot"]["triggerbotHead"], handle, &Settings::Triggerbot::triggerbotHead, false);
+			HandleConfigItem(j["Triggerbot"]["triggerbotChest"], handle, &Settings::Triggerbot::triggerbotChest, false);
+			HandleConfigItem(j["Triggerbot"]["triggerbotStomach"], handle, &Settings::Triggerbot::triggerbotStomach, false);
 			HandleConfigItem(j["Triggerbot"]["triggerbotFastShoot"], handle, &Settings::Triggerbot::triggerbotFastShoot, false);
 		}
 		catch (...)
