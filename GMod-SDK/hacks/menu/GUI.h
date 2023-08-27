@@ -155,8 +155,8 @@ namespace GUI
 				Menu::InsertCheckbox("Name", &Settings::ESP::espName);
 				Menu::InsertColorPicker("##Name color", &Settings::ESP::espNameColor, false);
 
-				Menu::InsertCheckbox("Weapon name", &Settings::ESP::weaponText);
-				Menu::InsertColorPicker("##Weapon name color", &Settings::ESP::espWeaponColor, false);
+				Menu::InsertCheckbox("Weapon", &Settings::ESP::weaponText);
+				Menu::InsertColorPicker("##Weapon color", &Settings::ESP::espWeaponColor, false);
 
 				Menu::InsertCheckbox("Ammo", &Settings::ESP::weaponAmmo);
 				Menu::InsertColorPicker("##Ammo color", &Settings::ESP::espAmmoColor, false);
@@ -238,12 +238,11 @@ namespace GUI
 				style->ItemSpacing = ImVec2(4, 2);
 				style->WindowPadding = ImVec2(4, 4);
 				ImGui::CustomSpacing(9.f);
-
-				Menu::InsertCheckbox("Remove skybox", &Settings::Visuals::disableSkyBox);
-
+				
 				Menu::InsertCheckbox("Change world color", &Settings::Visuals::changeWorldColor);
 				Menu::InsertColorPicker("##World Color", &Settings::Visuals::worldColor, true);
 
+				Menu::InsertCheckbox("Remove skybox", &Settings::Visuals::disableSkyBox);
 				Menu::InsertCheckbox("Remove visual recoil", &Settings::Visuals::noVisualRecoil);
 				Menu::InsertCheckbox("Remove hands", &Settings::Misc::removeHands);
 
