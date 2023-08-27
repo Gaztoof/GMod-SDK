@@ -7,26 +7,28 @@
 // That's bad, honestly needs a little improve
 void TriggerBot(CUserCmd* cmd)
 {
-	if (!Settings::Triggerbot::triggerBot)return;
+	if (!Settings::Triggerbot::triggerbot) return;
+
 	QAngle viewAng;
 	viewAng.z = 0;
 	EngineClient->GetViewAngles(viewAng);
-	trace_t Trace;
+	trace_t trace;
 	CTraceFilter filter;
 	filter.pSkip = localPlayer;
-	Ray_t Ray;
+	Ray_t ray;
 
-	Ray.Init(localPlayer->EyePosition(), localPlayer->EyePosition() + cmd->viewangles.toVector() * 69696.f);
-	EngineTrace->TraceRay(Ray, MASK_SHOT, &filter, &Trace);
+	ray.Init(localPlayer->EyePosition(), localPlayer->EyePosition() + cmd->viewangles.toVector() * 69696.f);
+	EngineTrace->TraceRay(ray, MASK_SHOT, &filter, &trace);
 
-	C_BasePlayer* target = (C_BasePlayer*)Trace.m_pEnt;
-	if (!target || !target->IsPlayer() || !target->IsAlive())
+	C_BasePlayer* entity = (C_BasePlayer*)trace.m_pEnt;
+
+	if (!entity || !entity->IsAlive() || !entity->IsPlayer() || entity == localPlayer || entity->IsDormant())
 		return;
 
-	if (!Settings::Aimbot::aimAtTeammates && target->InLocalTeam())
+	if (!Settings::Aimbot::aimAtTeammates && entity->InLocalTeam())
 		return;
 	
-	if ((Settings::Triggerbot::triggerBotHead && Trace.hitgroup == HITGROUP_HEAD) || (Settings::Triggerbot::triggerBotChest && Trace.hitgroup == HITGROUP_CHEST) || (Settings::Triggerbot::triggerBotStomach && Trace.hitgroup == HITGROUP_STOMACH))
+	if ((Settings::Triggerbot::triggerbotHead && trace.hitgroup == HITGROUP_HEAD) || (Settings::Triggerbot::triggerbotChest == 1 && trace.hitgroup == HITGROUP_CHEST) || (Settings::Triggerbot::triggerbotStomach == 2 && trace.hitgroup == HITGROUP_STOMACH))
 	{
 		static bool toggle = false;
 		toggle = !toggle;
