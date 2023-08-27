@@ -1,6 +1,6 @@
 #pragma once
 
-#define CheatVersion "1.2.2"
+#define CheatVersion "1.2.4"
 
 #include <map>
 #include <mutex>
@@ -167,6 +167,7 @@ namespace Globals {
 	int executeState = 0;
 
 	int screenWidth, screenHeight;
+	int screenWidthCenter, screenHeightCenter;
 
 	void* damageEvent;
 	void* deathEvent;
@@ -181,7 +182,7 @@ namespace Globals {
 namespace Settings {
 	ButtonCode_t menuKey = KEY_INSERT;
 	int menuKeyStyle = 1;
-	Color menuColor(0, 255, 0);
+	Color menuColor(142, 181, 53);
 
 	std::map<C_BasePlayer*, std::pair<bool, int>> friendList;
 	std::vector<C_BasePlayer*> selectedFriendList;
@@ -209,8 +210,8 @@ namespace Settings {
 
 		chamsSetting localPlayerChamsSettings;
 		chamsSetting netLocalChamsSettings;
-
 	}
+
 	namespace ESP {
 		int infosEmplacement;
 		bool espDormant;
@@ -234,27 +235,20 @@ namespace Settings {
 		bool entEsp = false;
 
 		bool onlyFriends = false;
-
 	}
+
 	namespace Visuals {
-		float fov = 130.f;
+		float fov = 120.f;
 		bool fovEnabled = false;
-		float viewModelFOV = 130.f;
+		float viewModelFov = 90.f;
+		bool viewModelFovEnabled = false;
 		bool noVisualRecoil;
 		Color worldColor(17.f, 33.f, 71.f, 255.f);
 		bool changeWorldColor;
 		bool fullBright;
 		bool disableSkyBox;
+	}
 
-	}
-	namespace AntiAim {
-		int currentAntiAimPitch = 0;
-		int currentAntiAimYaw = 0;
-		bool enableAntiAim;
-		ButtonCode_t antiAimKey = KEY_NONE;
-		int antiAimKeyStyle = 1; // KEY_NONE;
-		float fakePitch;
-	}
 	namespace Aimbot {
 		float aimbotFOV;
 		bool silentAim;
@@ -271,10 +265,9 @@ namespace Settings {
 		int aimbotSelection;
 		bool drawAimbotHeadlines;
 		bool aimAtTeammates;
-		C_BasePlayer* finalTarget = nullptr;
-
 		bool aimAtFriends;
 		bool onlyAimAtFriends;
+		C_BasePlayer* finalTarget = nullptr;
 
 		bool pistolFastShoot;
 
@@ -282,8 +275,25 @@ namespace Settings {
 		float smoothSteps;
 
 		Color fovColor(255, 255, 255);
-
 	}
+
+	namespace Triggerbot {
+		bool triggerbot;
+		bool triggerbotHead;
+		bool triggerbotChest;
+		bool triggerbotStomach;
+		bool triggerbotFastShoot;
+	}
+
+	namespace AntiAim {
+		int currentAntiAimPitch = 0;
+		int currentAntiAimYaw = 0;
+		bool enableAntiAim;
+		ButtonCode_t antiAimKey = KEY_NONE;
+		int antiAimKeyStyle = 1; // KEY_NONE;
+		float fakePitch;
+	}
+
 	namespace Misc {
 		bool scriptDumper;
 
@@ -349,16 +359,9 @@ namespace Settings {
 		bool svAllowCsLua;
 
 		float rainbowSpeed = 1.f;
-
-	}
-	namespace Triggerbot {
-		bool triggerBot;
-		bool triggerBotHead;
-		bool triggerBotChest;
-		bool triggerBotStomach;
-		bool triggerbotFastShoot;
 	}
 }
+
 void rainbowColor(Color& col, float speed) noexcept
 {
 	if (!col.rainbow)return;
