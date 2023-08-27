@@ -20,7 +20,6 @@
 #include "hooks/RunCommand.h"
 #include "hooks/Paint.h"
 
-
 #include "hacks/ConVarSpoofing.h"
 #include "engine/inetmessage.h"
 
@@ -33,8 +32,9 @@ void Main()
     FILE* f;
     freopen_s(&f, "CONOUT$", "w", stdout);
     freopen_s(&f, "CONIN$", "r", stdin);
-    SetConsoleTitle(L"GMod SDK - WIP - Coded by t.me/Gaztoof");
+    SetConsoleTitle(L"GMOD SDK - WIP - Coded by t.me/Gaztoof");
 #endif
+
     ConColorMsg = (MsgFn)GetProcAddress(GetModuleHandleW(L"tier0.dll"), ConColorMsgDec);
 
     ConPrint("Successfully injected!", Color(0, 255, 0));
@@ -96,6 +96,12 @@ void Main()
     Globals::deathEvent = new DeathEvent();
     GameEventManager->AddListener((IGameEventListener2*)Globals::damageEvent, "player_hurt", false);
     GameEventManager->AddListener((IGameEventListener2*)Globals::deathEvent, "entity_killed", false);
+
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawAimbot, "A", true, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawVisuals, "C", false, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawMisc, "D", false, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawFilters, "F", false, true, true });
+    GUI::categories.emplace_back(GUI::GUICategory{ &GUI::DrawLua, "LUA", false, false, true });
         
     // This can be easily detected(for instance, perphead will ban you for it), so disabled unless you need it and researched enough the server you're on.
     if (false)
@@ -108,7 +114,6 @@ void Main()
         cvar->RemoveFlags(FCVAR_SERVER_CAN_EXECUTE);
         cvar->DisableCallback();
     }
-    
 
     //GlobalVars->maxClients
     //GlobalVars + 0x14 = 1 will let u do anything lua related
@@ -116,7 +121,8 @@ void Main()
     *(_Present**)(present) = (_Present*)hkPresent;
 
     //EngineClient->ClientCmd_Unrestricted("play \"items/suitchargeok1.wav\"");
-        //Sleep(2200);
+    //Sleep(2200);
+
     Sleep(1000);
     MatSystemSurface->PlaySound("HL1/fvox/bell.wav");
     Sleep(1100);
@@ -124,10 +130,11 @@ void Main()
     Globals::openMenu = true;
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t ul_reason_for_call, LPVOID lpReserved)
+BOOL WINAPI DllMain(HMODULE hModule, uintptr_t dwReason, LPVOID lpReserved)
 {
-    if (ul_reason_for_call == DLL_PROCESS_ATTACH)
+    if (dwReason == DLL_PROCESS_ATTACH) {
         std::thread(Main).detach();
+    }
+
     return TRUE;
 }
-
