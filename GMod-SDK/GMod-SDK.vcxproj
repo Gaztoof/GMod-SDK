@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -87,8 +87,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x64;</LibraryPath>
+    <IncludePath>D:\Projects\C++\directx-sdk\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include</IncludePath>
+    <LibraryPath>D:\Projects\C++\directx-sdk\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x64</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -238,6 +238,7 @@
     <ClInclude Include="hooks\RenderView.h" />
     <ClInclude Include="hooks\RunCommand.h" />
     <ClInclude Include="hooks\RunStringEx.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="lua_shared\CLuaConVars.h" />
     <ClInclude Include="lua_shared\CLuaInterface.h" />
     <ClInclude Include="lua_shared\CLuaShared.h" />
@@ -256,7 +257,6 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Interface.h" />
-    <ClInclude Include="json.h" />
     <ClInclude Include="tier0\basetypes.h" />
     <ClInclude Include="tier0\platform.h" />
     <ClInclude Include="tier0\shareddefs.h" />
