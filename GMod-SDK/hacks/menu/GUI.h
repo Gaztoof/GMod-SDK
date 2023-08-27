@@ -25,18 +25,30 @@ extern ImFont* executorFont;
 
 namespace GUI
 {
+	typedef void(*Draw)();
+	struct GUICategory
+	{
+		Draw m_pCategoryHandler;
+		const char* m_szCategoryName;
+		bool m_bIsOpen;
+		bool m_bHasIcon;
+		bool m_bIsVisible;
+	};
+
 	const char* items[] = {
 		("Players"),
 		("Ragdolls"),
 		("Weapons"),
 		("NPCs"),
 	};
+
 	const char* chamsMaterials[] =
 	{
 		"Normal",
 		"Textured",
 		"Flat",
 	};
+
 	const char* antiAimPitch[] =
 	{
 		"None",
@@ -44,6 +56,7 @@ namespace GUI
 		"Fake Up",
 		"Jitter",
 	};
+
 	const char* antiAimYaw[] =
 	{
 		"None",
@@ -60,25 +73,30 @@ namespace GUI
 		"Health",
 		"FOV",
 	};
+
 	const char* aimbotHitboxText[] =
 	{
 		"Head",
 		"Chest",
 		"Stomach",
 	};
-	const char* espShape[] = {
 
+	const char* espShape[] = 
+	{
 		"2D",
 		"3D",
 	};
-	const char* plyInfoEmplacement[] = {
 
+	const char* plyInfoEmplacement[] = 
+	{
 		"Above",
 		"Below",
 		"Right",
 		"Left",
 	};
-	const char* configsNames[]{
+
+	const char* configsNames[]
+	{
 		"Default",
 		"HvH",
 		"Legit",
@@ -88,21 +106,28 @@ namespace GUI
 		"Config4",
 		"Config5",
 	};
-	const char* hitmarkerSound[]{
+
+	const char* hitmarkerSound[]
+	{
 		"Metal",
 		"Skeet",
 		"Bell",
 	};
-	const char* autostrafeStyle[]{
+
+	const char* autostrafeStyle[]
+	{
 		"Normal",
 		"Silent strafe",
 		"Optimizer(WIP)",
 	};
-	const char* executorLuaState[]{
+
+	const char* executorLuaState[]
+	{
 		"Client",
 		"Menu",
 	};
 
+	std::vector<GUICategory> categories;
 
 	void DrawVisuals()
 	{
@@ -122,7 +147,7 @@ namespace GUI
 				Menu::InsertCheckbox("Bounding box", &Settings::ESP::espBoundingBox);
 				Menu::InsertColorPicker("##Bounding box color", &Settings::ESP::espBoundingBoxColor, false);
 
-				Menu::InsertCombo("Bounding Box Shape", &Settings::ESP::espShapeInt, espShape, IM_ARRAYSIZE(espShape));
+				Menu::InsertCombo("Bounding box shape", &Settings::ESP::espShapeInt, espShape, IM_ARRAYSIZE(espShape));
 				Menu::InsertCheckbox("Dormant", &Settings::ESP::espDormant);
 				Menu::InsertCheckbox("Health", &Settings::ESP::espHealthBar);
 				Menu::InsertColorPicker("##Health color", &Settings::ESP::espHealthColor, false);
@@ -131,7 +156,7 @@ namespace GUI
 				Menu::InsertColorPicker("##Name color", &Settings::ESP::espNameColor, false);
 
 				Menu::InsertCheckbox("Weapon name", &Settings::ESP::weaponText);
-				Menu::InsertColorPicker("##Weaponname color", &Settings::ESP::espWeaponColor, false);
+				Menu::InsertColorPicker("##Weapon name color", &Settings::ESP::espWeaponColor, false);
 
 				Menu::InsertCheckbox("Ammo", &Settings::ESP::weaponAmmo);
 				Menu::InsertColorPicker("##Ammo color", &Settings::ESP::espAmmoColor, false);
@@ -147,7 +172,7 @@ namespace GUI
 
 				Menu::InsertCheckbox("Entity ESP", &Settings::ESP::entEsp);
 
-				Menu::InsertCheckbox("Only Friends", &Settings::ESP::onlyFriends);
+				Menu::InsertCheckbox("Only friends", &Settings::ESP::onlyFriends);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -161,17 +186,17 @@ namespace GUI
 				style->ItemSpacing = ImVec2(4, 2);
 				style->WindowPadding = ImVec2(4, 4);
 
-				Menu::InsertComboColor("Visible Enemy Material", &Settings::Chams::playerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.visibleColor, true);
-				Menu::InsertComboColor("Hidden Enemy Material", &Settings::Chams::playerChamsSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.hiddenColor, true);
-				Menu::InsertComboColor("Visible Teammate Material", &Settings::Chams::teamMateSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::teamMateSettings.visibleColor, true);
-				Menu::InsertComboColor("Hidden Teammate Material", &Settings::Chams::teamMateSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::teamMateSettings.hiddenColor, true);
+				Menu::InsertComboColor("Visible enemy material", &Settings::Chams::playerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Hidden enemy material", &Settings::Chams::playerChamsSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::playerChamsSettings.hiddenColor, true);
+				Menu::InsertComboColor("Visible teammate material", &Settings::Chams::teamMateSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::teamMateSettings.visibleColor, true);
+				Menu::InsertComboColor("Hidden teammate material", &Settings::Chams::teamMateSettings.hiddenMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::teamMateSettings.hiddenColor, true);
 
-				Menu::InsertComboColor("Local player Material", &Settings::Chams::localPlayerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::localPlayerChamsSettings.visibleColor, true);
-				Menu::InsertComboColor("Networked Local Material", &Settings::Chams::netLocalChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::netLocalChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Local player material", &Settings::Chams::localPlayerChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::localPlayerChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Networked local material", &Settings::Chams::netLocalChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::netLocalChamsSettings.visibleColor, true);
 
-				Menu::InsertComboColor("Ragdoll Material", &Settings::Chams::ragdollChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::ragdollChamsSettings.visibleColor, true);
-				Menu::InsertComboColor("NPC Material", &Settings::Chams::npcChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) , &Settings::Chams::npcChamsSettings.visibleColor, true);
-				Menu::InsertComboColor("Weapon Material", &Settings::Chams::weaponChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::weaponChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Ragdoll material", &Settings::Chams::ragdollChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) ,&Settings::Chams::ragdollChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("NPC material", &Settings::Chams::npcChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials) , &Settings::Chams::npcChamsSettings.visibleColor, true);
+				Menu::InsertComboColor("Weapon material", &Settings::Chams::weaponChamsSettings.visibleMaterial, chamsMaterials, IM_ARRAYSIZE(chamsMaterials), &Settings::Chams::weaponChamsSettings.visibleColor, true);
 
 
 				style->ItemSpacing = ImVec2(0, 0);
@@ -190,12 +215,12 @@ namespace GUI
 				Menu::InsertCheckbox("Crosshair", &Settings::Misc::drawCrosshair);
 				Menu::InsertColorPicker("##Crosshair color", &Settings::Misc::crossHairColor, false);
 
-				Menu::InsertSlider("Crosshair Size", &Settings::Misc::crosshairSize, 1, 20);
-				Menu::InsertCheckbox("Spectators", &Settings::Misc::drawSpectators);
+				Menu::InsertSlider("Crosshair size", &Settings::Misc::crosshairSize, 1, 20);
 
 				Menu::InsertCheckbox("Enabled FOV", &Settings::Visuals::fovEnabled);
 				Menu::InsertSlider("FOV", &Settings::Visuals::fov, 30, 150);
-				Menu::InsertSlider("ViewModel FOV", &Settings::Visuals::viewModelFOV, 30, 150);
+				Menu::InsertCheckbox("Enabled ViewModel FOV", &Settings::Visuals::viewModelFovEnabled);
+				Menu::InsertSlider("ViewModel FOV", &Settings::Visuals::viewModelFov, 30, 150);
 
 				Menu::InsertCheckbox("Zoom", &Settings::Misc::zoom);
 				ImGui::Keybind("zoomkey", (int*)&Settings::Misc::zoomKey, &Settings::Misc::zoomKeyStyle);
@@ -226,7 +251,7 @@ namespace GUI
 				ImGui::Keybind("thirdpersonkey", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
 				Menu::InsertSlider("Third person distance", &Settings::Misc::thirdpersonDistance, 20, 1000);
 
-				Menu::InsertCheckbox("Full Bright", &Settings::Visuals::fullBright);
+				Menu::InsertCheckbox("Full bright", &Settings::Visuals::fullBright);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -252,13 +277,13 @@ namespace GUI
 
 				Menu::InsertCombo("Target selection", &Settings::Aimbot::aimbotSelection, targetSelection, IM_ARRAYSIZE(targetSelection));
 
-				Menu::InsertCombo("Hitbox", &Settings::Aimbot::aimbotHitbox, aimbotHitboxText, IM_ARRAYSIZE(aimbotHitboxText));
+				Menu::InsertCombo("Target hitbox", &Settings::Aimbot::aimbotHitbox, aimbotHitboxText, IM_ARRAYSIZE(aimbotHitboxText));
 
-				Menu::InsertCheckbox("Auto fire", &Settings::Aimbot::aimbotAutoFire);
-				Menu::InsertCheckbox("Auto wall", &Settings::Aimbot::aimbotAutoWall);
+				Menu::InsertCheckbox("Automatic fire", &Settings::Aimbot::aimbotAutoFire);
+				Menu::InsertCheckbox("Automatic wall", &Settings::Aimbot::aimbotAutoWall);
 				Menu::InsertCheckbox("Silent aim", &Settings::Aimbot::silentAim);
 				Menu::InsertCheckbox("Smoothing", &Settings::Aimbot::smoothing);
-				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 10, 50);
+				Menu::InsertSlider("Smoothing steps", &Settings::Aimbot::smoothSteps, 10, 50);
 
 				Menu::InsertCheckbox("Aim lock", &Settings::Aimbot::lockOnTarget);
 				Menu::InsertCheckbox("Target teammates", &Settings::Aimbot::aimAtTeammates);
@@ -287,11 +312,11 @@ namespace GUI
 				style->WindowPadding = ImVec2(4, 4);
 				ImGui::CustomSpacing(9.f);
 
-				Menu::InsertCheckbox("Triggerbot", &Settings::Triggerbot::triggerBot);
-				Menu::InsertCheckbox("Head", &Settings::Triggerbot::triggerBotHead);
-				Menu::InsertCheckbox("Chest", &Settings::Triggerbot::triggerBotChest);
-				Menu::InsertCheckbox("Stomach", &Settings::Triggerbot::triggerBotStomach);
-				Menu::InsertCheckbox("Fast Shoot", &Settings::Triggerbot::triggerbotFastShoot);
+				Menu::InsertCheckbox("Enabled", &Settings::Triggerbot::triggerbot);
+				Menu::InsertCheckbox("Head", &Settings::Triggerbot::triggerbotHead);
+				Menu::InsertCheckbox("Chest", &Settings::Triggerbot::triggerbotChest);
+				Menu::InsertCheckbox("Stomach", &Settings::Triggerbot::triggerbotStomach);
+				Menu::InsertCheckbox("Fast shoot", &Settings::Triggerbot::triggerbotFastShoot);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -306,11 +331,11 @@ namespace GUI
 				style->WindowPadding = ImVec2(4, 4);
 				ImGui::CustomSpacing(9.f);
 
-				Menu::InsertCheckbox("Remove spread", &Settings::Misc::noSpread);
 				Menu::InsertCheckbox("Remove recoil", &Settings::Misc::noRecoil);
-				Menu::InsertCheckbox("Fake-Lag", &Settings::Misc::fakeLag);
+				Menu::InsertCheckbox("Remove spread", &Settings::Misc::noSpread);
+				Menu::InsertCheckbox("Fake lag", &Settings::Misc::fakeLag);
 				ImGui::Keybind("fakelagkey", (int*)&Settings::Misc::fakeLagKey, &Settings::Misc::fakeLagKeyStyle);
-				Menu::InsertSlider("Fake-Lag ticks", &Settings::Misc::fakeLagTicks, 1, 16);
+				Menu::InsertSlider("Fake lag ticks", &Settings::Misc::fakeLagTicks, 1, 16);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -331,13 +356,10 @@ namespace GUI
 				Menu::InsertCombo("Pitch", &Settings::AntiAim::currentAntiAimPitch, antiAimPitch, IM_ARRAYSIZE(antiAimPitch));
 				Menu::InsertCombo("Yaw", &Settings::AntiAim::currentAntiAimYaw, antiAimYaw, IM_ARRAYSIZE(antiAimYaw));
 
-
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
 
 			} Menu::InsertEndGroupBoxRight("Anti-Aim Cover", "Anti-Aim");
-
-
 		}
 	}
 
@@ -373,7 +395,6 @@ namespace GUI
 							auto found = Settings::friendList.find(entity);
 							if (found == Settings::friendList.end())
 								Settings::friendList.emplace(entity, std::pair(false, i));
-
 						}
 
 						std::vector<C_BasePlayer*> toRemoveMap;
@@ -509,9 +530,7 @@ namespace GUI
 				Menu::InsertCheckbox("Hitmarker sound enabled", &Settings::Misc::hitmarkerSoundEnabled);
 				Menu::InsertCombo("Hitmarker sound", &Settings::Misc::hitmarkerSound, hitmarkerSound, IM_ARRAYSIZE(hitmarkerSound));
 
-				Menu::InsertCheckbox("Quick stop", &Settings::Misc::quickStop);
-
-				Menu::InsertCheckbox("BunnyHop", &Settings::Misc::bunnyHop);
+				Menu::InsertCheckbox("Bunnyhop", &Settings::Misc::bunnyHop);
 				Menu::InsertCheckbox("Autostrafe", &Settings::Misc::autoStrafe);
 				Menu::InsertCombo("Autostrafe style", &Settings::Misc::autoStrafeStyle, autostrafeStyle, IM_ARRAYSIZE(autostrafeStyle));
 				if (Settings::Misc::autoStrafeStyle == 2)
@@ -522,21 +541,21 @@ namespace GUI
 					Menu::InsertCheckbox("Clamp optimizer angle", &Settings::Misc::optiClamp);
 					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
 				}
+				Menu::InsertCheckbox("Quick stop", &Settings::Misc::quickStop);
 				//Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
-				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
+				Menu::InsertCheckbox("Edge jump", &Settings::Misc::edgeJump);
 
-				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
-				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);
+				Menu::InsertCheckbox("Kill message", &Settings::Misc::killMessage);
+				Menu::InsertCheckbox("Kill message OOC", &Settings::Misc::killMessageOOC);
 
 				Menu::InsertCheckbox("Flashlight spam", &Settings::Misc::flashlightSpam);
 				Menu::InsertCheckbox("Use spam", &Settings::Misc::useSpam);
 
-				Menu::InsertCheckbox("Spectator List", &Settings::Misc::drawSpectators);
+				Menu::InsertCheckbox("Spectator list", &Settings::Misc::drawSpectators);
 
-				Menu::InsertCheckbox("Free-cam", &Settings::Misc::freeCam);
+				Menu::InsertCheckbox("Free camera", &Settings::Misc::freeCam);
 				ImGui::Keybind("freecamkey", (int*)&Settings::Misc::freeCamKey, &Settings::Misc::freeCamKeyStyle);
-				Menu::InsertSlider("Free-cam speed", &Settings::Misc::freeCamSpeed, 1.f, 5.f);
-
+				Menu::InsertSlider("Free camera speed", &Settings::Misc::freeCamSpeed, 1.f, 5.f);
 
 				//Menu::InsertCheckbox("sv_cheats (unstable)", &Settings::Misc::svCheats);
 				//Menu::InsertCheckbox("sv_allowcslua (unstable)", &Settings::Misc::svAllowCsLua);
@@ -590,7 +609,6 @@ namespace GUI
 				Menu::InsertButtonMiddle("Reset", resetPressed);
 				if (resetPressed)
 					ConfigSystem::HandleConfig("", ConfigSystem::configHandle::Reset);
-
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
