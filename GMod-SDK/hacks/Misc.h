@@ -3,6 +3,7 @@
 #include "../tier0/Vector.h"
 #include "../globals.hpp"
 #include "../ImGui/imgui.h"
+#include "ImGui/imgui-notify/imgui_notify.h"
 
 const char* killMessages[]{
     "Hah, you died!",
@@ -44,8 +45,15 @@ public:
         EngineClient->GetPlayerInfo(target, &targetInfo);
         EngineClient->GetPlayerInfo(attacker, &attackerInfo);
 
-        if(strlen(attackerInfo.name) && attacker != localPlayerID)
-            std::cout << attackerInfo.name << " attacked " << targetInfo.name << ". NEW HP: " << event->GetInt("health") << std::endl;
+        if (strlen(attackerInfo.name))
+        {
+            std::string outputString = string_format("%s attacked %s. NEW HP: %i", attackerInfo.name, targetInfo.name, event->GetInt("health"));
+            std::cout << outputString.c_str() << std::endl;
+            ImGuiToast toast(ImGuiToastType_None, 3000); // <-- content can also be passed here as above
+            toast.set_title("Damage-Event");
+            toast.set_content(outputString.c_str());
+            ImGui::InsertNotification(toast);
+        }
 
         if (target == localPlayerID || attacker != localPlayerID)
             return;

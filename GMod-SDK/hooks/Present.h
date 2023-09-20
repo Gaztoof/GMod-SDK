@@ -4,6 +4,7 @@
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_dx9.h"
 #include "../ImGui/imgui_impl_win32.h"
+#include "../ImGui/imgui-notify/imgui_notify.h"
 #include "../globals.hpp"
 #include "../hacks/menu/GUI.h"
 #include "../hacks/menu/drawing.h"
@@ -79,7 +80,11 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 		style = &ImGui::GetStyle();
 		ImGuiIO& io = ImGui::GetIO();
+		ImFontConfig font_cfg;
+		font_cfg.FontDataOwnedByAtlas = false;
 
+		io.Fonts->AddFontFromMemoryTTF((void*)verdanaBytes, sizeof(verdanaBytes), 11.f, &font_cfg);
+		ImGui::MergeIconsWithLatestFont(11.f, false);
 		io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 		menuFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBytes, sizeof(verdanaBytes), 11);
 		boldMenuFont = io.Fonts->AddFontFromMemoryTTF((void*)verdanaBoldBytes, sizeof(verdanaBoldBytes), 11);
@@ -123,6 +128,13 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.f); // Round borders
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(43.f / 255.f, 43.f / 255.f, 43.f / 255.f, 100.f / 255.f)); // Background color
+	ImGui::RenderNotifications(); // <-- Here we render all notifications
+	ImGui::PopStyleVar(1); // Don't forget to Pop()
+	ImGui::PopStyleColor(1);
+
 	if (EngineClient->IsInGame())
 	{
 		rainbowColor(Settings::Aimbot::fovColor, Settings::Misc::rainbowSpeed);
@@ -250,65 +262,37 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 					ImGui::PushFont(tabFont);
 
 					ImGui::TabSpacer("##Top Spacer", ImVec2(75.f, 10.f));
-					switch (tab) {
-
-					case 0:
-						if (ImGui::SelectedTab("A", ImVec2(75.f, 75.f))) tab = 0;
-						if (ImGui::Tab("C", ImVec2(75.f, 75.f))) tab = 1;
-						if (ImGui::Tab("D", ImVec2(75.f, 75.f))) tab = 2;
-						if (ImGui::Tab("F", ImVec2(75.f, 75.f))) tab = 3;
-						ImGui::PushFont(massiveFont);
-						if (ImGui::Tab("LUA", ImVec2(75.f, 75.f))) tab = 4;
-						ImGui::PopFont();
-						ImGui::Tab("  ", ImVec2(75.f, 75.f));
-						ImGui::Tab(" ", ImVec2(75.f, 75.f));
-						break;
-					case 1:
-
-						if (ImGui::Tab("A", ImVec2(75.f, 75.f))) tab = 0;
-						if (ImGui::SelectedTab("C", ImVec2(75.f, 75.f))) tab = 1;
-						if (ImGui::Tab("D", ImVec2(75.f, 75.f))) tab = 2;
-						if (ImGui::Tab("F", ImVec2(75.f, 75.f))) tab = 3;
-						ImGui::PushFont(massiveFont);
-						if (ImGui::Tab("LUA", ImVec2(75.f, 75.f))) tab = 4;
-						ImGui::PopFont();
-						ImGui::Tab("  ", ImVec2(75.f, 75.f));
-						ImGui::Tab(" ", ImVec2(75.f, 75.f));
-						break;
-					case 2:
-						if (ImGui::Tab("A", ImVec2(75.f, 75.f))) tab = 0;
-						if (ImGui::Tab("C", ImVec2(75.f, 75.f))) tab = 1;
-						if (ImGui::SelectedTab("D", ImVec2(75.f, 75.f))) tab = 2;
-						if (ImGui::Tab("F", ImVec2(75.f, 75.f))) tab =3;
-						ImGui::PushFont(massiveFont);
-						if (ImGui::Tab("LUA", ImVec2(75.f, 75.f))) tab = 4;
-						ImGui::PopFont();
-						ImGui::Tab("  ", ImVec2(75.f, 75.f));
-						ImGui::Tab(" ", ImVec2(75.f, 75.f));
-						break;
-					case 3:
-						if (ImGui::Tab("A", ImVec2(75.f, 75.f))) tab = 0;
-						if (ImGui::Tab("C", ImVec2(75.f, 75.f))) tab = 1;
-						if (ImGui::Tab("D", ImVec2(75.f, 75.f))) tab = 2;
-						if (ImGui::SelectedTab("F", ImVec2(75.f, 75.f))) tab = 3;
-						ImGui::PushFont(massiveFont);
-						if (ImGui::Tab("LUA", ImVec2(75.f, 75.f))) tab = 4;
-						ImGui::PopFont();
-						ImGui::Tab("  ", ImVec2(75.f, 75.f));
-						ImGui::Tab(" ", ImVec2(75.f, 75.f));
-						break;
-					case 4:
-						if (ImGui::Tab("A", ImVec2(75.f, 75.f))) tab = 0;
-						if (ImGui::Tab("C", ImVec2(75.f, 75.f))) tab = 1;
-						if (ImGui::Tab("D", ImVec2(75.f, 75.f))) tab = 2;
-						if (ImGui::Tab("F", ImVec2(75.f, 75.f))) tab = 3;
-						ImGui::PushFont(massiveFont);
-						if (ImGui::SelectedTab("LUA", ImVec2(75.f, 75.f))) tab = 4;
-						ImGui::PopFont();
-						ImGui::Tab("  ", ImVec2(75.f, 75.f));
-						ImGui::Tab(" ", ImVec2(75.f, 75.f));
-						break;
+					for (int i = 0; i < GUI::categories.size(); i++)
+					{
+						if (!GUI::categories[i].m_bIsVisible)
+						{
+							continue;
+						}
+						if (!GUI::categories[i].m_bHasIcon)
+						{
+							ImGui::PushFont(massiveFont);
+						}
+						if (tab == i) {
+							if (ImGui::SelectedTab(GUI::categories[i].m_szCategoryName, ImVec2(75.f, 75.f)))
+							{
+								tab = i;
+							}
+						}
+						else if (ImGui::Tab(GUI::categories[i].m_szCategoryName, ImVec2(75.f, 75.f)))
+						{
+							tab = i;
+						}
+						
+						if (!GUI::categories[i].m_bHasIcon)
+						{
+							ImGui::PopFont();
+						}
 					}
+					for (int i = 0; i < 7 - GUI::categories.size(); i++)
+					{
+						ImGui::Tab(" ", ImVec2(75.f, 75.f));
+					}
+					
 					ImGui::TabSpacer2("##Bottom Spacer", ImVec2(75.f, 7.f));
 					ImGui::PopFont();
 					style->ButtonTextAlign = ImVec2(0.5f, 0.5f);
@@ -320,24 +304,11 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 				ImGui::PushFont(menuFont);
 				ImGui::BeginChild("Tab Contents", ImVec2(572.f, 542.f), false); 
 				{
-					switch (tab) {
-
-					case 0:
-						GUI::DrawAimbot();
-						break;
-					case 1:
-						GUI::DrawVisuals();
-						break;
-					case 2:
-						GUI::DrawMisc();
-						break;
-					case 3:
-						GUI::DrawFilters();
-						break;
-					case 4:
-						GUI::DrawLua();
-						break;
+					if (tab >= GUI::categories.size())
+					{
+						tab = 0;
 					}
+					GUI::categories.at(tab).m_pCategoryHandler();
 
 					style->Colors[ImGuiCol_Border] = ImColor(10, 10, 10, 255);
 

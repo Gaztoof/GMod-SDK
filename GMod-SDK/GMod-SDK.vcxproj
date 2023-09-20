@@ -238,6 +238,9 @@
     <ClInclude Include="hooks\RenderView.h" />
     <ClInclude Include="hooks\RunCommand.h" />
     <ClInclude Include="hooks\RunStringEx.h" />
+    <ClInclude Include="ImGui\imgui-notify\fa_solid_900.h" />
+    <ClInclude Include="ImGui\imgui-notify\font_awesome_5.h" />
+    <ClInclude Include="ImGui\imgui-notify\imgui_notify.h" />
     <ClInclude Include="lua_shared\CLuaConVars.h" />
     <ClInclude Include="lua_shared\CLuaInterface.h" />
     <ClInclude Include="lua_shared\CLuaShared.h" />

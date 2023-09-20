@@ -25,6 +25,16 @@ extern ImFont* executorFont;
 
 namespace GUI
 {
+	typedef void(*Draw)();
+	struct GUICategory
+	{
+		Draw m_pCategoryHandler;
+		const char* m_szCategoryName;
+		bool m_bIsOpen;
+		bool m_bHasIcon;
+		bool m_bIsVisible;
+	};
+
 	const char* items[] = {
 		("Players"),
 		("Ragdolls"),
@@ -103,6 +113,7 @@ namespace GUI
 		"Menu",
 	};
 
+	std::vector<GUICategory> categories;
 
 	void DrawVisuals()
 	{
@@ -195,6 +206,8 @@ namespace GUI
 
 				Menu::InsertCheckbox("Enabled FOV", &Settings::Visuals::fovEnabled);
 				Menu::InsertSlider("FOV", &Settings::Visuals::fov, 30, 150);
+
+				Menu::InsertCheckbox("Enabled ViewModel FOV", &Settings::Visuals::viewModelFovEnabled);
 				Menu::InsertSlider("ViewModel FOV", &Settings::Visuals::viewModelFOV, 30, 150);
 
 				Menu::InsertCheckbox("Zoom", &Settings::Misc::zoom);
