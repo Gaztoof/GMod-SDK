@@ -24,6 +24,7 @@ void NoSpread(CUserCmd* cmd, C_BaseCombatWeapon* gun, CLuaInterface* Lua)
 		int topop = 3;
 		gun->PushEntity();
 
+		// WTF IS THIS IF ELSE SHIT LMAO? instead do a runtime/compiletime string hashing switch case
 		if (!strcmp(GetLuaEntBase(gun), "tfa_gun_base"))
 		{
 			--topop;

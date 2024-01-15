@@ -144,7 +144,8 @@ void DoLegitAimbot(CUserCmd* cmd)
 
 	if (Settings::Aimbot::finalTarget && Settings::Aimbot::finalTarget->IsAlive())
 	{
-		QAngle calc = finalPos.AngleTo(eyePos);
+		auto calc = (finalPos - eyePos + Settings::Aimbot::finalTarget->getVelocity() * GlobalVars->frametime * GlobalVars->interval_per_tick - localPlayer->getVelocity() * GlobalVars->interval_per_tick).toAngle();
+
 		canHit = CanHit(Settings::Aimbot::finalTarget, eyePos, finalPos);
 
 		bool shouldFire = true;

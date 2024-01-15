@@ -140,8 +140,8 @@ namespace GUI
 				Menu::InsertColorPicker("##Distance color", &Settings::ESP::espDistanceColor, false);
 
 				Menu::InsertCombo("Infos emplacement", &Settings::ESP::infosEmplacement, plyInfoEmplacement, IM_ARRAYSIZE(plyInfoEmplacement));
-
-				Menu::InsertCheckbox("Skeleton (can crash at roundstart)", &Settings::ESP::skeletonEsp);
+				bool skel = false;
+				Menu::InsertCheckbox("Skeleton (BROKEN)", &skel);
 				Menu::InsertColorPicker("##Skeleton color", &Settings::ESP::skeletonEspColor, false);
 				Menu::InsertCheckbox("Detail skeleton", &Settings::ESP::skeletonDetails);
 
@@ -156,7 +156,7 @@ namespace GUI
 
 			Menu::InsertSpacer("Player ESP - Chams");
 
-			Menu::InsertGroupBoxLeft("Chams", 157.f); {
+			Menu::InsertGroupBoxLeft("Chams /!\\", 157.f); {
 
 				style->ItemSpacing = ImVec2(4, 2);
 				style->WindowPadding = ImVec2(4, 4);
@@ -193,9 +193,9 @@ namespace GUI
 				Menu::InsertSlider("Crosshair Size", &Settings::Misc::crosshairSize, 1, 20);
 				Menu::InsertCheckbox("Spectators", &Settings::Misc::drawSpectators);
 
-				Menu::InsertCheckbox("Enabled FOV", &Settings::Visuals::fovEnabled);
+				Menu::InsertCheckbox("Enabled FOV /!\\", &Settings::Visuals::fovEnabled);
 				Menu::InsertSlider("FOV", &Settings::Visuals::fov, 30, 150);
-				Menu::InsertSlider("ViewModel FOV", &Settings::Visuals::viewModelFOV, 30, 150);
+				Menu::InsertSlider("ViewModel FOV /!\\", &Settings::Visuals::viewModelFOV, 30, 150);
 
 				Menu::InsertCheckbox("Zoom", &Settings::Misc::zoom);
 				ImGui::Keybind("zoomkey", (int*)&Settings::Misc::zoomKey, &Settings::Misc::zoomKeyStyle);
@@ -216,17 +216,17 @@ namespace GUI
 
 				Menu::InsertCheckbox("Remove skybox", &Settings::Visuals::disableSkyBox);
 
-				Menu::InsertCheckbox("Change world color", &Settings::Visuals::changeWorldColor);
+				Menu::InsertCheckbox("Change world color /!\\", &Settings::Visuals::changeWorldColor);
 				Menu::InsertColorPicker("##World Color", &Settings::Visuals::worldColor, true);
 
 				Menu::InsertCheckbox("Remove visual recoil", &Settings::Visuals::noVisualRecoil);
-				Menu::InsertCheckbox("Remove hands", &Settings::Misc::removeHands);
+				Menu::InsertCheckbox("Remove hands /!\\", &Settings::Misc::removeHands);
 
 				Menu::InsertCheckbox("Third person", &Settings::Misc::thirdperson);
 				ImGui::Keybind("thirdpersonkey", (int*)&Settings::Misc::thirdpersonKey, &Settings::Misc::thirdpersonKeyStyle);
 				Menu::InsertSlider("Third person distance", &Settings::Misc::thirdpersonDistance, 20, 1000);
 
-				Menu::InsertCheckbox("Full Bright", &Settings::Visuals::fullBright);
+				Menu::InsertCheckbox("Full Bright /!\\", &Settings::Visuals::fullBright);
 
 				style->ItemSpacing = ImVec2(0, 0);
 				style->WindowPadding = ImVec2(6, 6);
@@ -256,7 +256,7 @@ namespace GUI
 
 				Menu::InsertCheckbox("Auto fire", &Settings::Aimbot::aimbotAutoFire);
 				Menu::InsertCheckbox("Auto wall", &Settings::Aimbot::aimbotAutoWall);
-				Menu::InsertCheckbox("Silent aim", &Settings::Aimbot::silentAim);
+				Menu::InsertCheckbox("Silent aim /!\\", &Settings::Aimbot::silentAim);
 				Menu::InsertCheckbox("Smoothing", &Settings::Aimbot::smoothing);
 				Menu::InsertSlider("Smoothing Steps", &Settings::Aimbot::smoothSteps, 10, 50);
 
@@ -306,8 +306,8 @@ namespace GUI
 				style->WindowPadding = ImVec2(4, 4);
 				ImGui::CustomSpacing(9.f);
 
-				Menu::InsertCheckbox("Remove spread", &Settings::Misc::noSpread);
-				Menu::InsertCheckbox("Remove recoil", &Settings::Misc::noRecoil);
+				Menu::InsertCheckbox("Remove spread /!\\", &Settings::Misc::noSpread);
+				Menu::InsertCheckbox("Remove recoil /!\\", &Settings::Misc::noRecoil);
 				Menu::InsertCheckbox("Fake-Lag", &Settings::Misc::fakeLag);
 				ImGui::Keybind("fakelagkey", (int*)&Settings::Misc::fakeLagKey, &Settings::Misc::fakeLagKeyStyle);
 				Menu::InsertSlider("Fake-Lag ticks", &Settings::Misc::fakeLagTicks, 1, 16);
@@ -325,7 +325,7 @@ namespace GUI
 				style->WindowPadding = ImVec2(4, 4);
 				ImGui::CustomSpacing(9.f);
 
-				Menu::InsertCheckbox("Enabled", &Settings::AntiAim::enableAntiAim);
+				Menu::InsertCheckbox("Enabled /!\\", &Settings::AntiAim::enableAntiAim);
 				ImGui::Keybind("antiaimkey", (int*)&Settings::AntiAim::antiAimKey, &Settings::AntiAim::antiAimKeyStyle);
 
 				Menu::InsertCombo("Pitch", &Settings::AntiAim::currentAntiAimPitch, antiAimPitch, IM_ARRAYSIZE(antiAimPitch));
@@ -509,10 +509,10 @@ namespace GUI
 				Menu::InsertCheckbox("Hitmarker sound enabled", &Settings::Misc::hitmarkerSoundEnabled);
 				Menu::InsertCombo("Hitmarker sound", &Settings::Misc::hitmarkerSound, hitmarkerSound, IM_ARRAYSIZE(hitmarkerSound));
 
-				Menu::InsertCheckbox("Quick stop", &Settings::Misc::quickStop);
+				Menu::InsertCheckbox("Quick stop /!\\", &Settings::Misc::quickStop);
 
 				Menu::InsertCheckbox("BunnyHop", &Settings::Misc::bunnyHop);
-				Menu::InsertCheckbox("Autostrafe", &Settings::Misc::autoStrafe);
+				Menu::InsertCheckbox("Autostrafe /!\\", &Settings::Misc::autoStrafe);
 				Menu::InsertCombo("Autostrafe style", &Settings::Misc::autoStrafeStyle, autostrafeStyle, IM_ARRAYSIZE(autostrafeStyle));
 				if (Settings::Misc::autoStrafeStyle == 2)
 				{
@@ -523,7 +523,7 @@ namespace GUI
 					Menu::InsertSlider("Optimizer strength", &Settings::Misc::optiStrength, 5.f, 100.f);
 				}
 				//Menu::InsertCheckbox("Fast-Walk", &Settings::Misc::fastWalk);
-				Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
+				//Menu::InsertCheckbox("Edge Jump", &Settings::Misc::edgeJump);
 
 				Menu::InsertCheckbox("Message on death", &Settings::Misc::killMessage);
 				Menu::InsertCheckbox("OOC?", &Settings::Misc::killMessageOOC);

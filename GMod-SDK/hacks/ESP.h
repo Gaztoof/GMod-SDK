@@ -75,14 +75,16 @@ void doEsp()
 
 
 			matrix3x4_t bones[128];
+			auto rend = entity->GetClientRenderable();
 			if (((Settings::ESP::skeletonEsp) || Settings::Aimbot::drawAimbotHeadlines) && // Sometimes SetupBones will crash, and so adding these checks won't make you crash at round beginning if you disable features that need setupbones
-				((uintptr_t)entity->GetClientRenderable() < 0x1000 ||
-					!entity->GetClientRenderable()->SetupBones(bones, 128, BONE_USED_BY_HITBOX, EngineClient->Time())))
+				((uintptr_t)rend < 0x1000))
 				continue;
+
+			rend->SetupBones(bones, 128, BONE_USED_BY_HITBOX, GlobalVars->curtime);
 
 			int z = -1;
 
-			studiohdr_t* studioHdr = ModelInfo->GetStudiomodel((const model_t*)entity->GetClientRenderable()->GetModel());
+			studiohdr_t* studioHdr = ModelInfo->GetStudiomodel((const model_t*)rend->GetModel());
 
 			if (Settings::ESP::skeletonEsp)
 				for (int z = 0; z < studioHdr->numbones; z++)
@@ -114,7 +116,6 @@ void doEsp()
 			if (Settings::Aimbot::drawAimbotHeadlines && WorldToScreen(Vector(bones[selectedHitBox][0][3], bones[selectedHitBox][1][3], bones[selectedHitBox][2][3]), screenEyePos) && Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0).DistTo(screenEyePos) < Settings::Aimbot::aimbotFOV)
 			{
 				// white if random person, blue'ish if target
-
 				int color = entity == Settings::Aimbot::finalTarget ? 0xFF3333FF : 0xFFFFFFFF;
 				DrawLine(Vector(Globals::screenWidth / 2, Globals::screenHeight / 2, 0), screenEyePos, color);
 			}

@@ -51,6 +51,54 @@ ImFont* executorFont;
 ImGuiStyle* style;
 IDirect3DTexture9* menuBg;
 
+bool isAnnoyingMessageDone = false;
+void AnnoyingBeginningMessageButComeOnThisNeedsOneCusIDecidedItDoes() {
+	static bool checkedOnce = false;
+	if (isAnnoyingMessageDone)
+		return;
+	if (!checkedOnce) {
+		std::ifstream f("C:/GaztoofScriptHook/consider_me.txt");
+		if (f.good())
+		{
+			isAnnoyingMessageDone = true;
+			return;
+		}
+		checkedOnce = true;
+	}
+
+	//(Globals::screenWidth - 370.f) / 2.f
+	ImGui::SetNextWindowSize(ImVec2(370.f, 113.f));
+	ImGui::SetNextWindowPos(ImVec2((Globals::screenWidth - 370.f) / 2.f, (Globals::screenHeight - 113.f) / 2.f));
+	ImGui::BeginMenuBackground("Annoying Window", &Globals::openMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
+	{
+		ImGui::ColorBar("rainbowBar69", ImVec2(360.f, 2.f));
+
+		ImGui::GetStyle().ItemSpacing = ImVec2(4, 2);
+		ImGui::GetStyle().WindowPadding = ImVec2(4, 4);
+		ImGui::SameLine(15.f);
+		ImGui::Text("Hey there!\nSorry to let you know, this cheat will probably not be worked on \nanymore as it has too many bugs, and is not worth the time invested \nat all (i benefit absolutely nothing from it).\nSo I guess enjoy it while it works :D");
+
+		bool closePressed = false;
+		ImGui::Spacing(); ImGui::NewLine(); ImGui::NewLine(); ImGui::SameLine(106.f); ImGui::PushItemWidth(158.f);
+
+		if (ImGui::Button("CLOSE", ImVec2(158.f, 0)))
+		{
+			isAnnoyingMessageDone = true;
+			std::ofstream outputFile("C:/GaztoofScriptHook/consider_me.txt");
+
+			if (outputFile.is_open()) {
+				outputFile << "Hey! It's a good thing you opened this :D\n\nI will probably not work on this cheat anymore because it takes way too much time for what I benefit from it(nothing).\nHope you understand! If you want to show support, feel free to donate crypto!\nBTC: bc1q6zd8m662vvtrmuk8cmgctl7f7nzcqajs2sh0yv\nETH: 0x65c93c24d47dF946997b29508D58fb7AF622E500\nBCH: qpspqu33hjt47ppwdxa04gzrgfjn78qnv5h4zpwhld";
+			}
+			outputFile.close();
+		}
+	}
+
+	ImGui::PopItemWidth(); ImGui::CustomSpacing(1.f);
+
+
+	ImGui::End();
+
+}
 HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, CONST RECT* pDestRect, HWND hDestWindowOverride, CONST RGNDATA* pDirtyRegion)
 {
 	static bool initialized = false;
@@ -209,7 +257,9 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	}
 	ImGui::End();	
 
-	if (Globals::openMenu)
+	AnnoyingBeginningMessageButComeOnThisNeedsOneCusIDecidedItDoes();
+
+	if (Globals::openMenu && isAnnoyingMessageDone)
 	{
 		rainbowColor(Settings::menuColor, Settings::Misc::rainbowSpeed);
 

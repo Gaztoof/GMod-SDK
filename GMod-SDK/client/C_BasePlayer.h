@@ -308,7 +308,7 @@ public:
 	/*231*/	virtual bool UsesLua(void) = 0;
 	/*232*/	virtual int GetLuaEntityType(void) = 0;
 	/*233*/	virtual void PushEntity(void) = 0;
-	/*234*/	virtual void Push_This_Entity(void) = 0;
+	///*234*/	virtual void Push_This_Entity(void) = 0;
 	/*235*/	virtual void* SetEntity(char const*,C_BaseEntity*) = 0;
 	/*236*/	virtual void* GetParentPhysicsNum(void) = 0;
 	/*237*/	virtual void* SetParentPhysicsNum(int) = 0;
@@ -584,7 +584,7 @@ public:
 		// Update 30/10/2021: Tests show that you can't sig CalcPlayerView anymore (tested in X64), so here's an alternative:
 		// String XREF "Initialize All Game Systems", you'll find this https://i.imgur.com/rWlXdHI.png, so XREF vieweffects, and the first reference should look like this: https://i.imgur.com/rxXt4Wt.png. That's your CalcPlayerView
 #ifdef _WIN64
-		return *(QAngle*)((uintptr_t)this + 0x2DB0);
+		return *(QAngle*)((uintptr_t)this + 0x2A00);
 #else
 		return *(QAngle*)((uintptr_t)this + 0x24D0); // https://i.imgur.com/Y5hSyqS.png <- that's viewpunch offset. see screenshot above on how to get it, sig the stuff if u want to find it again
 #endif

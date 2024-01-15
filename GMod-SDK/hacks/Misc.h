@@ -155,6 +155,7 @@ void SpectatorList()
     }
     ImGui::End();
 }
+
 int flagsPrePred = 0;
 void QuickStop(CUserCmd* cmd)
 {
